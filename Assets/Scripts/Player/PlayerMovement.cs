@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace Player {
-  public class Movement : MonoBehaviour {
+  public class PlayerMovement : MonoBehaviour {
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
 
