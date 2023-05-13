@@ -3,27 +3,76 @@ using UnityEngine;
 
 namespace Player {
   public class Movement : MonoBehaviour {
+    [SerializeField]
+    private KeyCode jumpKey = KeyCode.Space;
 
-    public float moveSpeed = 3f;
-    
+    [SerializeField]
+    private float moveSpeed = 3f;
+
+    [SerializeField]
+    private float jumpSpeed = 7f;
+
+    [SerializeField]
+    private LayerMask layerMask = 0;
+
+    private Vector3 startScale;
+    private bool isJumping;
+    private bool wasLeft = true;
+    private float distance = 0f;
+
     private Animator animator;
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
 
     private void Awake() {
       animator = GetComponent<Animator>();
+      rb = GetComponent<Rigidbody2D>();
+      sr = GetComponent<SpriteRenderer>();
+      distance = GetComponent<BoxCollider2D>().bounds.extents.y + 0.1f;
 
+      startScale = transform.localScale;
     }
 
     private void FixedUpdate() {
+      TryMove();
+    }
+
+    private void Update() {
+      TryJump();
+      CheckGround();
+    }
+
+    private void TryMove() {
       var horizontal = Input.GetAxisRaw("Horizontal");
-      var vertical = Input.GetAxisRaw("Vertical");
 
-      animator.SetFloat("vertical", vertical);
-      animator.SetFloat("horizontal", vertical == 0 ? horizontal : 0);
-      animator.SetBool("isWalking", horizontal != 0 || vertical != 0);
+      animator.SetBool("isWalking", horizontal != 0);
+      transform.Translate(horizontal * Time.deltaTime * moveSpeed, 0f, 0f);
+      if (horizontal < 0) wasLeft = false;
+      else if (horizontal > 0) wasLeft = true;
+      sr.flipX = !wasLeft;
+    }
 
-      
-      transform.Translate(horizontal * Time.deltaTime * moveSpeed, vertical * Time.deltaTime * moveSpeed, 0f);
+    private void CheckGround() {
+      if (rb.velocity.y < 0) {
+        var hit = Physics2D.Raycast(transform.position, Vector2.down, distance, layerMask);
 
+        if (hit && hit.transform.CompareTag("Ground")) {
+          SetJumping(false);
+        }
+      }
+    }
+
+    private void TryJump() {
+      if (!isJumping && Input.GetKey(jumpKey)) {
+        SetJumping(true);
+        // rb.AddForce(Vector2.up * (jumpSpeed * 100f));
+        rb.velocity = Vector2.up * jumpSpeed;
+      }
+    }
+
+    private void SetJumping(bool value) {
+      isJumping = value;
+      animator.SetBool("isJumping", value);
     }
   }
 }
