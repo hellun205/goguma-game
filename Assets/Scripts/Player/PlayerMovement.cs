@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player {
   public class PlayerMovement : MonoBehaviour {
@@ -14,6 +15,8 @@ namespace Player {
 
     [SerializeField]
     private LayerMask layerMask = 0;
+
+    public bool canFlip = true;
 
     private Vector3 startScale;
     private bool isJumping;
@@ -49,7 +52,8 @@ namespace Player {
       transform.Translate(horizontal * Time.deltaTime * moveSpeed, 0f, 0f);
       if (horizontal < 0) wasLeft = false;
       else if (horizontal > 0) wasLeft = true;
-      sr.flipX = !wasLeft;
+      
+      Flip();
     }
 
     private void CheckGround() {
@@ -73,6 +77,17 @@ namespace Player {
     private void SetJumping(bool value) {
       isJumping = value;
       animator.SetBool("isJumping", value);
+    }
+
+    private void Flip() {
+      // rotate
+      // sr.flipX = !wasLeft;
+      if (!canFlip) return;
+      if (wasLeft) {
+        transform.localScale = new Vector3(1f, 1f, 1f); 
+      } else {
+        transform.localScale = new Vector3(-1f, 1f, 1f);
+      }
     }
   }
 }
