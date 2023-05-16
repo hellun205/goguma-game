@@ -18,22 +18,24 @@ namespace Player {
 
     public bool canFlip = true;
 
-    private Vector3 startScale;
     private bool isJumping;
     private bool wasLeft = true;
-    private float distance = 0f;
+    private float distanceX = 0f;
+    private float distanceY = 0f;
 
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private BoxCollider2D boxCol;
 
     private void Awake() {
       animator = GetComponent<Animator>();
       rb = GetComponent<Rigidbody2D>();
       sr = GetComponent<SpriteRenderer>();
-      distance = GetComponent<BoxCollider2D>().bounds.extents.y + 0.1f;
+      boxCol = GetComponent<BoxCollider2D>();
 
-      startScale = transform.localScale;
+      distanceX = boxCol.bounds.extents.x;
+      distanceY = boxCol.bounds.extents.y + 0.2f;
     }
 
     private void FixedUpdate() {
@@ -52,18 +54,23 @@ namespace Player {
       transform.Translate(horizontal * Time.deltaTime * moveSpeed, 0f, 0f);
       if (horizontal < 0) wasLeft = false;
       else if (horizontal > 0) wasLeft = true;
-      
+
       Flip();
     }
 
     private void CheckGround() {
-      if (rb.velocity.y < 0) {
-        var hit = Physics2D.Raycast(transform.position, Vector2.down, distance, layerMask);
+      // if (rb.velocity.y < 0) {
+      var pos = transform.position;
+      var hitLeft = Physics2D.Raycast(new Vector2(pos.x - distanceX, pos.y), Vector2.down, distanceY, layerMask);
+      var hitRight = Physics2D.Raycast(new Vector2(pos.x + distanceX, pos.y), Vector2.down, distanceY, layerMask);
 
-        if (hit && hit.transform.CompareTag("Ground")) {
-          SetJumping(false);
-        }
+      if ((hitLeft || hitRight) &&
+          (hitLeft.transform.CompareTag("Ground") || hitRight.transform.CompareTag("Ground"))) {
+        SetJumping(false);
+      } else {
+        SetJumping(true);
       }
+      // }
     }
 
     private void TryJump() {
@@ -84,7 +91,7 @@ namespace Player {
       // sr.flipX = !wasLeft;
       if (!canFlip) return;
       if (wasLeft) {
-        transform.localScale = new Vector3(1f, 1f, 1f); 
+        transform.localScale = new Vector3(1f, 1f, 1f);
       } else {
         transform.localScale = new Vector3(-1f, 1f, 1f);
       }
