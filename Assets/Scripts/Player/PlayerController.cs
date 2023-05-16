@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Enemy;
 using Player.Attack;
 using UnityEngine;
 
@@ -23,10 +24,11 @@ namespace Player {
     [SerializeField]
     private SkillType currentAttack = 0;
 
-    [SerializeField] private bool hasWeapon => anim.GetBool("hasWeapon");
+    private bool hasWeapon => anim.GetBool("hasWeapon");
 
     private float curCoolTime;
     private float curEndTime;
+    private bool isStarted;
 
     private void Awake() {
       if (Instance == null) Instance = this;
@@ -38,6 +40,7 @@ namespace Player {
       movement = GetComponent<PlayerMovement>();
       audioSrc = GetComponent<AudioSource>();
     }
+    
 
     private void OnDestroy() {
       if (Instance == this) Instance = null;
@@ -85,8 +88,10 @@ namespace Player {
 
       var colliders = Physics2D.OverlapBoxAll(attack.hitBoxPos.position, attack.hitBoxSize, 0);
       foreach (var col in colliders) {
-        // Attack Feature
-        Debug.Log(col.tag);
+        if (col.CompareTag("Enemy")) {
+          var enemy = col.GetComponent<EnemyController>();
+          enemy.Hit(weapon.damage * attack.damagePercent);
+        }
       }
     }
 
@@ -97,9 +102,11 @@ namespace Player {
 
     private void OnDrawGizmos() {
       // Attack HitBox Gizmos
-      var attack = weapons.Get(currentWeapon).Attacks.Get(currentAttack);
-      Gizmos.color = Color.red;
-      Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
+      if (isStarted) {
+        var attack = weapons.Get(currentWeapon).Attacks.Get(currentAttack);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
+      }
     }
 
     public bool ChangeWeapon(Weapons type) {
@@ -110,6 +117,11 @@ namespace Player {
       anim.SetBool("hasWeapon", type != Weapons.None);
       
       return true;
+    }
+
+    private void Start() {
+      isStarted = true;
+      ChangeWeapon(Weapons.Sword);
     }
   }
 }

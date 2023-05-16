@@ -6,6 +6,8 @@ namespace Player.Attack {
   public class Skill {
     public SkillType type;
 
+    public float damagePercent = 1f;
+
     [Header("Cooldown")]
     public float coolTime;
 
