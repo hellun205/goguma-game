@@ -3,7 +3,7 @@
 namespace Player.Attack {
   [Serializable]
   public class Weapon {
-    public int type;
+    public Weapons type;
 
     public Skill[] Attacks;
   }

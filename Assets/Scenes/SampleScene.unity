@@ -317,14 +317,14 @@ MonoBehaviour:
   weapons:
   - type: 0
     Attacks:
-    - type: 1
+    - type: 0
       coolTime: 0.55
       endTime: 0.45
       hitBoxPos: {fileID: 1552355644}
       hitBoxSize: {x: 1.32, y: 1.5}
       sound: {fileID: 8300000, guid: baf5afd6674c0f34aa9a487a3ca97407, type: 3}
       soundDelay: 0.17
-    - type: 2
+    - type: 1
       coolTime: 0.8
       endTime: 0.35
       hitBoxPos: {fileID: 1848792809}

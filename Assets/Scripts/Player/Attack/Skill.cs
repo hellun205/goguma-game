@@ -4,14 +4,14 @@ using UnityEngine;
 namespace Player.Attack {
   [Serializable]
   public class Skill {
-    public int type;
+    public SkillType type;
 
     [Header("Cooldown")]
     public float coolTime;
 
     public float endTime;
 
-    [Header("Hitbox")]
+    [Header("HitBox")]
     public Transform hitBoxPos;
 
     public Vector2 hitBoxSize;

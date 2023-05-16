@@ -18,10 +18,10 @@ namespace Player {
     private Weapon[] weapons;
 
     [SerializeField]
-    private int currentWeapon = 0;
+    private Weapons currentWeapon = 0;
 
     [SerializeField]
-    private int currentAttack = 0;
+    private SkillType currentAttack = 0;
 
     [SerializeField] private bool hasWeapon => anim.GetBool("hasWeapon");
 
@@ -51,9 +51,9 @@ namespace Player {
       if (!hasWeapon) return;
 
       if (curCoolTime <= 0) {
-        for (var i = 0; i < attackKeys.Length; i++) {
-          if (Input.GetKey(attackKeys[i])) {
-            Attack(weapons[currentWeapon], i);
+        foreach (var key in attackKeys) {
+          if (Input.GetKey(key)) {
+            Attack(weapons.Get(currentWeapon), key.GetSkill());
             break;
           }
         }
@@ -68,13 +68,13 @@ namespace Player {
       }
     }
 
-    private void Attack(Weapon weapon, int atkType) {
-      var attack = weapon.Attacks[atkType];
+    private void Attack(Weapon weapon, SkillType atkType) {
+      var attack = weapon.Attacks.Get(atkType);
 
       movement.canFlip = false;
       currentAttack = atkType;
-      anim.SetInteger("weaponType", weapon.type);
-      anim.SetInteger("attackType", atkType + 1);
+      anim.SetInteger("weaponType", (int)weapon.type);
+      anim.SetInteger("attackType", (int)atkType);
       anim.SetBool("isAttack", true);
       anim.SetTrigger("attack");
       curCoolTime = attack.coolTime;
@@ -96,10 +96,20 @@ namespace Player {
     }
 
     private void OnDrawGizmos() {
-      // Attack Hitbox Gizmos
-      var attack = weapons[currentWeapon].Attacks[currentAttack];
+      // Attack HitBox Gizmos
+      var attack = weapons.Get(currentWeapon).Attacks.Get(currentAttack);
       Gizmos.color = Color.red;
       Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
+    }
+
+    public bool ChangeWeapon(Weapons type) {
+      if (!weapons.Select(weapon => weapon.type).Contains(type)) return false;
+
+      currentWeapon = type;
+      anim.SetInteger("weaponType", (int)type);
+      anim.SetBool("hasWeapon", type != Weapons.None);
+      
+      return true;
     }
   }
 }
