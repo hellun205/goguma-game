@@ -6,6 +6,7 @@ namespace Entity.UI {
   public abstract class UIEntity : Entity {
     public RectTransform rectTransform;
     private Vector3 _position;
+    private Vector2 _size;
 
     public override Vector3 position {
       get => _position;
@@ -15,9 +16,19 @@ namespace Entity.UI {
       }
     }
 
+    public override Vector2 size {
+      get => _size;
+      set {
+        _size = value;
+        rectTransform.sizeDelta = value.WorldToScreenPoint();
+      }
+    }
+
     protected virtual void Awake() {
       rectTransform = GetComponent<RectTransform>();
-      rectTransform.SetParent(FindObjectOfType<Canvas>().transform);
+
+      _position = rectTransform.position.ScreenToWorldPoint();
+      _size = rectTransform.sizeDelta.ScreenToWorldPoint();
     }
 
     protected virtual void Update() {
@@ -25,7 +36,7 @@ namespace Entity.UI {
     }
 
     protected void RefreshPosition() {
-      rectTransform.position = UnityEngine.Camera.main.WorldToScreenPoint(position);
+      rectTransform.position = position.WorldToScreenPoint();
     }
   }
 }

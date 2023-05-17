@@ -26,7 +26,7 @@ namespace Entity {
       get => _line;
       set {
         _line = value;
-        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _line * 16f);
+        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _line * 16f + 6f);
       }
     }
 

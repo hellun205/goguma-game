@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Entity.UI;
 using UnityEngine;
 using UnityEngine.Pool;
 using Utils;
@@ -11,12 +12,18 @@ namespace Entity {
     
     public PoolManageData[] managements;
 
+    public Transform entityCollection;
+    
+    public RectTransform uiEntityCollection;
+
     private Dictionary<EntityType, IObjectPool<Entity>> pools;
 
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
+      DontDestroyOnLoad(entityCollection.gameObject);
+      DontDestroyOnLoad(uiEntityCollection.gameObject);
       
       var list = managements.Select(x => x.type);
 
@@ -30,7 +37,12 @@ namespace Entity {
       }
     }
 
-    private Entity OnCreateObject(PoolManageData data) => Instantiate(data.prefab);
+    private Entity OnCreateObject(PoolManageData data) {
+      var obj = Instantiate(data.prefab);
+      
+      obj.transform.SetParent(obj is UIEntity ? uiEntityCollection : entityCollection);
+      return obj;
+    }
 
     private void OnGetObject(Entity entity) => entity.gameObject.SetActive(true);
 

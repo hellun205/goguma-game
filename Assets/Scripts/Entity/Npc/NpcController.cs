@@ -21,11 +21,17 @@ namespace Entity.Npc {
 
     private BoxCollider2D npcCol;
 
-    private Vector3 npcPos;
+
+    public new Vector3 position {
+      get => base.position;
+      set {
+        base.position = value;
+        RefreshPosition();
+      }
+    }
 
     private void Awake() {
       npcCol = GetComponent<BoxCollider2D>();
-      npcPos = transform.position;
     }
 
     private void Start() {
@@ -33,8 +39,7 @@ namespace Entity.Npc {
       nameTag = (DisplayText)EntityManager.Get(EntityType.DisplayText);
       nameTag.SetText(name);
       nameTag.width = nameTagWidth;
-      nameTag.position = new Vector3(npcPos.x,
-        npcPos.y + npcCol.bounds.size.y + 0.05f, npcPos.z);
+      RefreshPosition();
     }
 
     private void ShowMessageRandom() {
@@ -43,7 +48,13 @@ namespace Entity.Npc {
       };
       messageBox = (MessageBox)EntityManager.Get(EntityType.MessageBox);
       messageBox.ShowMessage(this, msgData);
-      messageBox.position = new Vector3(npcPos.x, npcPos.y + npcCol.bounds.size.y + 0.6f, npcPos.z);
+      RefreshPosition();
+    }
+
+    private void RefreshPosition() {
+      var npcPos = transform.position;
+      if (messageBox != null) messageBox.position = new Vector3(npcPos.x, npcPos.y + npcCol.bounds.size.y, npcPos.z);
+      if (nameTag != null) nameTag.position = new Vector3(npcPos.x, npcPos.y + npcCol.bounds.size.y, npcPos.z);
     }
   }
 }

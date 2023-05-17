@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: DisplayText
+  rectTransform: {fileID: 0}
   text: {fileID: 2887388378380888574}
   img: {fileID: 8253395167095562714}
 --- !u!114 &8253395167095562714

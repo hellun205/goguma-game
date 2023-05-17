@@ -12,6 +12,11 @@ namespace Entity {
       set => transform.position = value;
     }
 
+    public virtual Vector2 size {
+      get => transform.localScale;
+      set => transform.localScale = new Vector3(value.x, value.y, transform.localScale.z);
+    }
+
     // private void OnBecameInvisible() => Release();
 
     public void Release() => EntityManager.Release(this);
