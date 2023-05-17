@@ -41,6 +41,8 @@ namespace Dialogue {
 
     public bool isEnabled { get; private set; }
 
+    public bool skipable = true;
+
     private char[] curText;
     private int curTextIndex;
     private bool isWriting;
@@ -60,8 +62,8 @@ namespace Dialogue {
     private void ResetUI(Speaker speaker = null) {
       speakerName.text = string.Empty;
       text.text = string.Empty;
-      speakerName.alignment = TextAlignmentOptions.Left;
-      text.alignment = TextAlignmentOptions.Left;
+      speakerName.alignment = TextAlignmentOptions.TopLeft;
+      text.alignment = TextAlignmentOptions.TopLeft;
       leftAvatar.gameObject.SetActive(false);
       rightAvatar.gameObject.SetActive(false);
       nextBtn.gameObject.SetActive(false);
@@ -80,8 +82,8 @@ namespace Dialogue {
         case AvatarPosition.Right:
           rightAvatar.gameObject.SetActive(true);
           rightAvatar.sprite = speaker.sprite;
-          speakerName.alignment = TextAlignmentOptions.Right;
-          text.alignment = TextAlignmentOptions.Right;
+          speakerName.alignment = TextAlignmentOptions.TopRight;
+          text.alignment = TextAlignmentOptions.TopRight;
           break;
       }
 
@@ -92,6 +94,7 @@ namespace Dialogue {
     private void Update() {
       if (isEnabled && Input.GetKeyDown(nextKey)) {
         if (isWriting) {
+          if (!skipable) return;
           for (var i = curTextIndex; i < curText.Length; i++) {
             text.text += curText[i];
           }
@@ -193,30 +196,6 @@ namespace Dialogue {
       multIndex--;
       HideBtns();
       SetMultiDialogue();
-    }
-
-    private void Start() {
-
-      // var speaker1 = new Speaker() {
-      //   avatarPosition = AvatarPosition.None,
-      //   entityName = "cas",
-      //   nameColor = Color.yellow
-      // };
-      //
-      // ShowDialogues(new[] {
-      //   new DialogueData() {
-      //     speaker = speaker1,
-      //     text = "우와안녕하십니까",
-      //   },
-      //   new DialogueData() {
-      //     speaker = speaker1,
-      //     text = "저는cas라고해요!",
-      //   },
-      //   new DialogueData() {
-      //     speaker = speaker1,
-      //     text = "감사합니다!",
-      //   }
-      // });
     }
   }
 }

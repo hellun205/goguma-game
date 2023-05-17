@@ -2,6 +2,7 @@
 using System.Linq;
 using Dialogue;
 using Entity.Enemy;
+using Entity.Npc;
 using Player.Attack;
 using UnityEngine;
 
@@ -9,13 +10,26 @@ namespace Entity.Player {
   public class PlayerController : Entity {
     public override EntityType type => EntityType.Player;
     public static PlayerController Instance { get; private set; }
+
+    // Components
     private Rigidbody2D rb;
     private Animator anim;
     private PlayerMovement movement;
     private AudioSource audioSrc;
+    private BoxCollider2D col;
 
+    // Inspector Settings
     [SerializeField]
     private KeyCode[] attackKeys;
+
+    [SerializeField]
+    private KeyCode meetNpcKey = KeyCode.C;
+
+    [SerializeField]
+    private LayerMask layerMask;
+
+    [SerializeField]
+    private float checkNpcDistance = 3f;
 
     [SerializeField]
     private Weapon[] weapons;
@@ -26,11 +40,16 @@ namespace Entity.Player {
     [SerializeField]
     private SkillType currentAttack = 0;
 
-    private bool hasWeapon => anim.GetBool("hasWeapon");
+    [SerializeField]
+    private Sprite sprite;
 
+    // Variables
+    private bool hasWeapon => anim.GetBool("hasWeapon");
     private float curCoolTime;
     private float curEndTime;
     private bool isStarted;
+    private float distanceY;
+    public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, sprite, AvatarPosition.Left);
 
     private void Awake() {
       if (Instance == null) Instance = this;
@@ -41,8 +60,11 @@ namespace Entity.Player {
       anim = GetComponent<Animator>();
       movement = GetComponent<PlayerMovement>();
       audioSrc = GetComponent<AudioSource>();
+      col = GetComponent<BoxCollider2D>();
+
+      distanceY = col.bounds.extents.y - 0.1f;
     }
-    
+
 
     private void OnDestroy() {
       if (Instance == this) Instance = null;
@@ -50,6 +72,7 @@ namespace Entity.Player {
 
     private void Update() {
       TryAttack();
+      CheckNpc();
     }
 
     private void TryAttack() {
@@ -78,8 +101,8 @@ namespace Entity.Player {
 
       movement.canFlip = false;
       currentAttack = atkType;
-      anim.SetInteger("weaponType", (int)weapon.type);
-      anim.SetInteger("attackType", (int)atkType);
+      anim.SetInteger("weaponType", (int) weapon.type);
+      anim.SetInteger("attackType", (int) atkType);
       anim.SetBool("isAttack", true);
       anim.SetTrigger("attack");
       curCoolTime = attack.coolTime;
@@ -109,21 +132,40 @@ namespace Entity.Player {
       //   Gizmos.color = Color.red;
       //   Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
       // }
+      // 
+      // Check Npc Ray Gizmos
+      // var pos = transform.position;
+      // Gizmos.color = Color.yellow;
+      // Gizmos.DrawRay(new Vector2(pos.x, pos.y - distanceY), (movement.wasLeft ? Vector2.right : Vector2.left) * checkNpcDistance);
     }
 
     public bool ChangeWeapon(Weapons type) {
       if (!weapons.Select(weapon => weapon.type).Contains(type)) return false;
 
       currentWeapon = type;
-      anim.SetInteger("weaponType", (int)type);
+      anim.SetInteger("weaponType", (int) type);
       anim.SetBool("hasWeapon", type != Weapons.None);
-      
+
       return true;
     }
 
     private void Start() {
       isStarted = true;
       ChangeWeapon(Weapons.Sword);
+    }
+
+    private void CheckNpc() {
+      if (!Input.GetKeyDown(meetNpcKey)) return;
+
+      var pos = transform.position;
+      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY),
+        (movement.wasLeft ? Vector2.right : Vector2.left), checkNpcDistance, layerMask);
+
+      if (hit && hit.transform.CompareTag("Npc")) {
+        var npc = hit.transform.GetComponent<NpcController>();
+        
+        npc.Meet();
+      }
     }
   }
 }

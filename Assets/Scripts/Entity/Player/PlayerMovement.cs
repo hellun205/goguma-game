@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 namespace Entity.Player {
   public class PlayerMovement : MonoBehaviour {
+    // Inspector Settings
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
 
@@ -17,13 +18,18 @@ namespace Entity.Player {
     [SerializeField]
     private LayerMask layerMask = 0;
 
+    // Variables
+    [HideInInspector]
     public bool canFlip = true;
 
+    [HideInInspector]
+    public bool wasLeft = true;
+    
     private bool isJumping;
-    private bool wasLeft = true;
     private float distanceX = 0f;
     private float distanceY = 0f;
 
+    // Components
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -74,7 +80,6 @@ namespace Entity.Player {
         }
         // }
       } catch {
-        
       }
     }
 

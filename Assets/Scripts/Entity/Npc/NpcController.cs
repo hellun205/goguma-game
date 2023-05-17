@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using Dialogue;
+using Entity.Player;
+using Entity.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
@@ -7,8 +11,7 @@ namespace Entity.Npc {
   public class NpcController : Entity {
     public override EntityType type => EntityType.Npc;
 
-    [Header("Messages")]
-    public string[] messages;
+    public Npc npcData;
 
     public float MessageWidth = 150f;
 
@@ -35,15 +38,22 @@ namespace Entity.Npc {
     }
 
     private void Start() {
-      InvokeRepeating("ShowMessageRandom", 6f, 12f);
+      StartMessage();
       RefreshPosition();
     }
 
+    private void StartMessage() => InvokeRepeating("ShowMessageRandom", 6f, 12f);
+
+    private void StopMessage() {
+      CancelInvoke("ShowMessageRandom");
+      SetTalking(false);
+    }
+
     private void ShowMessageRandom() {
-      var msgData = new MessageData(entityName, messages.Random()) {
+      var msgData = new MessageData(entityName, npcData.messages.Random()) {
         panelWidth = MessageWidth
       };
-      messageBox = (MessageBox)EntityManager.Get(EntityType.MessageBox);
+      messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
       SetTalking(true);
       messageBox.ShowMessage(this, msgData, () => SetTalking(false));
       RefreshPosition();
@@ -54,5 +64,12 @@ namespace Entity.Npc {
     }
 
     private void SetTalking(bool value) => anim.SetBool("isTalking", value);
+
+    public void Meet() {
+      DialogueController.Instance.ShowDialogues(npcData.meetDialogue.Select(dialogue =>
+        new DialogueData(
+          (dialogue.speaker == Speaker.Npc ? npcData.speakerData : PlayerController.Instance.speakerData),
+          dialogue.text)).ToArray());
+    }
   }
 }

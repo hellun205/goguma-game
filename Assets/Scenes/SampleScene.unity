@@ -123,6 +123,64 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &12148462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 12148464}
+  - component: {fileID: 12148463}
+  m_Layer: 0
+  m_Name: NpcManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &12148463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12148462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e345459108dd4a6fbeea3d238a69be8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcs:
+  - name: "\uAE38\uCB49 \uB2F9\uADFC"
+    type: 1
+    who: 0
+    messages:
+    - "\uC544~~ \uC2EC\uC2EC\uD558\uB2E4"
+    - "\uB530\uBD84\uD574...~"
+    - "\uC5B4\uB514 \uC7AC\uBC0C\uB294\uAC70 \uC5C6\uB098?"
+    - "\uB098\uB3C4 \uC5BC\uB978 \uB098\uAC00\uACE0 \uC2F6\uB2E4~"
+    - "\uC5B8\uC81C\uAE4C\uC9C0 \uC5EC\uAE30\uC788\uC744\uAE4C?"
+    meetDialogue:
+    - speaker: 1
+      text: "\uC548\uB155!! \uBC18\uAC00\uC6CC!!!"
+    sprite: {fileID: 0}
+--- !u!4 &12148464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12148462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &71035726
 GameObject:
   m_ObjectHideFlags: 0
@@ -256,6 +314,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 951
   canFlip: 1
+  wasLeft: 1
 --- !u!61 &71035731
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -317,6 +376,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: "[Lv. 1] \uACE0\uAD6C\uB9C8"
   attackKeys: 7a00000078000000
+  meetNpcKey: 99
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 951
+  checkNpcDistance: 1.65
   weapons:
   - type: 0
     damage: 3
@@ -339,6 +403,7 @@ MonoBehaviour:
       soundDelay: 0.03
   currentWeapon: 0
   currentAttack: 0
+  sprite: {fileID: 0}
 --- !u!82 &71035734
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1049,7 +1114,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &945543044
 GameObject:
@@ -1109,7 +1174,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 478840041, guid: 254a7ac089a75b94287931b7ffdecfdc, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1466,11 +1531,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: "\uAE38\uCB49 \uB2F9\uADFC"
-  messages:
-  - "\uB098\uB294 \uADC0\uC5EC\uC6B4 \uB2F9\uADFC!"
-  - "\uD788\uD788"
-  - "\uC74C.. \uC2EC\uC2EC\uD558\uB2E4.."
-  - '!!!!'
+  npcData:
+    name: "\uAE38\uCB49 \uB2F9\uADFC"
+    type: 1
+    who: 0
+    messages:
+    - "\uC544~~ \uC2EC\uC2EC\uD558\uB2E4"
+    - "\uB530\uBD84\uD574...~"
+    - "\uC5B4\uB514 \uC7AC\uBC0C\uB294\uAC70 \uC5C6\uB098?"
+    - "\uB098\uB3C4 \uC5BC\uB978 \uB098\uAC00\uACE0 \uC2F6\uB2E4~"
+    - "\uC5B8\uC81C\uAE4C\uC9C0 \uC5EC\uAE30\uC788\uC744\uAE4C?"
+    meetDialogue:
+    - speaker: 1
+      text: "\uC548\uB155!! \uBC18\uAC00\uC6CC!!!"
+    sprite: {fileID: 0}
   MessageWidth: 150
   MessageBoxPosition: {fileID: 204530373}
 --- !u!114 &1122286937
@@ -1609,7 +1683,8 @@ MonoBehaviour:
   nextBtnText: {fileID: 262222354}
   previousBtn: {fileID: 963085966}
   writeDelay: 0.05
-  nextKey: 32
+  nextKey: 99
+  skipable: 0
 --- !u!1 &1152399738
 GameObject:
   m_ObjectHideFlags: 0
@@ -1668,7 +1743,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d0793065a60a8344a2a48e7110a2ed6, type: 2}
   m_sharedMaterial: {fileID: 7621643780296998847, guid: 6d0793065a60a8344a2a48e7110a2ed6, type: 2}
@@ -1967,7 +2042,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 478840041, guid: 254a7ac089a75b94287931b7ffdecfdc, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2051,7 +2126,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: text
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6d0793065a60a8344a2a48e7110a2ed6, type: 2}
   m_sharedMaterial: {fileID: 7621643780296998847, guid: 6d0793065a60a8344a2a48e7110a2ed6, type: 2}
@@ -2357,7 +2432,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2778,11 +2853,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2123160862}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 539.53516, y: 283.86594, z: -1.1610842}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

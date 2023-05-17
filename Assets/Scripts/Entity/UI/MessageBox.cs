@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
 
-namespace Entity {
+namespace Entity.UI {
   public class MessageBox : UIEntity {
     public override EntityType type => EntityType.MessageBox;
 

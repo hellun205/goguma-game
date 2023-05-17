@@ -1,4 +1,5 @@
 ﻿using System;
+using Entity.UI;
 using UnityEngine;
 
 namespace Entity {
