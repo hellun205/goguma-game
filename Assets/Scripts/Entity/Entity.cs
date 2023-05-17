@@ -1,10 +1,12 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.Serialization;
 
 namespace Entity {
   public abstract class Entity : MonoBehaviour {
-    public string name;
+    [FormerlySerializedAs("name")]
+    public string entityName;
     public abstract EntityType type { get; }
 
     public virtual Vector3 position {

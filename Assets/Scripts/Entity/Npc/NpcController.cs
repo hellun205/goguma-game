@@ -7,20 +7,19 @@ namespace Entity.Npc {
   public class NpcController : Entity {
     public override EntityType type => EntityType.Npc;
 
-    [Header("Name Tag")]
-    public float nameTagWidth = 50f;
-
     [Header("Messages")]
     public string[] messages;
 
-    [FormerlySerializedAs("width")]
     public float MessageWidth = 150f;
 
+    [InspectorName("Position")]
+    public Transform MessageBoxPosition;
+
     private MessageBox messageBox;
-    private DisplayText nameTag;
 
     private BoxCollider2D npcCol;
 
+    private Animator anim;
 
     public new Vector3 position {
       get => base.position;
@@ -32,29 +31,28 @@ namespace Entity.Npc {
 
     private void Awake() {
       npcCol = GetComponent<BoxCollider2D>();
+      anim = GetComponent<Animator>();
     }
 
     private void Start() {
       InvokeRepeating("ShowMessageRandom", 6f, 12f);
-      nameTag = (DisplayText)EntityManager.Get(EntityType.DisplayText);
-      nameTag.SetText(name);
-      nameTag.width = nameTagWidth;
       RefreshPosition();
     }
 
     private void ShowMessageRandom() {
-      var msgData = new MessageData(name, messages.Random()) {
+      var msgData = new MessageData(entityName, messages.Random()) {
         panelWidth = MessageWidth
       };
       messageBox = (MessageBox)EntityManager.Get(EntityType.MessageBox);
-      messageBox.ShowMessage(this, msgData);
+      SetTalking(true);
+      messageBox.ShowMessage(this, msgData, () => SetTalking(false));
       RefreshPosition();
     }
 
     private void RefreshPosition() {
-      var npcPos = transform.position;
-      if (messageBox != null) messageBox.position = new Vector3(npcPos.x, npcPos.y + npcCol.bounds.size.y, npcPos.z);
-      if (nameTag != null) nameTag.position = new Vector3(npcPos.x, npcPos.y + npcCol.bounds.size.y, npcPos.z);
+      if (messageBox != null) messageBox.position = MessageBoxPosition.position;
     }
+
+    private void SetTalking(bool value) => anim.SetBool("isTalking", value);
   }
 }

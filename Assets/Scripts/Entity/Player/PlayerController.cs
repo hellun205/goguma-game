@@ -6,7 +6,8 @@ using Player.Attack;
 using UnityEngine;
 
 namespace Entity.Player {
-  public class PlayerController : MonoBehaviour {
+  public class PlayerController : Entity {
+    public override EntityType type => EntityType.Player;
     public static PlayerController Instance { get; private set; }
     private Rigidbody2D rb;
     private Animator anim;

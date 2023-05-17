@@ -199,7 +199,7 @@ namespace Dialogue {
 
       // var speaker1 = new Speaker() {
       //   avatarPosition = AvatarPosition.None,
-      //   name = "cas",
+      //   entityName = "cas",
       //   nameColor = Color.yellow
       // };
       //

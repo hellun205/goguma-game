@@ -3,6 +3,7 @@ using Camera;
 using Dialogue;
 using Entity.Npc;
 using Entity.UI;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -15,15 +16,22 @@ namespace Entity {
     [SerializeField]
     private TextMeshProUGUI text;
 
-    public void ShowMessage(NpcController npc, MessageData messageData) {
+    [CanBeNull]
+    private Action callBack;
+
+    public void ShowMessage(NpcController npc, MessageData messageData, [CanBeNull] Action endCallback = null) {
       text.text = messageData.text;
       rectTransform.sizeDelta = new Vector2(messageData.panelWidth, 
         MessageData.emptyHeight + MessageData.fontHeight * messageData.line);
+      callBack = endCallback;
       RefreshPosition();
       Invoke("Close", messageData.exitTime);
     }
 
-    private void Close() => Release();
+    private void Close()  {
+      callBack?.Invoke();
+      Release();
+    }
     
   }
 }

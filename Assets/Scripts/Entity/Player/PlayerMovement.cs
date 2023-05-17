@@ -61,18 +61,21 @@ namespace Entity.Player {
     }
 
     private void CheckGround() {
-      // if (rb.velocity.y < 0) {
-      var pos = transform.position;
-      var hitLeft = Physics2D.Raycast(new Vector2(pos.x - distanceX, pos.y), Vector2.down, distanceY, layerMask);
-      var hitRight = Physics2D.Raycast(new Vector2(pos.x + distanceX, pos.y), Vector2.down, distanceY, layerMask);
-
-      if ((hitLeft || hitRight) &&
-          (hitLeft.transform.CompareTag("Ground") || hitRight.transform.CompareTag("Ground"))) {
-        SetJumping(false);
-      } else {
-        SetJumping(true);
+      try {
+        // if (rb.velocity.y < 0) {
+        var pos = transform.position;
+        var hitLeft = Physics2D.Raycast(new Vector2(pos.x - distanceX, pos.y), Vector2.down, distanceY, layerMask);
+        var hitRight = Physics2D.Raycast(new Vector2(pos.x + distanceX, pos.y), Vector2.down, distanceY, layerMask);
+        if ((hitLeft || hitRight) &&
+            (hitLeft.transform.CompareTag("Ground") || hitRight.transform.CompareTag("Ground"))) {
+          SetJumping(false);
+        } else {
+          SetJumping(true);
+        }
+        // }
+      } catch {
+        
       }
-      // }
     }
 
     private void TryJump() {
