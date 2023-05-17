@@ -77,7 +77,7 @@ namespace Entity.Player {
 
     private void TryJump() {
       if (DialogueController.Instance.isEnabled) return;
-      if (!isJumping && Input.GetKey(jumpKey)) {
+      if (!isJumping && Input.GetKeyDown(jumpKey)) {
         SetJumping(true);
         // rb.AddForce(Vector2.up * (jumpSpeed * 100f));
         rb.velocity = Vector2.up * jumpSpeed;

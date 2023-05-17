@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Dialogue;
 using Entity.Enemy;
 using Player.Attack;
 using UnityEngine;
@@ -51,7 +52,7 @@ namespace Entity.Player {
     }
 
     private void TryAttack() {
-      if (!hasWeapon) return;
+      if (!hasWeapon || DialogueController.Instance.isEnabled) return;
 
       if (curCoolTime <= 0) {
         foreach (var key in attackKeys) {

@@ -45,7 +45,7 @@ namespace Dialogue {
     private int curTextIndex;
     private bool isWriting;
     private bool isMulti;
-    private DialogueInfo[] multiList;
+    private DialogueData[] multiList;
     private int multIndex;
 
     private void Awake() {
@@ -104,9 +104,10 @@ namespace Dialogue {
 
     private void Close() {
       panel.SetActive(false);
+      isEnabled = false;
     }
 
-    public void ShowDialogue(DialogueInfo dialogue) {
+    public void ShowDialogue(DialogueData dialogue) {
       if (isEnabled) return;
       isEnabled = true;
       panel.gameObject.SetActive(true);
@@ -118,7 +119,7 @@ namespace Dialogue {
       InvokeRepeating("Write", 0f, writeDelay);
     }
 
-    public void ShowDialogues(DialogueInfo[] dialogues) {
+    public void ShowDialogues(DialogueData[] dialogues) {
       if (isEnabled) return;
       isEnabled = true;
       panel.gameObject.SetActive(true);
@@ -196,26 +197,26 @@ namespace Dialogue {
 
     private void Start() {
 
-      var speaker1 = new Speaker() {
-        avatarPosition = AvatarPosition.None,
-        name = "cas",
-        nameColor = Color.yellow
-      };
-
-      ShowDialogues(new[] {
-        new DialogueInfo() {
-          speaker = speaker1,
-          text = "우와안녕하십니까",
-        },
-        new DialogueInfo() {
-          speaker = speaker1,
-          text = "저는cas라고해요!",
-        },
-        new DialogueInfo() {
-          speaker = speaker1,
-          text = "감사합니다!",
-        }
-      });
+      // var speaker1 = new Speaker() {
+      //   avatarPosition = AvatarPosition.None,
+      //   name = "cas",
+      //   nameColor = Color.yellow
+      // };
+      //
+      // ShowDialogues(new[] {
+      //   new DialogueData() {
+      //     speaker = speaker1,
+      //     text = "우와안녕하십니까",
+      //   },
+      //   new DialogueData() {
+      //     speaker = speaker1,
+      //     text = "저는cas라고해요!",
+      //   },
+      //   new DialogueData() {
+      //     speaker = speaker1,
+      //     text = "감사합니다!",
+      //   }
+      // });
     }
   }
 }
