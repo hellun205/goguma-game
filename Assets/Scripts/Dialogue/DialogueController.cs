@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
+using Entity.Player;
+using JetBrains.Annotations;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -31,8 +34,15 @@ namespace Dialogue {
     [SerializeField]
     private TextMeshProUGUI nextBtnText;
 
+    private Image nextBtnImg;
+
     [SerializeField]
     private Button previousBtn;
+
+    [SerializeField]
+    private TextMeshProUGUI previousBtnText;
+
+    private Image previousBtnImg;
 
     [Header("Dialogue")]
     public float writeDelay = 0.05f;
@@ -43,27 +53,43 @@ namespace Dialogue {
 
     public bool skipable = true;
 
+    [Header("Ask Setting")]
+    public Color yesColor;
+
+    public Color noColor;
+
+    public Color defaultColor;
+
+    public KeyCode yesKey = KeyCode.Z;
+
+    public KeyCode noKey = KeyCode.X;
+
     private char[] curText;
     private int curTextIndex;
     private bool isWriting;
     private bool isMulti;
     private DialogueData[] multiList;
     private int multIndex;
+    private (bool isAsk, string yes, string no) ask;
+    private Action<bool> callback;
 
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
+      nextBtnImg = nextBtn.GetComponent<Image>();
+      previousBtnImg = previousBtn.GetComponent<Image>();
 
       ResetUI();
       Close();
     }
 
-    private void ResetUI(Speaker speaker = null) {
+    private void ResetUI(Speaker speaker = null, bool isAsk = false) {
       speakerName.text = string.Empty;
       text.text = string.Empty;
       speakerName.alignment = TextAlignmentOptions.TopLeft;
       text.alignment = TextAlignmentOptions.TopLeft;
+      ask.isAsk = isAsk;
       leftAvatar.gameObject.SetActive(false);
       rightAvatar.gameObject.SetActive(false);
       nextBtn.gameObject.SetActive(false);
@@ -92,52 +118,75 @@ namespace Dialogue {
     }
 
     private void Update() {
-      if (isEnabled && Input.GetKeyDown(nextKey)) {
-        if (isWriting) {
-          if (!skipable) return;
-          for (var i = curTextIndex; i < curText.Length; i++) {
-            text.text += curText[i];
-          }
-          EndWriting();
-        } else {
-          NextOrClose();
+      if (!isEnabled || PlayerController.Instance.isInputCooldown) return;
+      
+      if (Input.GetKeyDown(nextKey) && isWriting) {
+        if (!skipable) return;
+        for (var i = curTextIndex; i < curText.Length; i++) {
+          text.text += curText[i];
+        }
+        EndWriting();
+        PlayerController.Instance.EnableInputCooldown();
+      }
+      
+      if (PlayerController.Instance.isInputCooldown) return;
+      if (ask.isAsk) {
+        if (Input.GetKeyDown(yesKey)) NextOrCloseOrYes();
+        else if (Input.GetKeyDown(noKey)) PreviousOrNo();
+        
+      } else {
+        if (Input.GetKeyDown(nextKey)) {
+          NextOrCloseOrYes();
         }
       }
     }
 
-    private void Close() {
+    private void Close(bool? btn = null) {
       panel.SetActive(false);
       isEnabled = false;
+      if (btn.HasValue) callback?.Invoke(btn.Value);
     }
 
-    public void ShowDialogue(DialogueData dialogue) {
+    public void ShowDialogue(DialogueData dialogue, [CanBeNull] Action<bool> callback = null, bool isAsk = false) {
       if (isEnabled) return;
       isEnabled = true;
       panel.gameObject.SetActive(true);
-      ResetUI(dialogue.speaker);
+      ResetUI(dialogue.speaker, isAsk);
+      ask.isAsk = isAsk;
       curText = dialogue.text.ToCharArray();
-      curTextIndex = 0;
       isMulti = false;
-      isWriting = true;
-      InvokeRepeating("Write", 0f, writeDelay);
+      this.callback = callback;
+      StartWrite();
     }
 
-    public void ShowDialogues(DialogueData[] dialogues) {
+    public void ShowDialogues(DialogueData[] dialogues, [CanBeNull] Action<bool> callback = null) {
       if (isEnabled) return;
       isEnabled = true;
       panel.gameObject.SetActive(true);
       isMulti = true;
       multiList = dialogues;
       multIndex = 0;
+      this.callback = callback;
       SetMultiDialogue();
+    }
+
+    public void Ask(DialogueData dialogue, Action<bool> callback, string yesText = "예", string noText = "아니요") {
+      ask.yes = yesText;
+      ask.no = noText;
+      ShowDialogue(dialogue, callback, true);
     }
 
     private void SetMultiDialogue() {
       var dialogue = multiList[multIndex];
       ResetUI(dialogue.speaker);
       curText = dialogue.text.ToCharArray();
+      StartWrite();
+    }
+
+    private void StartWrite() {
       curTextIndex = 0;
       isWriting = true;
+      PlayerController.Instance.EnableInputCooldown();
       InvokeRepeating("Write", 0f, writeDelay);
     }
 
@@ -158,13 +207,22 @@ namespace Dialogue {
     }
 
     private void ShowBtns() {
-      if (isMulti) {
-        nextBtnText.text = (multIndex < multiList.Length - 1 ? "다음" : "확인");
-        previousBtn.gameObject.SetActive(multIndex > 0);
+      SetBtnColor(ask.isAsk, yesColor, noColor, defaultColor);
+      Debug.Log(ask.isAsk);
+      if (ask.isAsk) {
+        nextBtnText.text = ask.yes;
+        previousBtnText.text = ask.no;
+        previousBtn.gameObject.SetActive(true);
         nextBtn.gameObject.SetActive(true);
       } else {
-        nextBtnText.text = "확인";
-        nextBtn.gameObject.SetActive(true);
+        if (isMulti) {
+          nextBtnText.text = (multIndex < multiList.Length - 1 ? "다음" : "확인");
+          previousBtn.gameObject.SetActive(multIndex > 0);
+          nextBtn.gameObject.SetActive(true);
+        } else {
+          nextBtnText.text = "확인";
+          nextBtn.gameObject.SetActive(true);
+        }
       }
     }
 
@@ -174,28 +232,50 @@ namespace Dialogue {
     }
 
     public void OnNextButtonClick() {
-      NextOrClose();
+      NextOrCloseOrYes();
     }
 
     public void OnPreviousButtonClick() {
-      Previous();
+      PreviousOrNo();
     }
 
-    private void NextOrClose() {
-      if (isMulti && multIndex < multiList.Length - 1) {
-        multIndex++;
+    private void NextOrCloseOrYes() {
+      if (ask.isAsk) {
+        Close(true);
+      } else {
+        if (isMulti && multIndex < multiList.Length - 1) {
+          multIndex++;
+          HideBtns();
+          SetMultiDialogue();
+        } else {
+          Close(true);
+        }
+      }
+
+      PlayerController.Instance.EnableInputCooldown();
+    }
+
+    private void PreviousOrNo() {
+      if (ask.isAsk) {
+        Close(false);
+      } else {
+        if (multIndex <= 0) return;
+        multIndex--;
         HideBtns();
         SetMultiDialogue();
-      } else {
-        Close();
       }
+
+      PlayerController.Instance.EnableInputCooldown();
     }
 
-    private void Previous() {
-      if (multIndex <= 0) return;
-      multIndex--;
-      HideBtns();
-      SetMultiDialogue();
+    private void SetBtnColor(bool isAsk, Color yesColor, Color noColor, Color defColor) {
+      if (isAsk) {
+        nextBtnImg.color = yesColor;
+        previousBtnImg.color = noColor;
+      } else {
+        nextBtnImg.color = defColor;
+        previousBtnImg.color = defColor;
+      }
     }
   }
 }

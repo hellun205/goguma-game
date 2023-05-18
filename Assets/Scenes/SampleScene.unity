@@ -315,6 +315,7 @@ MonoBehaviour:
     m_Bits: 951
   canFlip: 1
   wasLeft: 1
+  inputCooldown: 0.1
 --- !u!61 &71035731
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -801,7 +802,6 @@ MonoBehaviour:
   minCameraBoundary: {x: 0, y: 0}
   maxCameraBoundary: {x: 0, y: 0}
   clamp: 0
-  camera: {fileID: 0}
 --- !u!1 &620349921
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,7 +1574,7 @@ GameObject:
   - component: {fileID: 1127839992}
   - component: {fileID: 1127839995}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: DialogueController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1682,9 +1682,15 @@ MonoBehaviour:
   nextBtn: {fileID: 1916835407}
   nextBtnText: {fileID: 262222354}
   previousBtn: {fileID: 963085966}
+  previousBtnText: {fileID: 620349923}
   writeDelay: 0.05
   nextKey: 99
-  skipable: 0
+  skipable: 1
+  yesColor: {r: 0, g: 0.6320754, b: 0, a: 1}
+  noColor: {r: 0.6886792, g: 0, b: 0, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  yesKey: 122
+  noKey: 120
 --- !u!1 &1152399738
 GameObject:
   m_ObjectHideFlags: 0
@@ -2212,7 +2218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1439033598
 RectTransform:
   m_ObjectHideFlags: 0

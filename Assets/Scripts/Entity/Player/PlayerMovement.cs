@@ -19,12 +19,16 @@ namespace Entity.Player {
     private LayerMask layerMask = 0;
 
     // Variables
+    
     [HideInInspector]
     public bool canFlip = true;
 
     [HideInInspector]
     public bool wasLeft = true;
-    
+
+    public bool isInputCooldown => curInputCooldown < inputCooldown;
+    public float inputCooldown = 0.5f;
+    private float curInputCooldown;
     private bool isJumping;
     private float distanceX = 0f;
     private float distanceY = 0f;
@@ -43,15 +47,21 @@ namespace Entity.Player {
 
       distanceX = boxCol.bounds.extents.x;
       distanceY = boxCol.bounds.extents.y + 0.2f;
+      curInputCooldown = inputCooldown;
     }
 
     private void FixedUpdate() {
+      if (isInputCooldown) return;
       TryMove();
     }
 
     private void Update() {
-      TryJump();
-      CheckGround();
+      if (isInputCooldown) {
+        curInputCooldown += Time.deltaTime;
+      } else {
+        TryJump();
+        CheckGround();
+      }
     }
 
     private void TryMove() {
@@ -107,5 +117,7 @@ namespace Entity.Player {
         transform.localScale = new Vector3(-1f, 1f, 1f);
       }
     }
+
+    public void EnableInputCooldown() => curInputCooldown = 0f;
   }
 }

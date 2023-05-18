@@ -47,9 +47,9 @@ namespace Entity.Player {
     private bool hasWeapon => anim.GetBool("hasWeapon");
     private float curCoolTime;
     private float curEndTime;
-    private bool isStarted;
     private float distanceY;
     public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, sprite, AvatarPosition.Left);
+    public bool isInputCooldown => movement.isInputCooldown;
 
     private void Awake() {
       if (Instance == null) Instance = this;
@@ -71,6 +71,8 @@ namespace Entity.Player {
     }
 
     private void Update() {
+      if (movement.isInputCooldown) return;
+      
       TryAttack();
       CheckNpc();
     }
@@ -150,7 +152,6 @@ namespace Entity.Player {
     }
 
     private void Start() {
-      isStarted = true;
       ChangeWeapon(Weapons.Sword);
     }
 
@@ -167,5 +168,7 @@ namespace Entity.Player {
         npc.Meet();
       }
     }
+
+    public void EnableInputCooldown() => movement.EnableInputCooldown();
   }
 }

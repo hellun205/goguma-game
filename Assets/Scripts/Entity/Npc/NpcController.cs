@@ -69,7 +69,15 @@ namespace Entity.Npc {
       DialogueController.Instance.ShowDialogues(npcData.meetDialogue.Select(dialogue =>
         new DialogueData(
           (dialogue.speaker == Speaker.Npc ? npcData.speakerData : PlayerController.Instance.speakerData),
-          dialogue.text)).ToArray());
+          dialogue.text)).ToArray(), btn => {
+        if (npcData.type == NpcType.Shop) {
+          DialogueController.Instance.Ask(new DialogueData(npcData.speakerData, "상점을 여시겠습니까?"), openShop => {
+            if (openShop) {
+              Debug.Log("open Shop!");
+            }
+          });
+        }
+      });
     }
   }
 }

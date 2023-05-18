@@ -10,14 +10,12 @@ namespace Camera {
     public Vector2 minCameraBoundary;
     public Vector2 maxCameraBoundary;
     public bool clamp = false;
-    public UnityEngine.Camera camera;
 
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
 
-      camera = GetComponent<UnityEngine.Camera>();
     }
 
     private void OnDestroy() {
