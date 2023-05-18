@@ -1,12 +1,17 @@
-﻿using System;
-using Entity.UI;
+﻿using Entity.UI;
 using UnityEngine;
 
 namespace Entity {
+  /// <summary>
+  /// 엔티티의 이름을 표시 하는 컴포넌트
+  /// </summary>
   public class NameTag : MonoBehaviour {
     private string _text;
     private Vector3 tempPosition;
     
+    /// <summary>
+    /// 표시할 텍스트 (엔티티의 이름)을 지정하거나 가져옵니다.
+    /// </summary>
     public string text {
       get => _text;
       set {
@@ -14,10 +19,20 @@ namespace Entity {
         Refresh();
       }
     }
-
+    
+    /// <summary>
+    /// 이름표 엔티티
+    /// </summary>
     private DisplayText obj;
+    
+    /// <summary>
+    /// 이름표를 표시 할 엔티티
+    /// </summary>
     private Entity entity;
     
+    /// <summary>
+    /// 이름표의 위치
+    /// </summary>
     [SerializeField]
     private Transform position;
 
@@ -40,8 +55,11 @@ namespace Entity {
       Refresh();
     }
 
+    /// <summary>
+    /// 새로고침 합니다.
+    /// </summary>
     private void Refresh() {
-      obj.SetText(text);
+      obj.text = text;
       obj.position = position.position;
     }
   }

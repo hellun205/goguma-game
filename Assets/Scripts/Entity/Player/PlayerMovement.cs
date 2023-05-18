@@ -69,7 +69,7 @@ namespace Entity.Player {
       var horizontal = Input.GetAxisRaw("Horizontal");
 
       animator.SetBool("isWalking", horizontal != 0);
-      transform.Translate(horizontal * Time.deltaTime * moveSpeed, 0f, 0f);
+      transform.Translate(horizontal * Time.fixedDeltaTime * moveSpeed, 0f, 0f);
       if (horizontal < 0) wasLeft = false;
       else if (horizontal > 0) wasLeft = true;
 

@@ -315,7 +315,7 @@ MonoBehaviour:
     m_Bits: 951
   canFlip: 1
   wasLeft: 1
-  inputCooldown: 0.1
+  inputCooldown: 0.3
 --- !u!61 &71035731
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69565e49d3f746a781aad5d8f3c56ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  smoothing: 0.13
+  smoothing: 1
   minCameraBoundary: {x: 0, y: 0}
   maxCameraBoundary: {x: 0, y: 0}
   clamp: 0
@@ -2218,7 +2218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1439033598
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1,13 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Dialogue;
 using Entity.Player;
 using Entity.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace Entity.Npc {
+  /// <summary>
+  /// Npc 컨트롤러 입니다.
+  /// </summary>
   public class NpcController : Entity {
     public override EntityType type => EntityType.Npc;
 
@@ -50,12 +51,12 @@ namespace Entity.Npc {
     }
 
     private void ShowMessageRandom() {
-      var msgData = new MessageData(entityName, npcData.messages.Random()) {
+      var msgData = new MessageData(npcData.messages.Random()) {
         panelWidth = MessageWidth
       };
       messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
       SetTalking(true);
-      messageBox.ShowMessage(this, msgData, () => SetTalking(false));
+      messageBox.ShowMessage(msgData, () => SetTalking(false));
       RefreshPosition();
     }
 

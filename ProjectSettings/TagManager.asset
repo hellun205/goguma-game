@@ -19,8 +19,8 @@ TagManager:
   - Ground
   - Npc
   - Enemy
-  - 
-  - 
+  - MessageBox
+  - DisplayText
   - 
   - 
   - 
