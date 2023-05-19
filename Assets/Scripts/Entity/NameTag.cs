@@ -45,7 +45,6 @@ namespace Entity {
 
     private void Start() {
       obj = (DisplayText) EntityManager.Get(EntityType.DisplayText);
-      obj.width = 10f * text.Length + 20f;
       Refresh();
     }
 
@@ -60,6 +59,7 @@ namespace Entity {
     /// </summary>
     private void Refresh() {
       obj.text = text;
+      obj.width = 10f * text.Length + 20f;
       obj.position = position.position;
     }
   }

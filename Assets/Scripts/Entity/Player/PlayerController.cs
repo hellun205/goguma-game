@@ -41,15 +41,16 @@ namespace Entity.Player {
     private SkillType currentAttack = 0;
 
     [SerializeField]
-    private Sprite sprite;
+    private Sprite avatar;
 
     // Variables
     private bool hasWeapon => anim.GetBool("hasWeapon");
     private float curCoolTime;
     private float curEndTime;
     private float distanceY;
-    public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, sprite, AvatarPosition.Left);
+    public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, avatar, AvatarPosition.Left);
     public bool isInputCooldown => movement.isInputCooldown;
+    public PlayerStatus status;
 
     private void Awake() {
       if (Instance == null) Instance = this;

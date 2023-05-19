@@ -24,5 +24,10 @@
     /// 메시지 박스
     /// </summary>
     MessageBox,
+    
+    /// <summary>
+    /// 아이템
+    /// </summary>
+    Item,
   }
 }

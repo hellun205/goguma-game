@@ -10,12 +10,6 @@ namespace Entity.Player {
     private KeyCode jumpKey = KeyCode.Space;
 
     [SerializeField]
-    private float moveSpeed = 3f;
-
-    [SerializeField]
-    private float jumpSpeed = 7f;
-
-    [SerializeField]
     private LayerMask layerMask = 0;
 
     // Variables
@@ -32,18 +26,21 @@ namespace Entity.Player {
     private bool isJumping;
     private float distanceX = 0f;
     private float distanceY = 0f;
+    private PlayerStatus status => controller.status;
 
     // Components
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private BoxCollider2D boxCol;
+    private PlayerController controller;
 
     private void Awake() {
       animator = GetComponent<Animator>();
       rb = GetComponent<Rigidbody2D>();
       sr = GetComponent<SpriteRenderer>();
       boxCol = GetComponent<BoxCollider2D>();
+      controller = GetComponent<PlayerController>();
 
       distanceX = boxCol.bounds.extents.x;
       distanceY = boxCol.bounds.extents.y + 0.2f;
@@ -69,7 +66,7 @@ namespace Entity.Player {
       var horizontal = Input.GetAxisRaw("Horizontal");
 
       animator.SetBool("isWalking", horizontal != 0);
-      transform.Translate(horizontal * Time.fixedDeltaTime * moveSpeed, 0f, 0f);
+      transform.Translate(horizontal * Time.fixedDeltaTime * status.moveSpeed, 0f, 0f);
       if (horizontal < 0) wasLeft = false;
       else if (horizontal > 0) wasLeft = true;
 
@@ -98,7 +95,7 @@ namespace Entity.Player {
       if (!isJumping && Input.GetKeyDown(jumpKey)) {
         SetJumping(true);
         // rb.AddForce(Vector2.up * (jumpSpeed * 100f));
-        rb.velocity = Vector2.up * jumpSpeed;
+        rb.velocity = Vector2.up * status.jumpSpeed;
       }
     }
 

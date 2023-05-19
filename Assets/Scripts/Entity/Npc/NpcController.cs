@@ -40,13 +40,12 @@ namespace Entity.Npc {
 
     private void Start() {
       StartMessage();
-      RefreshPosition();
     }
 
-    private void StartMessage() => InvokeRepeating("ShowMessageRandom", 6f, 12f);
+    private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
 
     private void StopMessage() {
-      CancelInvoke("ShowMessageRandom");
+      CancelInvoke(nameof(ShowMessageRandom));
       SetTalking(false);
     }
 
@@ -61,7 +60,8 @@ namespace Entity.Npc {
     }
 
     private void RefreshPosition() {
-      if (messageBox != null) messageBox.position = MessageBoxPosition.position;
+      if (messageBox.position != MessageBoxPosition.position)
+        messageBox.position = MessageBoxPosition.position;
     }
 
     private void SetTalking(bool value) => anim.SetBool("isTalking", value);
