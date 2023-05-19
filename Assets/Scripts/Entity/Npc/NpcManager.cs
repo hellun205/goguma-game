@@ -11,8 +11,8 @@ namespace Entity.Npc {
 
     private void Awake() {
       if (Instance == null) Instance = this;
-      else Destroy(gameObject);
-      DontDestroyOnLoad(gameObject);
+      else Destroy(this);
+      // DontDestroyOnLoad(gameObject);
     }
 
     public Npc GetNpc(Npcs who) => npcs.Where(npc => npc.who == who).Single();

@@ -5,12 +5,16 @@ using UnityEngine;
 
 namespace Entity.Item {
   public class ItemManager : MonoBehaviour {
+    public static ItemManager Instance { get; private set; }
     [SerializeField]
     private Item[] list;
     
     public HashSet<Item> items { get; private set; }
 
     private void Awake() {
+      if (Instance == null) Instance = this;
+      else Destroy(this);
+      
       items = list.ToHashSet();
       list = null;
     }

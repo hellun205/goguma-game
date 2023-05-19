@@ -36,10 +36,10 @@ namespace Entity {
 
     private void Awake() {
       if (Instance == null) Instance = this;
-      else Destroy(gameObject);
-      DontDestroyOnLoad(gameObject);
-      DontDestroyOnLoad(entityCollection.gameObject);
-      DontDestroyOnLoad(uiEntityCollection.gameObject);
+      else Destroy(this);
+      // DontDestroyOnLoad(gameObject);
+      // DontDestroyOnLoad(entityCollection.gameObject);
+      // DontDestroyOnLoad(uiEntityCollection.gameObject);
       
       var list = managements.Select(x => x.type);
 
