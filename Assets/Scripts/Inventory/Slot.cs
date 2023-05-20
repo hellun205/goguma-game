@@ -23,7 +23,7 @@ namespace Inventory {
       this.item = item;
       this.count = count;
 
-      iconImg.sprite = item.sprite;
+      iconImg.sprite = item.sprite8x;
       iconImg.color = item.spriteColor;
       countTMP.text = (count == 1 ? string.Empty : count.ToString());
     }

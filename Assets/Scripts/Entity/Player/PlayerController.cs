@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Audio;
 using Dialogue;
 using Entity.Enemy;
 using Entity.Item;
@@ -70,7 +71,7 @@ namespace Entity.Player {
       col = GetComponent<BoxCollider2D>();
 
       distanceY = col.bounds.extents.y - 0.1f;
-      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 1);      
+      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);      
       InventoryController.Instance.data = inventory;
     }
 
@@ -120,8 +121,10 @@ namespace Entity.Player {
       curCoolTime = attack.coolTime;
       curEndTime = attack.endTime;
 
-      audioSrc.clip = attack.sound;
-      audioSrc.PlayDelayed(attack.soundDelay);
+      // audioSrc.clip = attack.sound;
+      // audioSrc.PlayDelayed(attack.soundDelay);
+      // AudioManager.Play(attack.sound, attack.soundDelay);
+      AudioManager.Play(attack.sound, attack.soundDelay);
 
       var colliders = Physics2D.OverlapBoxAll(attack.hitBoxPos.position, attack.hitBoxSize, 0);
       foreach (var col in colliders) {
@@ -171,6 +174,7 @@ namespace Entity.Player {
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
       InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
+      
     }
 
     private void CheckNpc() {
@@ -201,7 +205,7 @@ namespace Entity.Player {
 
     private void OnPickUpItem((Item.Item item, byte count) data) {
       Debug.Log($"get: {data.item._name}, count: {data.count}");
-
+      AudioManager.Play("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
       if (left > 0) {

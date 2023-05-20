@@ -1,4 +1,5 @@
 ﻿using System;
+using Audio;
 using Dialogue;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -97,6 +98,7 @@ namespace Entity.Player {
         SetJumping(true);
         // rb.AddForce(Vector2.up * (jumpSpeed * 100f));
         rb.velocity = Vector2.up * status.jumpSpeed;
+        AudioManager.Play("jump");
       }
     }
 

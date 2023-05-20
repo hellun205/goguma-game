@@ -19,7 +19,7 @@ namespace Player.Attack {
     public Vector2 hitBoxSize;
 
     [Header("Sound")]
-    public AudioClip sound;
+    public string sound;
 
     public float soundDelay = 0f;
   }
