@@ -41,7 +41,6 @@ namespace Entity {
     /// </summary>
     private void Refresh() {
       displayText.text = entity.entityName;
-      displayText.width = 16f * entity.entityName.Length + 16f;
       displayText.position = position.position;
     }
 

@@ -39,11 +39,14 @@ namespace Inventory {
 
     public const byte horizontalCount = 4;
 
+    [Header("ToolTip")]
+    public ItemToolTip toolTipPanel;
+
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(this);
       // DontDestroyOnLoad(gameObject);
-
+      toolTipPanel.gameObject.SetActive(false);
       panel.SetActive(activeInventory);
       SetCount(slotCount);
     }

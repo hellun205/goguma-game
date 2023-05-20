@@ -22,27 +22,6 @@ namespace Entity.UI {
     /// </summary>
     [SerializeField]
     private Image img;
-    
-    private byte _line;
-    
-    /// <summary>
-    /// 넓이를 지정합니다.
-    /// </summary>
-    public float width {
-      get => rectTransform.sizeDelta.x;
-      set => rectTransform.sizeDelta = new Vector2(value, rectTransform.sizeDelta.y);
-      }
-
-    /// <summary>
-    /// 줄(길이)을 지정합니다.
-    /// </summary>
-    public byte line {
-      get => _line;
-      set {
-        _line = value;
-        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _line * 20f + 20f);
-      }
-    }
 
     /// <summary>
     /// 표시할 내용을 지정합니다.
@@ -54,9 +33,6 @@ namespace Entity.UI {
 
     protected override void Awake() {
       base.Awake();
-
-      width = 300f;
-      line = 1;
     }
 
     // private void OnBecameInvisible() => pool.Release(this);

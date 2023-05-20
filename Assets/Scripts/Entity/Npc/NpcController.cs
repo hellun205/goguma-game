@@ -47,9 +47,7 @@ namespace Entity.Npc {
     }
 
     private void ShowMessageRandom() {
-      var msgData = new MessageData(npcData.messages.Random()) {
-        panelWidth = MessageWidth
-      };
+      var msgData = new MessageData(npcData.messages.Random());
       messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
       SetTalking(true);
       messageBox.ShowMessage(msgData, () => SetTalking(false));
