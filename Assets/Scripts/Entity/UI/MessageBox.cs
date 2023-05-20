@@ -29,8 +29,6 @@ namespace Entity.UI {
     /// <param name="endCallback">메시지 박스가 종료된 후 실행 할 콜백함수</param>
     public void ShowMessage(MessageData messageData, [CanBeNull] Action endCallback = null) {
       text.text = messageData.text;
-      rectTransform.sizeDelta = new Vector2(messageData.panelWidth, 
-        MessageData.emptyHeight + MessageData.fontHeight * messageData.line);
       callBack = endCallback;
       RefreshPosition();
       Invoke("Close", messageData.exitTime);

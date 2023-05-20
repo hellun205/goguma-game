@@ -3,7 +3,7 @@ using UnityEngine.Serialization;
 
 namespace Entity {
   /// <summary>
-  /// 기본적인 엔티티의 기능을 가진 클래스 입니다.
+  /// 기본적인 엔티티의 기능을 가진 컴포넌트 입니다.
   /// </summary>
   public abstract class Entity : MonoBehaviour {
     /// <summary>
@@ -11,7 +11,7 @@ namespace Entity {
     /// </summary>
     [FormerlySerializedAs("name")]
     public string entityName;
-    
+
     /// <summary>
     /// 엔티티의 종류를 가져옵니다.
     /// </summary>
@@ -25,12 +25,26 @@ namespace Entity {
       set => transform.position = value;
     }
 
-    // private void OnBecameInvisible() => Release();
+    public bool canDespawn = true;
+
+    public event EntityManager.entityEvent onGet;
+    public event EntityManager.entityEvent onRelease;
+
+    private void OnBecameInvisible() {
+      if (canDespawn) {
+        Release();
+      }
+    }
+
+    
 
     /// <summary>
     /// 엔티티를 삭제합니다.
     /// </summary>
-    public void Release() => EntityManager.Release(this);
-    
+    public virtual void Release() => EntityManager.Release(this);
+
+    public virtual void OnGet() => onGet?.Invoke(this);
+
+    public virtual void OnRelease() => onRelease?.Invoke(this);
   }
 }

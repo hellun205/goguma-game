@@ -33,13 +33,24 @@ namespace Entity {
     /// 오브젝트 풀 입니다.
     /// </summary>
     private Dictionary<EntityType, IObjectPool<Entity>> pools;
+    
+    public delegate void entityEvent(Entity entity);
+    public delegate void defaultEvent();
+    
+    public event entityEvent onReleaseBefore;
+
+    public event entityEvent onReleaseAfter;
+    
+    public event defaultEvent onGetBefore;
+    
+    public event entityEvent onGetAfter;
 
     private void Awake() {
       if (Instance == null) Instance = this;
-      else Destroy(gameObject);
-      DontDestroyOnLoad(gameObject);
-      DontDestroyOnLoad(entityCollection.gameObject);
-      DontDestroyOnLoad(uiEntityCollection.gameObject);
+      else Destroy(this);
+      // DontDestroyOnLoad(gameObject);
+      // DontDestroyOnLoad(entityCollection.gameObject);
+      // DontDestroyOnLoad(uiEntityCollection.gameObject);
       
       var list = managements.Select(x => x.type);
 
@@ -88,13 +99,25 @@ namespace Entity {
     /// </summary>
     /// <param name="type">가져올 엔티티 종류</param>
     /// <returns>가져온 엔티티</returns>
-    public Entity GetEntity(EntityType type) => pools[type].Get();
+    public Entity GetEntity(EntityType type) {
+      onGetBefore?.Invoke();
+      var entity = pools[type].Get();
+      onGetAfter?.Invoke(entity);
+      entity.OnRelease();
+      return entity;
+      
+    }
 
     /// <summary>
     /// 풀에서 엔티티를 비활성화(삭제) 합니다.
     /// </summary>
     /// <param name="entity">비활성화(삭제)할 엔티티</param>
-    public void ReleaseEntity(Entity entity) => pools[entity.type].Release(entity);
+    public void ReleaseEntity(Entity entity) {
+      onReleaseBefore?.Invoke(entity);
+      entity.OnRelease();
+      pools[entity.type].Release(entity);
+      onReleaseAfter?.Invoke(entity);
+    }
 
     /// <summary>
     /// 엔티티를 생성합니다.

@@ -7,7 +7,7 @@ using Utils;
 
 namespace Entity.Npc {
   /// <summary>
-  /// Npc 컨트롤러 입니다.
+  /// NPC 컴포넌트
   /// </summary>
   public class NpcController : Entity {
     public override EntityType type => EntityType.Npc;
@@ -21,8 +21,6 @@ namespace Entity.Npc {
 
     private MessageBox messageBox;
 
-    private BoxCollider2D npcCol;
-
     private Animator anim;
 
     public new Vector3 position {
@@ -34,12 +32,11 @@ namespace Entity.Npc {
     }
 
     private void Awake() {
-      npcCol = GetComponent<BoxCollider2D>();
       anim = GetComponent<Animator>();
     }
 
     private void Start() {
-      StartMessage();
+      // StartMessage();
     }
 
     private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
@@ -50,9 +47,7 @@ namespace Entity.Npc {
     }
 
     private void ShowMessageRandom() {
-      var msgData = new MessageData(npcData.messages.Random()) {
-        panelWidth = MessageWidth
-      };
+      var msgData = new MessageData(npcData.messages.Random());
       messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
       SetTalking(true);
       messageBox.ShowMessage(msgData, () => SetTalking(false));
@@ -80,5 +75,26 @@ namespace Entity.Npc {
         }
       });
     }
+
+    public override void OnGet() {
+      base.OnGet();
+      StartMessage();
+    }
+
+    public override void OnRelease() {
+      base.OnRelease();
+      StopMessage();
+    }
+
+    public void Initialize(Npc npc, Vector2? position = null) {
+      this.npcData = npc;
+      anim.runtimeAnimatorController = npc.animCtrler;
+      if (position.HasValue)
+        transform.position = position.Value;
+      entityName = npc._name;
+    }
+
+    public void Initialize(string uniqueName, Vector2? position = null) =>
+      Initialize(NpcManager.Instance.GetWithCode(uniqueName), position);
   }
 }

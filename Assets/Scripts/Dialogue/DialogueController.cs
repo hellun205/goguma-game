@@ -175,8 +175,8 @@ namespace Dialogue {
 
     private void Awake() {
       if (Instance == null) Instance = this;
-      else Destroy(gameObject);
-      DontDestroyOnLoad(gameObject);
+      else Destroy(this);
+      // DontDestroyOnLoad(gameObject);
       nextBtnImg = nextBtn.GetComponent<Image>();
       previousBtnImg = previousBtn.GetComponent<Image>();
 

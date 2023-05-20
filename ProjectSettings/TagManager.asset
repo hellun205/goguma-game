@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Npc
   - EntityCollection
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -19,8 +20,8 @@ TagManager:
   - Ground
   - Npc
   - Enemy
-  - MessageBox
-  - DisplayText
+  - UIEntity
+  - 
   - 
   - 
   - 
@@ -45,9 +46,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Item
+    uniqueID: 1623085697
+    locked: 0
   - name: Player
     uniqueID: 1446722059
-    locked: 0
-  - name: New Layer 2
-    uniqueID: 1623085697
     locked: 0

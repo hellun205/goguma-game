@@ -6,6 +6,7 @@ namespace Entity.UI {
   /// UI형식의 엔티티의 기능을 가진 클래스 입니다.
   /// </summary>
   public abstract class UIEntity : Entity {
+    [HideInInspector]
     public RectTransform rectTransform;
     private Vector3 _position;
 
