@@ -2,7 +2,7 @@
 using UnityEngine.Serialization;
 
 namespace Entity.Item {
-  public abstract class Item : ScriptableObject {
+  public abstract class Item : UnityEngine.ScriptableObject {
     [Header("Item")]
 
     public string _name;
@@ -13,6 +13,8 @@ namespace Entity.Item {
 
     [Header("Sprite")]
     public Sprite sprite;
+
+    public Sprite sprite8x;
     
     public Color spriteColor = Color.white;
 

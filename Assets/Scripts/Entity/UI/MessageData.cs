@@ -31,17 +31,17 @@
     /// <summary>
     /// 메시지 박스의 넓이를 지정합니다.
     /// </summary>
-    public float panelWidth = 100f;
+    public float panelWidth = 300f;
 
     /// <summary>
     /// 내용의 여백 간격입니다.
     /// </summary>
-    public const float emptyHeight = 15f;
+    public const float emptyHeight = 40f;
     
     /// <summary>
     /// 글꼴의 길이입니다. 
     /// </summary>
-    public const float fontHeight = 16f;
+    public const float fontHeight = 20f;
 
     /// <summary>
     /// 메시지 박스에 대한 정보를 생성합니다.

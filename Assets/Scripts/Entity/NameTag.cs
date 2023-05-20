@@ -1,4 +1,6 @@
-﻿using Entity.UI;
+﻿using System;
+using System.Collections;
+using Entity.UI;
 using UnityEngine;
 
 namespace Entity {
@@ -6,30 +8,18 @@ namespace Entity {
   /// 엔티티의 이름을 표시 하는 컴포넌트
   /// </summary>
   public class NameTag : MonoBehaviour {
-    private string _text;
     private Vector3 tempPosition;
-    
-    /// <summary>
-    /// 표시할 텍스트 (엔티티의 이름)을 지정하거나 가져옵니다.
-    /// </summary>
-    public string text {
-      get => _text;
-      set {
-        _text = value;
-        Refresh();
-      }
-    }
-    
+
     /// <summary>
     /// 이름표 엔티티
     /// </summary>
-    private DisplayText obj;
-    
+    private DisplayText displayText;
+
     /// <summary>
     /// 이름표를 표시 할 엔티티
     /// </summary>
     private Entity entity;
-    
+
     /// <summary>
     /// 이름표의 위치
     /// </summary>
@@ -38,14 +28,9 @@ namespace Entity {
 
     private void Awake() {
       entity = GetComponent<Entity>();
-
-      _text = entity.entityName;
-      tempPosition = entity.position;
-    }
-
-    private void Start() {
-      obj = (DisplayText) EntityManager.Get(EntityType.DisplayText);
-      Refresh();
+      // Init();
+      EntityManager.Instance.onGetAfter += OnGetEntity;
+      EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
     }
 
     private void Update() {
@@ -58,9 +43,28 @@ namespace Entity {
     /// 새로고침 합니다.
     /// </summary>
     private void Refresh() {
-      obj.text = text;
-      obj.width = 10f * text.Length + 20f;
-      obj.position = position.position;
+      displayText.text = entity.entityName;
+      displayText.width = 16f * entity.entityName.Length + 16f;
+      displayText.position = position.position;
     }
+
+    private void Init() {
+      displayText = (DisplayText) EntityManager.Get(EntityType.DisplayText);
+      tempPosition = entity.position;
+      Refresh();
+    }
+
+    public void OnGetEntity(Entity entity) {
+      if (entity == this.entity) {
+        Init();
+      }
+    }
+
+    public void OnReleasedEntity(Entity entity) {
+      if (entity == this.entity) {
+        displayText.Release();
+      }
+    }
+
   }
 }

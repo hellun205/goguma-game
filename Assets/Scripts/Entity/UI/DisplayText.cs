@@ -40,7 +40,7 @@ namespace Entity.UI {
       get => _line;
       set {
         _line = value;
-        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _line * 16f + 6f);
+        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, _line * 20f + 20f);
       }
     }
 

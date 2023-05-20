@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace Entity.Item.Useable {
-  [CreateAssetMenu(fileName = "Potion", menuName = "Items/Useable/Potion")]
+  [CreateAssetMenu(fileName = "Potion", menuName = "Item/Useable/Potion")]
   public class Potion : UseableItem {
     public override UseableType u_type => UseableType.Potion;
 

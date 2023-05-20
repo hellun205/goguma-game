@@ -17,8 +17,9 @@ namespace Entity.Player {
     [HideInInspector]
     public bool canFlip = true;
 
-    [HideInInspector]
-    public bool wasLeft = true;
+    private bool wasLeft = true;
+
+    public Vector2 direction => wasLeft ? Vector2.right : Vector2.left;
 
     public bool isInputCooldown => curInputCooldown < inputCooldown;
     public float inputCooldown = 0.5f;

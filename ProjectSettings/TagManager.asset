@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Npc
   - EntityCollection
+  - Item
   layers:
   - Default
   - TransparentFX

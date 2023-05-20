@@ -2,6 +2,7 @@
 using System.Linq;
 using Dialogue;
 using Entity.Enemy;
+using Entity.Item;
 using Entity.Npc;
 using Player.Attack;
 using UnityEngine;
@@ -30,6 +31,9 @@ namespace Entity.Player {
 
     [SerializeField]
     private float checkNpcDistance = 3f;
+    
+    [SerializeField]
+    private float pickupDistance;
 
     [SerializeField]
     private Weapon[] weapons;
@@ -76,6 +80,7 @@ namespace Entity.Player {
       
       TryAttack();
       CheckNpc();
+      CheckItems();
     }
 
     private void TryAttack() {
@@ -154,6 +159,14 @@ namespace Entity.Player {
 
     private void Start() {
       ChangeWeapon(Weapons.Sword);
+      GetComponent<NameTag>().OnGetEntity(this);
+      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
+      testItem.SetItem("apple", position: new Vector2(2f,5f));
+
+      var testNpc = (NpcController) EntityManager.Get(EntityType.Npc);
+      testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
+      
+      InvokeRepeating(nameof(SummonTestItem), 0f, 4f);
     }
 
     private void CheckNpc() {
@@ -161,7 +174,7 @@ namespace Entity.Player {
 
       var pos = transform.position;
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY),
-        (movement.wasLeft ? Vector2.right : Vector2.left), checkNpcDistance, layerMask);
+        movement.direction, checkNpcDistance, layerMask);
 
       if (hit && hit.transform.CompareTag("Npc")) {
         var npc = hit.transform.GetComponent<NpcController>();
@@ -170,6 +183,28 @@ namespace Entity.Player {
       }
     }
 
+    private void CheckItems() {
+      var pos = transform.position;
+      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.direction, pickupDistance, layerMask);
+      if (hit && hit.transform.CompareTag("Item")) {
+        var item = hit.transform.GetComponent<ItemController>();
+        if (!item.isPickingUp)
+          item.PickUp(transform, OnPickUpItem);
+      }
+    }
+
     public void EnableInputCooldown() => movement.EnableInputCooldown();
+    
+    private void OnPickUpItem((Item.Item item, byte count) data) {
+      Debug.Log($"get: {data.item._name}, count: {data.count}");
+      
+      
+    }
+
+    private void SummonTestItem() {
+      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
+      testItem.SetItem("apple",position: new Vector2(2f,5f));
+    }
+    
   }
 }

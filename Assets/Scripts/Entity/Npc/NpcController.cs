@@ -7,7 +7,7 @@ using Utils;
 
 namespace Entity.Npc {
   /// <summary>
-  /// Npc 컨트롤러 입니다.
+  /// NPC 컴포넌트
   /// </summary>
   public class NpcController : Entity {
     public override EntityType type => EntityType.Npc;
@@ -21,7 +21,7 @@ namespace Entity.Npc {
 
     private MessageBox messageBox;
 
-    private BoxCollider2D npcCol;
+    private BoxCollider2D collider;
 
     private Animator anim;
 
@@ -34,12 +34,12 @@ namespace Entity.Npc {
     }
 
     private void Awake() {
-      npcCol = GetComponent<BoxCollider2D>();
+      collider = GetComponent<BoxCollider2D>();
       anim = GetComponent<Animator>();
     }
 
     private void Start() {
-      StartMessage();
+      // StartMessage();
     }
 
     private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
@@ -80,5 +80,26 @@ namespace Entity.Npc {
         }
       });
     }
+
+    public override void OnGet() {
+      base.OnGet();
+      StartMessage();
+    }
+
+    public override void OnRelease() {
+      base.OnRelease();
+      StopMessage();
+    }
+
+    public void Initialize(Npc npc, Vector2? position = null) {
+      this.npcData = npc;
+      anim.runtimeAnimatorController = npc.animCtrler;
+      if (position.HasValue)
+        transform.position = position.Value;
+      entityName = npc._name;
+    }
+
+    public void Initialize(string uniqueName, Vector2? position = null) =>
+      Initialize(NpcManager.Instance.GetWithCode(uniqueName), position);
   }
 }
