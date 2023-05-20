@@ -25,10 +25,18 @@ namespace Entity {
       set => transform.position = value;
     }
 
+    public bool canDespawn = true;
+
     public event EntityManager.entityEvent onGet;
     public event EntityManager.entityEvent onRelease;
 
-    // private void OnBecameInvisible() => Release();
+    private void OnBecameInvisible() {
+      if (canDespawn) {
+        Release();
+      }
+    }
+
+    
 
     /// <summary>
     /// 엔티티를 삭제합니다.

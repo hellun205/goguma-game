@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: DisplayText
+  canDespawn: 0
   rectTransform: {fileID: 0}
   textTMP: {fileID: 2887388378380888574}
   img: {fileID: 8253395167095562714}

@@ -186,6 +186,7 @@ GameObject:
   - component: {fileID: 71035730}
   - component: {fileID: 71035734}
   - component: {fileID: 71035735}
+  - component: {fileID: 71035736}
   m_Layer: 6
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -253,7 +254,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1446722059
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 370153207, guid: a17c1915e147e2f46877b1b75aa59043, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -361,6 +362,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: "\uACE0\uAD6C\uB9C8"
+  canDespawn: 1
   attackKeys: 7a00000078000000
   meetNpcKey: 99
   layerMask:
@@ -505,6 +507,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {fileID: 1513037111}
+--- !u!58 &71035736
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71035726}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 10
 --- !u!1 &79127430
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,8 +2060,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341627203}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.17, y: -2.97, z: 0}
-  m_LocalScale: {x: 5.240775, y: 0.37996456, z: 1}
+  m_LocalPosition: {x: -6.6974, y: -2.97, z: 0}
+  m_LocalScale: {x: 10.295503, y: 0.37996456, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2781,8 +2799,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1786380219}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4555, y: -3.6932, z: 0}
-  m_LocalScale: {x: 12.442486, y: 0.37996456, z: 1}
+  m_LocalPosition: {x: 9.9665, y: -3.6932, z: 0}
+  m_LocalScale: {x: 29.46505, y: 0.37996456, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

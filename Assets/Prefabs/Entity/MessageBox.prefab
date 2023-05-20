@@ -226,5 +226,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: 
+  canDespawn: 0
   rectTransform: {fileID: 0}
   text: {fileID: 1166170861652350488}

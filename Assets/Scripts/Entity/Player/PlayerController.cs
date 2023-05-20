@@ -4,6 +4,7 @@ using Dialogue;
 using Entity.Enemy;
 using Entity.Item;
 using Entity.Npc;
+using Inventory;
 using Player.Attack;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace Entity.Player {
 
     [SerializeField]
     private float checkNpcDistance = 3f;
-    
+
     [SerializeField]
     private float pickupDistance;
 
@@ -55,6 +56,7 @@ namespace Entity.Player {
     public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, avatar, AvatarPosition.Left);
     public bool isInputCooldown => movement.isInputCooldown;
     public PlayerStatus status;
+    public Inventory.Inventory inventory;
 
     private void Awake() {
       if (Instance == null) Instance = this;
@@ -68,6 +70,8 @@ namespace Entity.Player {
       col = GetComponent<BoxCollider2D>();
 
       distanceY = col.bounds.extents.y - 0.1f;
+      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 1);      
+      InventoryController.Instance.data = inventory;
     }
 
 
@@ -77,7 +81,7 @@ namespace Entity.Player {
 
     private void Update() {
       if (movement.isInputCooldown) return;
-      
+
       TryAttack();
       CheckNpc();
       CheckItems();
@@ -160,13 +164,13 @@ namespace Entity.Player {
     private void Start() {
       ChangeWeapon(Weapons.Sword);
       GetComponent<NameTag>().OnGetEntity(this);
-      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple", position: new Vector2(2f,5f));
+      var testItem = (ItemController) EntityManager.Get(EntityType.Item);
+      testItem.SetItem("apple", position: new Vector2(2f, 5f));
 
       var testNpc = (NpcController) EntityManager.Get(EntityType.Npc);
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
-      
-      InvokeRepeating(nameof(SummonTestItem), 0f, 4f);
+
+      InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
     }
 
     private void CheckNpc() {
@@ -178,7 +182,7 @@ namespace Entity.Player {
 
       if (hit && hit.transform.CompareTag("Npc")) {
         var npc = hit.transform.GetComponent<NpcController>();
-        
+
         npc.Meet();
       }
     }
@@ -188,23 +192,30 @@ namespace Entity.Player {
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.direction, pickupDistance, layerMask);
       if (hit && hit.transform.CompareTag("Item")) {
         var item = hit.transform.GetComponent<ItemController>();
-        if (!item.isPickingUp)
+        if (!item.isPickingUp && !item.isThrowing)
           item.PickUp(transform, OnPickUpItem);
       }
     }
 
     public void EnableInputCooldown() => movement.EnableInputCooldown();
-    
+
     private void OnPickUpItem((Item.Item item, byte count) data) {
       Debug.Log($"get: {data.item._name}, count: {data.count}");
-      
-      
+
+      var left = inventory.GainItem(data.item, data.count);
+      InventoryController.Instance.Refresh();
+      if (left > 0) {
+        var throwItem = (ItemController) EntityManager.Get(EntityType.Item);
+        throwItem.SetItem(data.item, left);
+        var dir = movement.direction == Vector2.left ? -1 : 1;
+        var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * dir);
+        throwItem.Throw(new Vector2(startPositionX, position.y), new Vector2(dir * 2f, 3f), 4f);
+      }
     }
 
     private void SummonTestItem() {
-      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple", count: 5,position: new Vector2(2f,5f));
+      var testItem = (ItemController) EntityManager.Get(EntityType.Item);
+      testItem.SetItem("apple", count: 200, position: new Vector2(4f, 5f));
     }
-    
   }
 }

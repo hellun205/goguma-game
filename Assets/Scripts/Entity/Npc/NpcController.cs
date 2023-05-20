@@ -21,8 +21,6 @@ namespace Entity.Npc {
 
     private MessageBox messageBox;
 
-    private BoxCollider2D collider;
-
     private Animator anim;
 
     public new Vector3 position {
@@ -34,7 +32,6 @@ namespace Entity.Npc {
     }
 
     private void Awake() {
-      collider = GetComponent<BoxCollider2D>();
       anim = GetComponent<Animator>();
     }
 

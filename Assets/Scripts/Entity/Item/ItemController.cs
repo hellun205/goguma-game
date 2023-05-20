@@ -41,6 +41,9 @@ namespace Entity.Item {
 
     [HideInInspector]
     public bool isPickingUp;
+    
+    [HideInInspector]
+    public bool isThrowing;
 
     private Transform target;
 
@@ -115,11 +118,29 @@ namespace Entity.Item {
         }
       } else if (col.CompareTag("Item")) {
         var item = col.GetComponent<ItemController>();
-        if (item.data.item == this.data.item) {
-          item.SetItem(item.data.item, (byte) (item.data.count + this.data.count));
-          this.Release();
+        if (item.data.item == this.data.item && item.data.count != byte.MaxValue) {
+          var plus = item.data.count + this.data.count;
+          if (plus <= byte.MaxValue) {
+            item.SetItem(item.data.item, (byte) (item.data.count + this.data.count));
+            this.Release();
+          } else {
+            var left = plus - byte.MaxValue;
+            item.SetItem(item.data.item, byte.MaxValue);
+            this.SetItem(this.data.item, (byte)left);
+          }
         }
       }
     }
+
+    public void Throw(Vector2 startPosition, Vector2 direction, float power) {
+      position = startPosition;
+      rb.velocity = direction.normalized * power;
+      isThrowing = true;
+      Invoke(nameof(EndThrowing), 2f);
+    }
+
+    private void EndThrowing() => isThrowing = false;
+
+
   }
 }
