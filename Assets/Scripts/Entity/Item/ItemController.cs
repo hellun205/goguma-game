@@ -2,6 +2,7 @@
 using Entity.UI;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entity.Item {
   public class ItemController : Entity {
@@ -10,9 +11,14 @@ namespace Entity.Item {
     public (Item item, byte count) data;
 
     [SerializeField]
-    private SpriteRenderer sr;
+    private SpriteRenderer[] sprRenderers;
 
+    [SerializeField]
+    private byte[] countSprite;
+
+    [SerializeField]
     private Transform imgTrans;
+
     private NameTag nTag;
     private Rigidbody2D rb;
     private int direction = 1;
@@ -43,7 +49,6 @@ namespace Entity.Item {
     private void Awake() {
       nTag = GetComponent<NameTag>();
       rb = GetComponent<Rigidbody2D>();
-      imgTrans = sr.transform;
     }
 
     private void Update() {
@@ -68,18 +73,26 @@ namespace Entity.Item {
       this.data = (item, count);
       if (item == null) {
         entityName = string.Empty;
-        sr.sprite = ItemManager.GetInstance().noneSprite;
+        for (var i = 0; i < sprRenderers.Length; i++) {
+          sprRenderers[i].sprite = ItemManager.GetInstance().noneSprite;
+          sprRenderers[i].enabled = false;
+        }
+
         return;
       }
-
+      
       entityName = $"{item._name}{(count == 1 ? "" : $"x{count}")}";
-      sr.sprite = item.sprite;
+      for (var i = 0; i < sprRenderers.Length; i++) {
+        sprRenderers[i].sprite = item.sprite;
+        sprRenderers[i].enabled = countSprite[i] <= data.count;
+      }
+
       if (position.HasValue)
         transform.position = position.Value;
     }
 
-    public void SetItem(string uniqueName,byte count =1, Vector3? position = null) =>
-      SetItem(ItemManager.Instance.GetWithCode(uniqueName),count, position);
+    public void SetItem(string uniqueName, byte count = 1, Vector3? position = null) =>
+      SetItem(ItemManager.Instance.GetWithCode(uniqueName), count, position);
 
 
     public void PickUp(Transform target, Action<(Item item, byte count)> callback) {
@@ -100,8 +113,12 @@ namespace Entity.Item {
           callback.Invoke(data);
           Release();
         }
-      } else {
-        
+      } else if (col.CompareTag("Item")) {
+        var item = col.GetComponent<ItemController>();
+        if (item.data.item == this.data.item) {
+          item.SetItem(item.data.item, (byte) (item.data.count + this.data.count));
+          this.Release();
+        }
       }
     }
   }

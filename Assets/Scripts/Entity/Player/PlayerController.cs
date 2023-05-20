@@ -203,7 +203,7 @@ namespace Entity.Player {
 
     private void SummonTestItem() {
       var testItem = (ItemController)EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple",position: new Vector2(2f,5f));
+      testItem.SetItem("apple", count: 5,position: new Vector2(2f,5f));
     }
     
   }

@@ -8,7 +8,6 @@ namespace Entity {
   /// 엔티티의 이름을 표시 하는 컴포넌트
   /// </summary>
   public class NameTag : MonoBehaviour {
-    private Vector3 tempPosition;
 
     /// <summary>
     /// 이름표 엔티티
@@ -34,8 +33,6 @@ namespace Entity {
     }
 
     private void Update() {
-      if (tempPosition == entity.position) return;
-      tempPosition = entity.position;
       Refresh();
     }
 
@@ -50,7 +47,6 @@ namespace Entity {
 
     private void Init() {
       displayText = (DisplayText) EntityManager.Get(EntityType.DisplayText);
-      tempPosition = entity.position;
       Refresh();
     }
 
