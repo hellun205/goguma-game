@@ -46,7 +46,7 @@ namespace Window {
         window => {
           window.Set();
           window.gameObject.SetActive(false);
-        }, 
+        },
         window => Destroy(window.gameObject));
     }
 
@@ -62,16 +62,17 @@ namespace Window {
       var window = inputBoxPool.Get();
       window.title = title;
       window.Set(text, confirm, cancel, defValue, callback);
+      InputBoxWindow.isEnabled = true;
     }
 
     public static void Ask(string title, string text, string yesText = "예", string noText = "아니요",
-                            UnityAction<bool> callback = null)
+                           UnityAction<bool> callback = null)
       => Instance.ShowMsgBox(title, text, yesText, noText, callback);
 
     public static void Show(string title, string text, string comfirmText = "확인", UnityAction callBack = null)
       => Instance.ShowMsgBox(title, text, comfirmText, string.Empty, b => callBack?.Invoke());
 
-    public static void Read(string title, string text, UnityAction<string> callback, string defValue = "",
+    public static void Read(string title, UnityAction<string> callback, string text = "", string defValue = "",
                             string confirm = "확인", string cancel = "취소")
       => Instance.ShowInputBox(title, text, callback, defValue, confirm, cancel);
   }

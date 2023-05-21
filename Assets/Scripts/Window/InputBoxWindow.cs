@@ -1,9 +1,9 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Window {
@@ -41,7 +41,8 @@ namespace Window {
 
     public string placeholder = "Enter Text...";
 
-    [FormerlySerializedAs("onBtnClick")]
+    public static bool isEnabled = false;
+
     [CanBeNull]
     public UnityAction<string> onSubmit;
     
@@ -74,6 +75,15 @@ namespace Window {
       OnValidate();
     }
 
-    protected override void OnCloseButtonClick() => pool.Release(this);
+    protected override void OnCloseButtonClick() {
+      isEnabled = false;
+      pool.Release(this);
+    }
+    
+    private void Update() {
+      if (Input.GetKeyDown(KeyCode.Return)) {
+        onSubmit?.Invoke(inputField.text);
+      }
+    }
   }
 }

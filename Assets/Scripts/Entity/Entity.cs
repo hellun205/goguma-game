@@ -32,7 +32,7 @@ namespace Entity {
     public event EntityManager.entityEvent onGet;
     public event EntityManager.entityEvent onRelease;
 
-    private BoxCollider2D col;
+    protected BoxCollider2D col;
 
     protected virtual void OnBecameInvisible() {
       if (canDespawn) {

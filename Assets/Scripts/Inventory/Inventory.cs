@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace Inventory {
   public class Inventory {
+    public delegate void _onItemChanged();
+
+    public event _onItemChanged onItemChanged;
+    
     public List<(Item item, byte count)> items;
     public byte slotCount;
 
@@ -40,7 +44,7 @@ namespace Inventory {
           return count;
         }
       }
-
+      onItemChanged?.Invoke();
       return 0;
     }
 
@@ -53,16 +57,32 @@ namespace Inventory {
     public bool LoseItem(Item item, ushort count = 1) {
       if (!CheckItem(item, count)) return false;
       
-      
+      var linq = (from item_ in items
+                  where item_.item == item
+                  select items.IndexOf(item_)).ToArray();
+      foreach (var i in linq) {
+        var itemCount = items[i].count;
+        if (count < itemCount) {
+          items[i] = (item, (byte)(itemCount - count));
+          break;
+        } else if (count == itemCount) {
+          items.RemoveAt(i);
+          break;
+        } else if (count > itemCount) {
+          count -= itemCount;
+          items.RemoveAt(i);
+        }
+      }
+      onItemChanged?.Invoke();
       return true;
     }
 
     public Inventory(byte slotCount) {
       this.items = new List<(Item item, byte count)>();
       this.slotCount = slotCount;
-      for (var i = 0; i < this.slotCount; i++) {
-        items.Add((null, 0));
-      }
+      // for (var i = 0; i < this.slotCount; i++) {
+      //   items.Add((null, 0));
+      // }
     }
   }
 }

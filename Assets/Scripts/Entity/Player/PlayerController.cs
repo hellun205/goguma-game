@@ -8,6 +8,7 @@ using Entity.Npc;
 using Inventory;
 using Player.Attack;
 using UnityEngine;
+using Window;
 
 namespace Entity.Player {
   public class PlayerController : Entity {
@@ -19,7 +20,6 @@ namespace Entity.Player {
     private Animator anim;
     private PlayerMovement movement;
     private AudioSource audioSrc;
-    private BoxCollider2D col;
 
     // Inspector Settings
     [SerializeField]
@@ -73,6 +73,7 @@ namespace Entity.Player {
       distanceY = col.bounds.extents.y - 0.1f;
       inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
       InventoryController.Instance.data = inventory;
+      canDespawn = false;
     }
 
 
@@ -81,7 +82,7 @@ namespace Entity.Player {
     }
 
     private void Update() {
-      if (movement.isInputCooldown) return;
+      if (movement.isInputCooldown || InputBoxWindow.isEnabled) return;
 
       TryAttack();
       CheckNpc();
@@ -89,7 +90,7 @@ namespace Entity.Player {
     }
 
     private void TryAttack() {
-      if (!hasWeapon || DialogueController.Instance.isEnabled) return;
+      if (!hasWeapon || DialogueController.Instance.isEnabled ) return;
 
       if (curCoolTime <= 0) {
         foreach (var key in attackKeys) {
@@ -214,7 +215,7 @@ namespace Entity.Player {
 
     private void SummonTestItem() {
       var testItem = (ItemController) EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple", count: 200, position: new Vector2(4f, 5f));
+      testItem.SetItem("appleBuff", count: 32, position: new Vector2(4f, 5f));
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>

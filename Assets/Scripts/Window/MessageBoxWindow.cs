@@ -64,5 +64,11 @@ namespace Window {
     }
 
     protected override void OnCloseButtonClick() => pool.Release(this);
+    
+    private void Update() {
+      if (Input.GetKeyDown(KeyCode.Return)) {
+        onBtnClick?.Invoke(true);
+      }
+    }
   }
 }
