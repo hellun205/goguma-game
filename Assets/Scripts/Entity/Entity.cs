@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Entity.Item;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Entity {
@@ -30,13 +32,17 @@ namespace Entity {
     public event EntityManager.entityEvent onGet;
     public event EntityManager.entityEvent onRelease;
 
-    private void OnBecameInvisible() {
+    private BoxCollider2D col;
+
+    protected virtual void OnBecameInvisible() {
       if (canDespawn) {
         Release();
       }
     }
 
-    
+    protected virtual void Awake() {
+      col = GetComponent<BoxCollider2D>();
+    }
 
     /// <summary>
     /// 엔티티를 삭제합니다.
@@ -46,5 +52,21 @@ namespace Entity {
     public virtual void OnGet() => onGet?.Invoke(this);
 
     public virtual void OnRelease() => onRelease?.Invoke(this);
+
+    private void ThrowItemB(Item.Item item, byte count, sbyte direction = 1) {
+      var throwItem = (ItemController) EntityManager.Get(EntityType.Item);
+      throwItem.SetItem(item, count);
+      var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * direction);
+      throwItem.Throw(new Vector2(startPositionX, position.y), new Vector2(direction * 2f, 3f), 4f);
+    }
+
+    public void ThrowItem(Item.Item item, ushort count, sbyte direction = 1) {
+      if (count <= byte.MaxValue) {
+        ThrowItemB(item, (byte) count, direction);
+      } else {
+        ThrowItemB(item, byte.MaxValue, direction);
+        ThrowItem(item, (ushort)(count - byte.MaxValue), direction);
+      }
+    }
   }
 }

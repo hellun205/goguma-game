@@ -59,7 +59,7 @@ namespace Entity.Player {
     public PlayerStatus status;
     public Inventory.Inventory inventory;
 
-    private void Awake() {
+    protected override void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
@@ -71,7 +71,7 @@ namespace Entity.Player {
       col = GetComponent<BoxCollider2D>();
 
       distanceY = col.bounds.extents.y - 0.1f;
-      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);      
+      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
       InventoryController.Instance.data = inventory;
     }
 
@@ -174,7 +174,6 @@ namespace Entity.Player {
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
       InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
-      
     }
 
     private void CheckNpc() {
@@ -209,11 +208,7 @@ namespace Entity.Player {
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
       if (left > 0) {
-        var throwItem = (ItemController) EntityManager.Get(EntityType.Item);
-        throwItem.SetItem(data.item, left);
-        var dir = movement.direction == Vector2.left ? -1 : 1;
-        var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * dir);
-        throwItem.Throw(new Vector2(startPositionX, position.y), new Vector2(dir * 2f, 3f), 4f);
+        ThrowItem(data.item, left);
       }
     }
 
@@ -221,5 +216,8 @@ namespace Entity.Player {
       var testItem = (ItemController) EntityManager.Get(EntityType.Item);
       testItem.SetItem("apple", count: 200, position: new Vector2(4f, 5f));
     }
+
+    public void ThrowItem(Item.Item item, ushort count) =>
+      base.ThrowItem(item, count, (sbyte) (movement.direction == Vector2.left ? -1 : 1));
   }
 }

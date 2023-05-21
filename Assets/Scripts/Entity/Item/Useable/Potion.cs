@@ -27,13 +27,13 @@ namespace Entity.Item.Useable {
 
     public override void OnRightClick() {
       base.OnRightClick();
-      MessageBoxManager.Ask("아이템 사용",
+      WindowManager.Ask("아이템 사용",
         $"{nameColor.GetTag(_name)}(을)를 사용하시겠습니까?\n사용 시:\n{GetIncreaseText()}",
         "사용", "취소",
         use => {
           if (!use) return;
           Use();
-          MessageBoxManager.Show("아이템 사용", $"{nameColor.GetTag(_name)}(을)를 사용하였습니다.");
+          WindowManager.Show("아이템 사용", $"{nameColor.GetTag(_name)}(을)를 사용하였습니다.");
         });
     }
   }

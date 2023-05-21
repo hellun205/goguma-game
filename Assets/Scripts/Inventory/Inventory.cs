@@ -13,7 +13,7 @@ namespace Inventory {
 
     private void SetItemCount(int index, byte count) => items[index] = (items[index].item, count);
 
-    public byte GainItem(Item item, byte count = 1) {
+    public ushort GainItem(Item item, ushort count = 1) {
       var linq = (from item_ in items
                   where item_.item == item && item_.count < byte.MaxValue
                   select items.IndexOf(item_)).ToArray();
@@ -30,7 +30,7 @@ namespace Inventory {
       } else {
         if (items.Count < slotCount) {
           if (count <= byte.MaxValue) {
-            AddItem(item, count);
+            AddItem(item, (byte)count);
           } else {
             AddItem(item, byte.MaxValue);
             var left = GainItem(item, (byte)(count - byte.MaxValue));
@@ -44,9 +44,25 @@ namespace Inventory {
       return 0;
     }
 
+    public bool CheckItem(Item item, ushort count = 1) {
+      var list = items.Where(x => x.item == item).ToArray();
+      if (list.Length == 0) return false;
+      return list.Sum(x => x.count) >= count;
+    }
+
+    public bool LoseItem(Item item, ushort count = 1) {
+      if (!CheckItem(item, count)) return false;
+      
+      
+      return true;
+    }
+
     public Inventory(byte slotCount) {
       this.items = new List<(Item item, byte count)>();
       this.slotCount = slotCount;
+      for (var i = 0; i < this.slotCount; i++) {
+        items.Add((null, 0));
+      }
     }
   }
 }
