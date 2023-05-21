@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Inventory {
-  public class Slot : MonoBehaviour, IPointerMoveHandler, IPointerEnterHandler, IPointerExitHandler {
+  public class Slot : MonoBehaviour, IPointerMoveHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     [HideInInspector]
     public Item item;
 
@@ -55,6 +55,22 @@ namespace Inventory {
       toolTip.itemData = item;
       toolTip.Refresh();
       
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+      if (item is IInteractable interact) {
+        switch (eventData.button) {
+          case PointerEventData.InputButton.Left:
+            interact.OnLeftClick();
+            break;
+          case PointerEventData.InputButton.Middle:
+            interact.OnMiddleClick();
+            break;
+          case PointerEventData.InputButton.Right:
+            interact.OnRightClick();
+            break;
+        }
+      }
     }
   }
 }

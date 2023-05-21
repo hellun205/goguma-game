@@ -18,6 +18,7 @@ namespace Inventory {
       set {
         _data = value;
         SetCount(value.slotCount);
+        _data.onItemChanged += Refresh;
       }
     }
 

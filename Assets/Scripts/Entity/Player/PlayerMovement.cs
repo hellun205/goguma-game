@@ -3,6 +3,7 @@ using Audio;
 using Dialogue;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Window;
 
 namespace Entity.Player {
   public class PlayerMovement : MonoBehaviour {
@@ -14,7 +15,7 @@ namespace Entity.Player {
     private LayerMask layerMask = 0;
 
     // Variables
-    
+
     [HideInInspector]
     public bool canFlip = true;
 
@@ -50,7 +51,7 @@ namespace Entity.Player {
     }
 
     private void FixedUpdate() {
-      if (isInputCooldown) return;
+      if (isInputCooldown || InputBoxWindow.isEnabled) return;
       TryMove();
     }
 
@@ -58,9 +59,11 @@ namespace Entity.Player {
       if (isInputCooldown) {
         curInputCooldown += Time.deltaTime;
       } else {
+        if (InputBoxWindow.isEnabled) return;
         TryJump();
-        CheckGround();
       }
+
+      CheckGround();
     }
 
     private void TryMove() {
