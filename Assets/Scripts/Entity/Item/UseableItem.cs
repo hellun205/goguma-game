@@ -1,7 +1,7 @@
 ﻿using Entity.Item.Useable;
 
 namespace Entity.Item {
-  public abstract class UseableItem : Item {
+  public abstract class UseableItem : Item, IInteractable {
     public delegate void _onUse(UseableItem item);
 
     public event _onUse onUse;
@@ -13,6 +13,12 @@ namespace Entity.Item {
     public virtual void Use() {
       onUse?.Invoke(this);
     }
-    
+
+    public virtual void OnLeftClick() {
+    }
+    public virtual void OnMiddleClick() {
+    }
+    public virtual void OnRightClick() {
+    }
   }
 }
