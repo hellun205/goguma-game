@@ -71,7 +71,7 @@ namespace Entity.Player {
       var horizontal = Input.GetAxisRaw("Horizontal");
 
       animator.SetBool("isWalking", horizontal != 0);
-      transform.Translate(horizontal * Time.fixedDeltaTime * status.moveSpeed, 0f, 0f);
+      transform.Translate(horizontal * Time.fixedDeltaTime * Mathf.Abs(status.moveSpeed), 0f, 0f);
       if (horizontal < 0) wasLeft = false;
       else if (horizontal > 0) wasLeft = true;
 
@@ -100,7 +100,7 @@ namespace Entity.Player {
       if (!isJumping && Input.GetKeyDown(jumpKey)) {
         SetJumping(true);
         // rb.AddForce(Vector2.up * (jumpSpeed * 100f));
-        rb.velocity = Vector2.up * status.jumpSpeed;
+        rb.velocity = Vector2.up * Mathf.Abs(status.jumpSpeed);
         AudioManager.Play("jump");
       }
     }

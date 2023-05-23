@@ -175,6 +175,7 @@ namespace Entity.Player {
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
       InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
+      inventory.GainItem(ItemManager.Instance.GetWithCode("apple"));
     }
 
     private void CheckNpc() {
