@@ -9,9 +9,10 @@ namespace Inventory {
     public void OnDrop(PointerEventData eventData) {
       var invenCtrl = InventoryController.Instance;
       var inven = invenCtrl.inventory;
-      if (!invenCtrl.isDraging) return;
+      if (!invenCtrl.isDragging) return;
       var item = inven[invenCtrl.dragedIdx];
       WindowManager.Ask("버리기", $"{item.item._name}(을)를 버리시겠습니까?", callback: @throw => {
+        if (!@throw) return;
         if (item.count == 1) {
           Throw(item.item, item.count);
         } else {

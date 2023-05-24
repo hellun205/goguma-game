@@ -508,6 +508,9 @@ MonoBehaviour:
   currentAttack: 0
   avatar: {fileID: 0}
   quickSlotCtrler: {fileID: 634154010}
+  hands:
+  - {fileID: 1476122895}
+  - {fileID: 1245605064}
   status:
     maxHp: 50
     hp: 50
@@ -2426,6 +2429,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d11c04b45f8c4a31a711cd59c9661236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slots: []
+  isDragging: 0
+  dragedIdx: 0
 --- !u!1001 &658742225
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3221,7 +3227,7 @@ MonoBehaviour:
   slotCount: 28
   dragImg: {fileID: 207297589}
   dragedIdx: 0
-  isDraging: 0
+  isDragging: 0
   toolTipPanel: {fileID: 1208680578}
 --- !u!114 &1127839997
 MonoBehaviour:
@@ -5410,6 +5416,7 @@ MonoBehaviour:
   list:
   - {fileID: 11400000, guid: 95a560ffc01cde64f8106e981df217a7, type: 2}
   - {fileID: 11400000, guid: 6d08ee73e62e70544b15e117ed8c275f, type: 2}
+  - {fileID: 11400000, guid: c444f05d26a04bb4c93c7836cf12fbe1, type: 2}
   noneSprite: {fileID: 21300000, guid: e0112b57a6e2f7046a96f39e4a09ccca, type: 3}
 --- !u!4 &2040307402
 Transform:

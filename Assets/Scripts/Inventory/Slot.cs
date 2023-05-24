@@ -1,5 +1,7 @@
-﻿using Entity.Item;
+﻿using System.Linq;
+using Entity.Item;
 using Entity.Player;
+using Inventory.QuickSlot;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -32,6 +34,8 @@ namespace Inventory {
 
     [SerializeField]
     private Sprite noneSprite;
+
+    private QuickSlotController quickSlotCtrl => PlayerController.Instance.quickSlotCtrler;
 
     public void SetItem(Item item = null, byte count = 0) {
       this.item = item;
@@ -79,7 +83,7 @@ namespace Inventory {
       drgImg.sprite = item.sprite8x;
       drgImg.gameObject.SetActive(true);
       inven.dragedIdx = index;
-      inven.isDraging = true;
+      inven.isDragging = true;
     }
 
     public void OnDrag(PointerEventData eventData) {
@@ -88,11 +92,17 @@ namespace Inventory {
 
     public void OnEndDrag(PointerEventData eventData) {
       drgImg.gameObject.SetActive(false);
-      inven.isDraging = false;
+      inven.isDragging = false;
     }
 
     public void OnDrop(PointerEventData eventData) {
-      Debug.Log("drop slot");
+      if (inven.isDragging) {
+        var list = quickSlotCtrl.slots.Where(x => x.invenIndex == inven.dragedIdx);
+        foreach (var qSlot in list) {
+          qSlot.invenIndex = index;
+        }
+        inven.inventory.Move(inven.dragedIdx, index);
+      }
     }
   }
 }

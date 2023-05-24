@@ -104,6 +104,16 @@ namespace Inventory {
       return true;
     }
 
+    public void Move(byte aIdx, byte bIdx) {
+      if (items[bIdx].HasValue) {
+        (items[bIdx], items[aIdx]) = (items[aIdx], items[bIdx]);
+      } else {
+        items[bIdx] = items[aIdx];
+        items[aIdx] = null;
+      }
+      onItemChanged?.Invoke();
+    }
+
     public Inventory(byte slotCount) {
       this.items = new List<(Item item, byte count)?>();
       this.slotCount = slotCount;

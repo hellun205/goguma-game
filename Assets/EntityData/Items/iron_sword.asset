@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b5978b94e946bba84122cd27e195ff, type: 3}
+  m_Name: iron_sword
+  m_EditorClassIdentifier: 
+  _name: "\uCCA0 \uAC80"
+  nameColor: {r: 1, g: 1, b: 1, a: 1}
+  descriptions: "\uC77C\uBC18\uC801\uC778 \uAC80\uC774\uB2E4."
+  sprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  sprite8x: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  spriteColor: {r: 1, g: 1, b: 1, a: 1}
+  weaponType: 1
+  weaponSprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}

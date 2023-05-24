@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Inventory {
@@ -46,8 +47,9 @@ namespace Inventory {
     [HideInInspector]
     public byte dragedIdx;
 
+    [FormerlySerializedAs("isDraging")]
     [HideInInspector]
-    public bool isDraging;
+    public bool isDragging;
 
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;

@@ -1,7 +1,7 @@
 ﻿namespace Player.Attack {
   public enum Weapons {
-    None = -1,
-    Sword = 0,
+    None = 0,
+    Sword = 1,
     
   }
 }

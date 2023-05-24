@@ -53,6 +53,10 @@ namespace Entity.Player {
     
     public QuickSlotController quickSlotCtrler;
 
+    [Header("Hand")]
+    [SerializeField]
+    private SpriteRenderer[] hands;
+
     // Variables
     private bool hasWeapon => anim.GetBool("hasWeapon");
     private float curCoolTime;
@@ -74,11 +78,16 @@ namespace Entity.Player {
       audioSrc = GetComponent<AudioSource>();
       col = GetComponent<BoxCollider2D>();
       hpBar = GetComponent<HpBar>();
+      
+      quickSlotCtrler.onSlotChanged += OnChangedSlot;
 
       distanceY = col.bounds.extents.y - 0.1f;
       inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
       InventoryController.Instance.inventory = inventory;
       canDespawn = false;
+      quickSlotCtrler.SetIndex(0);
+
+      DisableAllHand();
     }
 
 
@@ -97,7 +106,29 @@ namespace Entity.Player {
       int slotIdx = Input.inputString switch {
         "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
       };
-      quickSlotCtrler.SetIndex((byte)slotIdx);
+      if (slotIdx != -1)
+        quickSlotCtrler.SetIndex((byte)slotIdx);
+    }
+
+    private void OnChangedSlot(byte slotIdx) {
+      var item = quickSlotCtrler.GetItem(slotIdx);
+      DisableAllHand();
+      if (item is null) return;
+      if (item is WeaponItem weapon) {
+        var hand = hands[(int)weapon.weaponType];
+        hand.gameObject.SetActive(true);
+        hand.sprite = weapon.weaponSprite;
+      } else {
+        var hand = hands[0];
+        hand.gameObject.SetActive(true);
+        hand.sprite = item.sprite;
+      }
+    }
+
+    private void DisableAllHand() {
+      foreach (var hand in hands) {
+        hand.gameObject.SetActive(false);
+      }
     }
 
     private void TryAttack() {
@@ -190,7 +221,7 @@ namespace Entity.Player {
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
       InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
-      inventory.GainItem(ItemManager.Instance.GetWithCode("apple"));
+      inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
       var testEnemy = (EnemyController) EntityManager.Get(EntityType.Enemy);
       testEnemy.position = new Vector3(5f, 0f);
     }

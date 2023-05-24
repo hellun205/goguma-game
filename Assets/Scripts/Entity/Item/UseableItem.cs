@@ -1,4 +1,5 @@
-﻿using Entity.Item.Useable;
+﻿using Audio;
+using Entity.Item.Useable;
 using Entity.Player;
 using UnityEngine;
 using Utils;
@@ -13,6 +14,8 @@ namespace Entity.Item {
     public override ItemType type => ItemType.Useable;
     
     public abstract UseableType u_type { get; }
+
+    public AudioData audioWhenUse;
 
     public virtual void Use() {
       onUse?.Invoke(this);
