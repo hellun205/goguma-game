@@ -183,7 +183,7 @@ namespace Entity.Player {
 
       var pos = transform.position;
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY),
-        movement.direction, checkNpcDistance, layerMask);
+        movement.dirVector, checkNpcDistance, layerMask);
 
       if (hit && hit.transform.CompareTag("Npc")) {
         var npc = hit.transform.GetComponent<NpcController>();
@@ -194,7 +194,7 @@ namespace Entity.Player {
 
     private void CheckItems() {
       var pos = transform.position;
-      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.direction, pickupDistance, layerMask);
+      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.dirVector, pickupDistance, layerMask);
       if (hit && hit.transform.CompareTag("Item")) {
         var item = hit.transform.GetComponent<ItemController>();
         if (!item.isPickingUp && !item.isThrowing)
@@ -220,6 +220,6 @@ namespace Entity.Player {
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte) (movement.direction == Vector2.left ? -1 : 1));
+      base.ThrowItem(item, count, (sbyte) movement.direction);
   }
 }

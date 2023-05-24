@@ -296,12 +296,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 510c8f4370234c4b9ef818e472a8f2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpKey: 32
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 4023
+  collider: {fileID: 71035731}
+  direction: 0
+  moveSpeed: 1
+  jumpPower: 3
   canFlip: 1
+  currentDirection: 0
+  groundTag: Ground
+  walkingAnim: isWalking
+  jumpingAnim: isJumping
   inputCooldown: 0.3
+  jumpKey: 32
 --- !u!61 &71035731
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -397,7 +402,7 @@ MonoBehaviour:
     maxHp: 50
     hp: 50
     moveSpeed: 3
-    jumpSpeed: 5
+    jumpPower: 5
 --- !u!82 &71035734
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3554,7 +3559,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 32
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -4345,15 +4350,19 @@ MonoBehaviour:
   - type: 4
     prefab: {fileID: 1166170861826038880, guid: a980c6b6fd3d54949bb3814605ca755d, type: 3}
     maxCount: 7
+    isUI: 1
   - type: 2
     prefab: {fileID: 1110954321598639403, guid: 5e54030e26204b04fb8c0e6ee26ae7a8, type: 3}
     maxCount: 10
+    isUI: 0
   - type: 1
     prefab: {fileID: 4451883627737325709, guid: c0166578202995e48bc720487a92ad60, type: 3}
     maxCount: 15
+    isUI: 1
   - type: 5
     prefab: {fileID: 6216576640922608934, guid: 1b227430328d6284ea3ed8b5d98a4c45, type: 3}
     maxCount: 30
+    isUI: 0
   entityCollection: {fileID: 803941389}
   uiEntityCollection: {fileID: 1751075563}
 --- !u!4 &2123160864

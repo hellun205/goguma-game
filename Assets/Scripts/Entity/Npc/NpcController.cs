@@ -36,7 +36,7 @@ namespace Entity.Npc {
     }
 
     private void Start() {
-      // StartMessage();
+      StartMessage();
     }
 
     private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
