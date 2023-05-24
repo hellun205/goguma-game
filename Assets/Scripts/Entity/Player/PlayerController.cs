@@ -20,6 +20,7 @@ namespace Entity.Player {
     private Animator anim;
     private PlayerMovement movement;
     private AudioSource audioSrc;
+    private HpBar hpBar;
 
     // Inspector Settings
     [SerializeField]
@@ -69,6 +70,7 @@ namespace Entity.Player {
       movement = GetComponent<PlayerMovement>();
       audioSrc = GetComponent<AudioSource>();
       col = GetComponent<BoxCollider2D>();
+      hpBar = GetComponent<HpBar>();
 
       distanceY = col.bounds.extents.y - 0.1f;
       inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
@@ -168,6 +170,10 @@ namespace Entity.Player {
     private void Start() {
       ChangeWeapon(Weapons.Sword);
       GetComponent<NameTag>().OnGetEntity(this);
+      hpBar.OnGetEntity(this);
+      hpBar.maxHp = status.maxHp;
+      hpBar.curHp = status.hp;
+      
       var testItem = (ItemController) EntityManager.Get(EntityType.Item);
       testItem.SetItem("apple", position: new Vector2(2f, 5f));
 
@@ -176,6 +182,9 @@ namespace Entity.Player {
 
       InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
       inventory.GainItem(ItemManager.Instance.GetWithCode("apple"));
+      var testEnemy = (EnemyController) EntityManager.Get(EntityType.Enemy);
+      testEnemy.position = new Vector3(5f, 0f);
+
     }
 
     private void CheckNpc() {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Entity.Item;
+using Entity.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 

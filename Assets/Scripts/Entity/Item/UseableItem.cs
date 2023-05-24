@@ -32,7 +32,7 @@ namespace Entity.Item {
     }
 
     protected void Consume(ushort count = 1) {
-      Debug.Log(PlayerController.Instance.inventory.LoseItem(this, count));
+      PlayerController.Instance.inventory.LoseItem(this, count);
     }
   }
 }

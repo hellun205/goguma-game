@@ -2,8 +2,8 @@
 
 namespace Entity.Item {
   public interface IInteractable {
-    public abstract void OnLeftClick();
-    public abstract void OnMiddleClick();
-    public abstract void OnRightClick();
+    public void OnLeftClick();
+    public void OnMiddleClick();
+    public void OnRightClick();
   }
 }
