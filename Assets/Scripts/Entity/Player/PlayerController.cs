@@ -50,7 +50,7 @@ namespace Entity.Player {
 
     [SerializeField]
     private Sprite avatar;
-    
+
     public QuickSlotController quickSlotCtrler;
 
     [Header("Hand")]
@@ -58,7 +58,6 @@ namespace Entity.Player {
     private SpriteRenderer[] hands;
 
     // Variables
-    private bool hasWeapon => anim.GetBool("hasWeapon");
     private float curCoolTime;
     private float curEndTime;
     private float distanceY;
@@ -78,7 +77,7 @@ namespace Entity.Player {
       audioSrc = GetComponent<AudioSource>();
       col = GetComponent<BoxCollider2D>();
       hpBar = GetComponent<HpBar>();
-      
+
       quickSlotCtrler.onSlotChanged += OnChangedSlot;
 
       distanceY = col.bounds.extents.y - 0.1f;
@@ -107,21 +106,29 @@ namespace Entity.Player {
         "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
       };
       if (slotIdx != -1)
-        quickSlotCtrler.SetIndex((byte)slotIdx);
+        quickSlotCtrler.SetIndex((byte) slotIdx);
     }
 
     private void OnChangedSlot(byte slotIdx) {
       var item = quickSlotCtrler.GetItem(slotIdx);
       DisableAllHand();
-      if (item is null) return;
-      if (item is WeaponItem weapon) {
-        var hand = hands[(int)weapon.weaponType];
-        hand.gameObject.SetActive(true);
-        hand.sprite = weapon.weaponSprite;
-      } else {
-        var hand = hands[0];
-        hand.gameObject.SetActive(true);
-        hand.sprite = item.sprite;
+      switch (item) {
+        case null:
+          return;
+
+        case WeaponItem weapon: {
+          var hand = hands[(int) weapon.weaponType];
+          hand.gameObject.SetActive(true);
+          hand.sprite = weapon.weaponSprite;
+          break;
+        }
+
+        default: {
+          var hand = hands[0];
+          hand.gameObject.SetActive(true);
+          hand.sprite = item.sprite;
+          break;
+        }
       }
     }
 
@@ -132,23 +139,47 @@ namespace Entity.Player {
     }
 
     private void TryAttack() {
-      if (!hasWeapon || DialogueController.Instance.isEnabled) return;
+      // if (!hasWeapon || DialogueController.Instance.isEnabled) return;
+      //
+      // if (curCoolTime <= 0) {
+      //   foreach (var key in attackKeys) {
+      //     if (Input.GetKey(key)) {
+      //       Attack(weapons.Get(currentWeapon), key.GetSkill());
+      //       break;
+      //     }
+      //   }
+      // } else {
+      //   curCoolTime -= Time.deltaTime;
+      // }
+      //
+      // if (curEndTime <= 0) {
+      //   EndAttack();
+      // } else {
+      //   curEndTime -= Time.deltaTime;
+      // }
+      foreach (var key in attackKeys) {
+        if (Input.GetKeyDown(key)) {
+          var item = quickSlotCtrler.GetItem();
 
-      if (curCoolTime <= 0) {
-        foreach (var key in attackKeys) {
-          if (Input.GetKey(key)) {
-            Attack(weapons.Get(currentWeapon), key.GetSkill());
-            break;
+          switch (item) {
+            case null:
+              return;
+
+            // case WeaponItem weapon: {
+            //   break;
+            // }
+
+            case UseableItem useable: {
+              useable.OnQuickClick();
+              break;
+            }
+            // default: {
+            //   var hand = hands[0];
+            //   
+            //   break;
+            // }
           }
         }
-      } else {
-        curCoolTime -= Time.deltaTime;
-      }
-
-      if (curEndTime <= 0) {
-        EndAttack();
-      } else {
-        curEndTime -= Time.deltaTime;
       }
     }
 

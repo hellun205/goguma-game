@@ -46,6 +46,8 @@ namespace Inventory.QuickSlot {
       CallSlotChanged();
     }
 
+    public Item GetItem() => GetItem(slotIndex);
+    
     [CanBeNull]
     public Item GetItem(byte slotIdx) {
       var idx = slots[slotIdx].invenIndex;
