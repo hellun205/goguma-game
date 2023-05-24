@@ -35,7 +35,7 @@ namespace Inventory.QuickSlot {
 
     private void InventoryItemChanged() {
       if (!invenIndex.HasValue) return;
-      var item = inven.items[invenIndex.Value];
+      var item = inven[invenIndex.Value];
       iconImg.sprite = item.item.sprite8x;
       countTMP.text = item.count.ToString();
     }

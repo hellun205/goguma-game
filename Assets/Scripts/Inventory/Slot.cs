@@ -30,14 +30,20 @@ namespace Inventory {
 
     private InventoryController inven => InventoryController.Instance;
 
-    public void SetItem(Item item, byte count = 1) {
+    [SerializeField]
+    private Sprite noneSprite;
+
+    public void SetItem(Item item = null, byte count = 0) {
       this.item = item;
       this.count = count;
 
-      iconImg.sprite = item.sprite8x;
-      iconImg.color = item.spriteColor;
-      countTMP.text = (count == 1 ? string.Empty : count.ToString());
+      var isNull = item is null;
+      
+      iconImg.sprite = isNull ? noneSprite : item.sprite8x;
+      iconImg.color = isNull ? Color.clear : item.spriteColor;
+      countTMP.text = isNull ? "" :(count == 1 ? string.Empty : count.ToString());
     }
+    
 
     private void Awake() {
 

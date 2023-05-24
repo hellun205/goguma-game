@@ -12,14 +12,14 @@ namespace Inventory {
 
     public bool activeInventory { get; private set; } = false;
 
-    private Inventory _data;
+    private Inventory _inventory;
 
-    public Inventory data {
-      get => _data;
+    public Inventory inventory {
+      get => _inventory;
       set {
-        _data = value;
+        _inventory = value;
         SetCount(value.slotCount);
-        _data.onItemChanged += Refresh;
+        _inventory.onItemChanged += Refresh;
       }
     }
 
@@ -94,8 +94,12 @@ namespace Inventory {
     }
 
     public void Refresh() {
-      for (var i = 0; i < data.items.Count; i++) {
-        slots[i].SetItem(data.items[i].item, data.items[i].count);
+      for (var i = 0; i < inventory.items.Count; i++) {
+        var item = inventory.items[i];
+        if (item.HasValue)
+          slots[i].SetItem(item.Value.item, item.Value.count);
+        else
+          slots[i].SetItem();
       }
     }
   }

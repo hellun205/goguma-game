@@ -78,9 +78,14 @@ namespace Window {
     }
 
     private void Update() {
-      if (Input.GetKeyDown(KeyCode.Return)) {
-        onSubmit?.Invoke(inputField.text);
-      }
+      if (!Input.GetKeyDown(KeyCode.Return)) return;
+      onSubmit?.Invoke(inputField.text);
+      OnCloseButtonClick();
+    }
+
+    protected override void OnCloseButtonClick() {
+      base.OnCloseButtonClick();
+      isEnabled = false;
     }
   }
 }

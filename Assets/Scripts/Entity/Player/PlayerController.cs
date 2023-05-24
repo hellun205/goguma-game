@@ -77,7 +77,7 @@ namespace Entity.Player {
 
       distanceY = col.bounds.extents.y - 0.1f;
       inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
-      InventoryController.Instance.data = inventory;
+      InventoryController.Instance.inventory = inventory;
       canDespawn = false;
     }
 
@@ -222,7 +222,7 @@ namespace Entity.Player {
     public void EnableInputCooldown() => movement.EnableInputCooldown();
 
     private void OnPickUpItem((Item.Item item, byte count) data) {
-      Debug.Log($"get: {data.item._name}, count: {data.count}");
+      // Debug.Log($"get: {data.item._name}, count: {data.count}");
       AudioManager.Play("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
@@ -237,6 +237,6 @@ namespace Entity.Player {
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte) movement.direction);
+      base.ThrowItem(item, count, (sbyte) (movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }
