@@ -17,11 +17,7 @@ namespace Entity.Item {
     public virtual void Use() {
       onUse?.Invoke(this);
     }
-
-    public virtual void OnLeftClick() {
-    }
-    public virtual void OnMiddleClick() {
-    }
+    
     public virtual void OnRightClick() {
       WindowManager.Ask("아이템 사용",
         $"{nameColor.GetTag(_name)}(을)를 사용하시겠습니까?",
@@ -29,6 +25,10 @@ namespace Entity.Item {
         use => {
           if (use) Use();
         });
+    }
+
+    public void OnQuickClick() {
+      Use();
     }
 
     protected void Consume(ushort count = 1) {

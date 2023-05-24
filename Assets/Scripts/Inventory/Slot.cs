@@ -1,12 +1,13 @@
-﻿using System;
-using Entity.Item;
+﻿using Entity.Item;
+using Entity.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Inventory {
-  public class Slot : MonoBehaviour, IPointerMoveHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+  public class Slot : MonoBehaviour, IPointerMoveHandler, IPointerEnterHandler, IPointerExitHandler,
+                      IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler {
     [HideInInspector]
     public Item item;
 
@@ -20,9 +21,14 @@ namespace Inventory {
     [SerializeField]
     private TextMeshProUGUI countTMP;
 
-    private Button btn;
-
     private ItemToolTip toolTip => InventoryController.Instance.toolTipPanel;
+    
+    private Image drgImg => InventoryController.Instance.dragImg;
+
+    [HideInInspector]
+    public byte index;
+
+    private InventoryController inven => InventoryController.Instance;
 
     public void SetItem(Item item, byte count = 1) {
       this.item = item;
@@ -34,9 +40,9 @@ namespace Inventory {
     }
 
     private void Awake() {
-      btn = GetComponent<Button>();
+
     }
-    
+
     public void OnPointerEnter(PointerEventData eventData) {
       if (item == null) return;
       toolTip.gameObject.SetActive(true);
@@ -54,23 +60,33 @@ namespace Inventory {
     private void Refresh() {
       toolTip.itemData = item;
       toolTip.Refresh();
-      
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-      if (item is IInteractable interact) {
-        switch (eventData.button) {
-          case PointerEventData.InputButton.Left:
-            interact.OnLeftClick();
-            break;
-          case PointerEventData.InputButton.Middle:
-            interact.OnMiddleClick();
-            break;
-          case PointerEventData.InputButton.Right:
-            interact.OnRightClick();
-            break;
-        }
+      if (item is not IInteractable interact) return;
+      if (eventData.button == PointerEventData.InputButton.Right) {
+        interact.OnRightClick();
       }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) {
+      drgImg.sprite = item.sprite8x;
+      drgImg.gameObject.SetActive(true);
+      inven.dragedIdx = index;
+      inven.isDraging = true;
+    }
+
+    public void OnDrag(PointerEventData eventData) {
+      drgImg.transform.position = eventData.position;
+    }
+
+    public void OnEndDrag(PointerEventData eventData) {
+      drgImg.gameObject.SetActive(false);
+      inven.isDraging = false;
+    }
+
+    public void OnDrop(PointerEventData eventData) {
+      Debug.Log("drop slot");
     }
   }
 }

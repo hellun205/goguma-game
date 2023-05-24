@@ -6,6 +6,7 @@ using Entity.Enemy;
 using Entity.Item;
 using Entity.Npc;
 using Inventory;
+using Inventory.QuickSlot;
 using Player.Attack;
 using UnityEngine;
 using Window;
@@ -49,6 +50,8 @@ namespace Entity.Player {
 
     [SerializeField]
     private Sprite avatar;
+    
+    public QuickSlotController quickSlotCtrler;
 
     // Variables
     private bool hasWeapon => anim.GetBool("hasWeapon");
@@ -89,10 +92,16 @@ namespace Entity.Player {
       TryAttack();
       CheckNpc();
       CheckItems();
+
+      if (!Input.anyKeyDown) return;
+      int slotIdx = Input.inputString switch {
+        "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
+      };
+      quickSlotCtrler.SetIndex((byte)slotIdx);
     }
 
     private void TryAttack() {
-      if (!hasWeapon || DialogueController.Instance.isEnabled ) return;
+      if (!hasWeapon || DialogueController.Instance.isEnabled) return;
 
       if (curCoolTime <= 0) {
         foreach (var key in attackKeys) {
@@ -162,7 +171,7 @@ namespace Entity.Player {
 
       currentWeapon = type;
       anim.SetInteger("weaponType", (int) type);
-      anim.SetBool("hasWeapon", type != Weapons.None);
+      // anim.SetBool("hasWeapon", type != Weapons.None);
 
       return true;
     }
@@ -173,7 +182,7 @@ namespace Entity.Player {
       hpBar.OnGetEntity(this);
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
-      
+
       var testItem = (ItemController) EntityManager.Get(EntityType.Item);
       testItem.SetItem("apple", position: new Vector2(2f, 5f));
 
@@ -184,7 +193,6 @@ namespace Entity.Player {
       inventory.GainItem(ItemManager.Instance.GetWithCode("apple"));
       var testEnemy = (EnemyController) EntityManager.Get(EntityType.Enemy);
       testEnemy.position = new Vector3(5f, 0f);
-
     }
 
     private void CheckNpc() {

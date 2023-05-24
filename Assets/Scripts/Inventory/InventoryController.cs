@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Inventory {
   public class InventoryController : MonoBehaviour {
@@ -40,6 +41,14 @@ namespace Inventory {
 
     public const byte horizontalCount = 4;
 
+    public Image dragImg;
+
+    [HideInInspector]
+    public byte dragedIdx;
+
+    [HideInInspector]
+    public bool isDraging;
+
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;
 
@@ -70,6 +79,7 @@ namespace Inventory {
 
       for (var i = 0; i < slotCount; i++) {
         var slot = Instantiate(slotPrefab, content);
+        slot.index = (byte)i;
         slots.Add(slot);
       }
     }
