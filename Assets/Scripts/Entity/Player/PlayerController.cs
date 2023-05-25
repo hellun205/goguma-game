@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Audio;
+﻿using Audio;
 using Dialogue;
 using Entity.Enemy;
 using Entity.Item;
@@ -8,7 +7,6 @@ using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
 using UnityEngine;
-using Utils;
 using Window;
 
 namespace Entity.Player {
@@ -17,10 +15,10 @@ namespace Entity.Player {
     public static PlayerController Instance { get; private set; }
 
     // Components
-    private Rigidbody2D rb;
+    // private Rigidbody2D rb;
     private Animator anim;
     private PlayerMovement movement;
-    private AudioSource audioSrc;
+    // private AudioSource audioSrc;
     private HpBar hpBar;
 
     // Inspector Settings
@@ -65,16 +63,19 @@ namespace Entity.Player {
     private float tempCoolTime;
     private bool cooled;
     private bool isEnd;
+    
+    private Vector2 attackHitPos = Vector2.zero;
+    private Vector2 attackHitSize = Vector2.zero;
 
     protected override void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
 
-      rb = GetComponent<Rigidbody2D>();
+      // rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
       movement = GetComponent<PlayerMovement>();
-      audioSrc = GetComponent<AudioSource>();
+      // audioSrc = GetComponent<AudioSource>();
       col = GetComponent<BoxCollider2D>();
       hpBar = GetComponent<HpBar>();
 
@@ -91,7 +92,7 @@ namespace Entity.Player {
 
     private void Update() {
       if (curCoolTime > 0) curCoolTime -= Time.deltaTime;
-      
+
       if (curEndTime > 0) curEndTime -= Time.deltaTime;
       else {
         if (isEnd) {
@@ -99,9 +100,10 @@ namespace Entity.Player {
           combo = 0;
           isEnd = false;
         }
+
         movement.canFlip = true;
       }
-      
+
       if (curKeepTime > 0) curKeepTime -= Time.deltaTime;
       else {
         anim.SetBool("isAttack", false);
@@ -184,25 +186,30 @@ namespace Entity.Player {
       tempCoolTime = coolTime;
       curEndTime = skill.endTime;
 
-      Debug.Log(skill.animParameter);
+      // Debug.Log(skill.animParameter);
       movement.canFlip = false;
       anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
-      anim.SetTrigger("attack");
+      // anim.SetTrigger("attack");
       // AudioManager.Play(skill.sound, skill.soundDelay);
 
-      var hitPos = skill.hitBoxPos;
-      var hitSize = skill.hitBoxSize;
-      hitPos.x *= (int)movement.currentDirection;
-      hitSize.x *= (int)movement.currentDirection;
-      var colliders = Physics2D.OverlapBoxAll(position + hitPos, hitSize, 0);
-      DebugUtils.DrawBox(position + hitPos, hitSize, Color.red, skill.endTime);
+      attackHitPos = skill.hitBoxPos;
+      attackHitSize = skill.hitBoxSize;
+      attackHitPos.x *= (int)movement.currentDirection;
+      Debug.Log(attackHitPos.x);
+      Debug.Log(attackHitSize.x);
+      
+      var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
       foreach (var hitCol in colliders) {
         if (hitCol.CompareTag("Enemy")) {
           var enemy = hitCol.GetComponent<EnemyController>();
           enemy.Hit(weaponDmg * skill.damagePercent);
         }
       }
+    }
+
+    private void OnDrawGizmos() {
+      Gizmos.DrawWireCube(transform.position + (Vector3)attackHitPos, attackHitSize);
     }
 
     private void TryInteract() {
@@ -233,64 +240,7 @@ namespace Entity.Player {
       }
     }
 
-
-    // private void Attack(Weapon weapon, SkillType atkType) {
-    //   var attack = weapon.Attacks.Get(atkType);
-    //
-    //   movement.canFlip = false;
-    //   currentAttack = atkType;
-    //   anim.SetInteger("weaponType", (int)weapon.type);
-    //   anim.SetInteger("attackType", (int)atkType);
-    //   anim.SetBool("isAttack", true);
-    //   anim.SetTrigger("attack");
-    //   curCoolTime = attack.coolTime;
-    //   curEndTime = attack.endTime;
-    //
-    //   // audioSrc.clip = attack.sound;
-    //   // audioSrc.PlayDelayed(attack.soundDelay);
-    //   // AudioManager.Play(attack.sound, attack.soundDelay);
-    //   AudioManager.Play(attack.sound, attack.soundDelay);
-    //
-    //   var colliders = Physics2D.OverlapBoxAll(attack.hitBoxPos.position, attack.hitBoxSize, 0);
-    //   foreach (var hitCol in colliders) {
-    //     if (hitCol.CompareTag("Enemy")) {
-    //       var enemy = hitCol.GetComponent<EnemyController>();
-    //       enemy.Hit(weapon.damage * attack.damagePercent);
-    //     }
-    //   }
-    // }
-
-    private void EndAttack() {
-      anim.SetBool("isAttack", false);
-      movement.canFlip = true;
-    }
-
-    private void OnDrawGizmos() {
-      // Attack HitBox Gizmos
-      // if (isStarted) {
-      //   var attack = weapons.Get(currentWeapon).Attacks.Get(currentAttack);
-      //   Gizmos.color = Color.red;
-      //   Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
-      // }
-      // 
-      // Check Npc Ray Gizmos
-      // var pos = transform.position;
-      // Gizmos.color = Color.yellow;
-      // Gizmos.DrawRay(new Vector2(pos.x, pos.y - distanceY), (movement.wasLeft ? Vector2.right : Vector2.left) * checkNpcDistance);
-    }
-
-    // public bool ChangeWeapon(Hands type) {
-    //   if (!weapons.Select(weapon => weapon.type).Contains(type)) return false;
-    //
-    //   currentWeapon = type;
-    //   anim.SetInteger("weaponType", (int)type);
-    //   // anim.SetBool("hasWeapon", type != Weapons.None);
-    //
-    //   return true;
-    // }
-
     private void Start() {
-      // ChangeWeapon(Hands.Sword);
       GetComponent<NameTag>().OnGetEntity(this);
       hpBar.OnGetEntity(this);
       hpBar.maxHp = status.maxHp;

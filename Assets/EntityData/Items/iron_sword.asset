@@ -21,30 +21,30 @@ MonoBehaviour:
   weaponType: 1
   weaponSprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
   skill:
-    damage: 1
+    damage: 3
     zSkill:
-    - damagePercent: 0
+    - damagePercent: 0.9
       endTime: 0.11
       animParameter: 0
-      hitBoxPos: {x: 0.01, y: 0.95}
+      hitBoxPos: {x: 0.55, y: 0.33}
       hitBoxSize: {x: 0.92, y: -1.39}
       sound: 
       soundDelay: 0
-    - damagePercent: 0
+    - damagePercent: 1.2
       endTime: 0.12
       animParameter: 1
-      hitBoxPos: {x: -0.64, y: 0.37}
+      hitBoxPos: {x: 0.27, y: 0}
       hitBoxSize: {x: 1.71, y: -1.11}
       sound: 
       soundDelay: 0
-    - damagePercent: 0
+    - damagePercent: 1.7
       endTime: 0.37
       animParameter: 2
-      hitBoxPos: {x: -0.44, y: 0.3}
+      hitBoxPos: {x: 0.52, y: -0.09}
       hitBoxSize: {x: 1.93, y: -0.8}
       sound: 
       soundDelay: 0
-    zCoolTime: 0.3
+    zCoolTime: 0.2
     zKeepComboTime: 0.5
     xSkill:
     - damagePercent: 0
