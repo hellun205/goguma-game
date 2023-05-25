@@ -174,6 +174,39 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3453038356315128936, guid: 2fd1b4b5a1e1c2d46bdfe5382ec43dc5, type: 3}
   m_PrefabInstance: {fileID: 48004723}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &43351874
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 43351875}
+  m_Layer: 6
+  m_Name: Sword
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &43351875
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43351874}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1552355644}
+  - {fileID: 1848792809}
+  m_Father: {fileID: 1026996700}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &47048451 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3453038356315128936, guid: 2fd1b4b5a1e1c2d46bdfe5382ec43dc5, type: 3}
@@ -388,7 +421,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1026996700}
-  - {fileID: 1513037111}
   - {fileID: 1156991718}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -484,28 +516,6 @@ MonoBehaviour:
     m_Bits: 951
   checkNpcDistance: 1.65
   pickupDistance: 0.7
-  weapons:
-  - type: 0
-    damage: 3
-    Attacks:
-    - type: 1
-      damagePercent: 1.35
-      coolTime: 0.55
-      endTime: 0.45
-      hitBoxPos: {fileID: 1552355644}
-      hitBoxSize: {x: 1.32, y: 1.5}
-      sound: sword_attack1
-      soundDelay: 0
-    - type: 2
-      damagePercent: 1.75
-      coolTime: 0.75
-      endTime: 0.35
-      hitBoxPos: {fileID: 1848792809}
-      hitBoxSize: {x: 1.4, y: 0.24}
-      sound: sword_attack2
-      soundDelay: 0
-  currentWeapon: 0
-  currentAttack: 0
   avatar: {fileID: 0}
   quickSlotCtrler: {fileID: 634154010}
   hands:
@@ -624,7 +634,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81178217a60a4190a6f5fe8ffe92b426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {fileID: 1513037111}
+  col: {fileID: 71035731}
+  distance: 0.15
 --- !u!58 &71035736
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -656,7 +667,7 @@ MonoBehaviour:
   curHp: 0
   maxHp: 0
   col: {fileID: 71035731}
-  distance: 0.1
+  distance: 0.05
 --- !u!1 &79127430
 GameObject:
   m_ObjectHideFlags: 0
@@ -2949,7 +2960,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1026996700}
   m_Layer: 6
-  m_Name: Sword
+  m_Name: AtkHitPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2967,8 +2978,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1552355644}
-  - {fileID: 1848792809}
+  - {fileID: 43351875}
   m_Father: {fileID: 71035729}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3411,7 +3421,7 @@ Transform:
   - {fileID: 1245605063}
   - {fileID: 1476122894}
   m_Father: {fileID: 71035729}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1208680576
 GameObject:
@@ -4183,37 +4193,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1513037110
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1513037111}
-  m_Layer: 6
-  m_Name: NameTagPosition
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1513037111
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1513037110}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.64, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 71035729}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1516544327
 GameObject:
   m_ObjectHideFlags: 0
@@ -4373,11 +4352,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1552355643}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.72, y: -0.06, z: 0}
+  m_LocalPosition: {x: 0.72, y: -0.060000002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1026996700}
+  m_Father: {fileID: 43351875}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1595719741 stripped
@@ -4873,12 +4852,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848792808}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.85, y: -0.17, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.8500001, y: -0.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1026996700}
+  m_Father: {fileID: 43351875}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1898772691

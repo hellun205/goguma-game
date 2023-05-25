@@ -10,7 +10,7 @@ namespace Entity.UI {
     public RectTransform rectTransform;
     private Vector3 _position;
 
-    public override Vector3 position {
+    public override Vector2 position {
       get => _position;
       set {
         _position = value; 

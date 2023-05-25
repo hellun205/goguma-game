@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6560473075134663019}
   - component: {fileID: 6560473075134663028}
   - component: {fileID: 6560473075134663023}
+  - component: {fileID: -3067237561173252021}
   m_Layer: 9
   m_Name: TestEnemyCharacter
   m_TagString: Enemy
@@ -147,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b206b271fc2e54491ac0ce5ceeb246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: 
+  entityName: test Enemy
   canDespawn: 0
   hp: 50
   maxHp: 50
@@ -167,3 +168,17 @@ MonoBehaviour:
   maxHp: 10
   col: {fileID: 6560473075134663019}
   distance: 0.1
+--- !u!114 &-3067237561173252021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6560473075134663029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81178217a60a4190a6f5fe8ffe92b426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  col: {fileID: 6560473075134663019}
+  distance: 0.2

@@ -1,4 +1,4 @@
-﻿using Player.Attack;
+﻿using Entity.Player.Attack;
 using UnityEngine;
 
 namespace Entity.Item {
@@ -7,8 +7,12 @@ namespace Entity.Item {
     public override ItemType type => ItemType.Weapon;
 
     [Header("Weapon")]
-    public Weapons weaponType;
+    public Hands weaponType;
 
     public Sprite weaponSprite;
+
+    public Skill skill;
+
+
   }
 }

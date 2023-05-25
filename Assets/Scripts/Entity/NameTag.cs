@@ -19,15 +19,17 @@ namespace Entity {
     /// </summary>
     private Entity entity;
 
-    /// <summary>
-    /// 이름표의 위치
-    /// </summary>
     [SerializeField]
-    private Transform position;
+    private Collider2D col;
+
+    [SerializeField]
+    private float distance = 0.1f;
+    
+    private float colDistance;
 
     private void Awake() {
       entity = GetComponent<Entity>();
-      // Init();
+      colDistance = col.bounds.extents.y;
       EntityManager.Instance.onGetAfter += OnGetEntity;
       EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
     }
@@ -40,8 +42,9 @@ namespace Entity {
     /// 새로고침 합니다.
     /// </summary>
     private void Refresh() {
+      var pos = entity.position;
       displayText.text = entity.entityName;
-      displayText.position = position.position;
+      displayText.position = new Vector3(pos.x, pos.y + colDistance+ distance);;
     }
 
     private void Init() {

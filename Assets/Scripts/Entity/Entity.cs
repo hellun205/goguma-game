@@ -23,7 +23,7 @@ namespace Entity {
     /// <summary>
     /// 엔티티의 위치 좌표를 지정하거나 가져옵니다.
     /// </summary>
-    public virtual Vector3 position {
+    public virtual Vector2 position {
       get => transform.position;
       set => transform.position = value;
     }

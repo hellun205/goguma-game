@@ -20,3 +20,53 @@ MonoBehaviour:
   spriteColor: {r: 1, g: 1, b: 1, a: 1}
   weaponType: 1
   weaponSprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  skill:
+    damage: 1
+    zSkill:
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 0
+      hitBoxPos: {x: -0.11, y: -1.32}
+      hitBoxSize: {x: 1.74, y: 1}
+      sound: 
+      soundDelay: 0
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 1
+      hitBoxPos: {x: 0, y: 0}
+      hitBoxSize: {x: 8.2, y: 9.83}
+      sound: 
+      soundDelay: 0
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 2
+      hitBoxPos: {x: 0, y: 0}
+      hitBoxSize: {x: 0, y: 0}
+      sound: 
+      soundDelay: 0
+    zCoolTime: 2
+    zKeepComboTime: 2
+    xSkill:
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 0
+      hitBoxPos: {x: 0, y: 0}
+      hitBoxSize: {x: 0, y: 0}
+      sound: 
+      soundDelay: 0
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 0
+      hitBoxPos: {x: 0, y: 0}
+      hitBoxSize: {x: 0, y: 0}
+      sound: 
+      soundDelay: 0
+    - damagePercent: 0
+      endTime: 0.6
+      animParameter: 0
+      hitBoxPos: {x: 0, y: 0}
+      hitBoxSize: {x: 0, y: 0}
+      sound: 
+      soundDelay: 0
+    xCoolTime: 0
+    xKeepComboTime: 3

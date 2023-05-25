@@ -55,7 +55,7 @@ namespace Entity.Npc {
     }
 
     private void RefreshPosition() {
-      if (messageBox.position != MessageBoxPosition.position)
+      if (messageBox.position != (Vector2)MessageBoxPosition.position)
         messageBox.position = MessageBoxPosition.position;
     }
 

@@ -27,7 +27,7 @@ namespace Entity {
 
     private void Update() {
       var pos = entity.position;
-      hpBar.position = new Vector3(pos.x, pos.y + colDistance+ distance, pos.z);
+      hpBar.position = new Vector3(pos.x, pos.y + colDistance+ distance);
       hpBar.maxValue = maxHp;
       hpBar.value = curHp;
     }
