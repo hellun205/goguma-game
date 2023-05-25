@@ -24,28 +24,28 @@ MonoBehaviour:
     damage: 1
     zSkill:
     - damagePercent: 0
-      endTime: 0.6
+      endTime: 0.11
       animParameter: 0
-      hitBoxPos: {x: -0.11, y: -1.32}
-      hitBoxSize: {x: 1.74, y: 1}
+      hitBoxPos: {x: 0.01, y: 0.95}
+      hitBoxSize: {x: 0.92, y: -1.39}
       sound: 
       soundDelay: 0
     - damagePercent: 0
-      endTime: 0.6
+      endTime: 0.12
       animParameter: 1
-      hitBoxPos: {x: 0, y: 0}
-      hitBoxSize: {x: 8.2, y: 9.83}
+      hitBoxPos: {x: -0.64, y: 0.37}
+      hitBoxSize: {x: 1.71, y: -1.11}
       sound: 
       soundDelay: 0
     - damagePercent: 0
-      endTime: 0.6
+      endTime: 0.37
       animParameter: 2
-      hitBoxPos: {x: 0, y: 0}
-      hitBoxSize: {x: 0, y: 0}
+      hitBoxPos: {x: -0.44, y: 0.3}
+      hitBoxSize: {x: 1.93, y: -0.8}
       sound: 
       soundDelay: 0
-    zCoolTime: 2
-    zKeepComboTime: 2
+    zCoolTime: 0.3
+    zKeepComboTime: 0.5
     xSkill:
     - damagePercent: 0
       endTime: 0.6

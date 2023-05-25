@@ -64,6 +64,7 @@ namespace Entity.Player {
     private KeyCode skillType;
     private float tempCoolTime;
     private bool cooled;
+    private bool isEnd;
 
     protected override void Awake() {
       if (Instance == null) Instance = this;
@@ -93,12 +94,17 @@ namespace Entity.Player {
       
       if (curEndTime > 0) curEndTime -= Time.deltaTime;
       else {
+        if (isEnd) {
+          curKeepTime = 0;
+          combo = 0;
+          isEnd = false;
+        }
         movement.canFlip = true;
-        anim.SetBool("isAttack", false);
       }
       
       if (curKeepTime > 0) curKeepTime -= Time.deltaTime;
       else {
+        anim.SetBool("isAttack", false);
         if (!cooled) {
           cooled = true;
           curCoolTime = tempCoolTime;
@@ -164,8 +170,7 @@ namespace Entity.Player {
         }
 
         if (combo + 1 >= comboSkill.skills.Length) {
-          curKeepTime = 0;
-          combo = 0;
+          isEnd = true;
         }
       } else {
         skillType = key;
@@ -186,9 +191,12 @@ namespace Entity.Player {
       anim.SetTrigger("attack");
       // AudioManager.Play(skill.sound, skill.soundDelay);
 
-      var hitPos = position + skill.hitBoxPos;
-      var colliders = Physics2D.OverlapBoxAll(hitPos, skill.hitBoxSize, 0);
-      DebugUtils.DrawBox(hitPos, skill.hitBoxSize, Color.red, skill.endTime);
+      var hitPos = skill.hitBoxPos;
+      var hitSize = skill.hitBoxSize;
+      hitPos.x *= (int)movement.currentDirection;
+      hitSize.x *= (int)movement.currentDirection;
+      var colliders = Physics2D.OverlapBoxAll(position + hitPos, hitSize, 0);
+      DebugUtils.DrawBox(position + hitPos, hitSize, Color.red, skill.endTime);
       foreach (var hitCol in colliders) {
         if (hitCol.CompareTag("Enemy")) {
           var enemy = hitCol.GetComponent<EnemyController>();
