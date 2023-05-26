@@ -72,7 +72,7 @@ namespace Entity {
     private Entity OnCreateObject(EntityPoolManageData data) {
       var parent = data.isUI ? uiEntityCollection : entityCollection;
       var obj = Instantiate(data.prefab, parent);
-      
+      obj.transform.SetAsFirstSibling();
       return obj;
     }
 

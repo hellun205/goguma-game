@@ -21,7 +21,7 @@ namespace Audio {
       else Destroy(this);
 
       srcs = audioSrcs.GetComponents<AudioSource>().ToList();
-      SetVolumes(0.5f);
+      SetVolumes(volume);
     }
 
     public void PlaySound(AudioData audioData, float delay = 0f) {

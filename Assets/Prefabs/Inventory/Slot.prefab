@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8349289176576631605}
   - component: {fileID: 8349289176576631607}
   - component: {fileID: 6449470030499448595}
+  - component: {fileID: 3172948823981542785}
   m_Layer: 5
   m_Name: Slot
   m_TagString: Untagged
@@ -70,8 +71,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 38c4d425ed8db764fae2510ca3c215d5, type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -111,6 +112,36 @@ MonoBehaviour:
   count: 1
   iconImg: {fileID: 8349289176831110679}
   countTMP: {fileID: 8349289177080489698}
+  index: 0
+  noneSprite: {fileID: 0}
+  animParameter: hover
+  dragSound:
+    name: 
+    audioClip: {fileID: 8300000, guid: a3fea35c6b9b7b74e9d2d12fc55d3805, type: 3}
+    pitch: 1
+    delay: 0
+    loop: 0
+--- !u!95 &3172948823981542785
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8349289176576631602}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f59ea9ac828196f4185349f4447eda9f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8349289176831110677
 GameObject:
   m_ObjectHideFlags: 0

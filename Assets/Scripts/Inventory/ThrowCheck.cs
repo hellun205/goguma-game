@@ -1,4 +1,5 @@
-﻿using Entity.Item;
+﻿using System.Linq;
+using Entity.Item;
 using Entity.Player;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,7 +18,7 @@ namespace Inventory {
           Throw(item.item, item.count);
         } else {
           var maxCnt = inven.ItemCount(item.item);
-          WindowManager.ReadInt("버리기", cnt => Throw(item.item, (ushort) cnt), 
+          WindowManager.ReadInt("버리기", cnt => Throw(item.item, (ushort) cnt),
             $"몇개를 버리시겠습니까? (최대 {maxCnt} 개)", maxCnt, minValue: 0, maxValue: maxCnt);
         }
       });
@@ -25,6 +26,14 @@ namespace Inventory {
 
     private static void Throw(Item item, ushort count) {
       var player = PlayerController.Instance;
+      var check = player.quickSlotCtrler.slots
+       .Where(x => x.invenIndex.HasValue && x.inven[x.invenIndex.Value].item == item);
+      if (check.Any()) {
+        foreach (var qSlot in check) {
+          qSlot.SetIndex();
+        }
+      }
+
       player.inventory.LoseItem(item, count);
       player.ThrowItem(item, count);
     }

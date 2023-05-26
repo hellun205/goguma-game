@@ -49,25 +49,13 @@ namespace Entity.Item {
 
     private Action<(Item item, byte count)> callback;
 
-    private void Awake() {
+    protected virtual void Awake() {
       nTag = GetComponent<NameTag>();
       rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update() {
-      if (!isPickingUp) {
-        var pos = imgTrans.localPosition;
-
-        // transform.Rotate(Vector3.up * (Time.fixedDeltaTime * 10f));
-        if (direction == 1 && pos.y >= maxY - limitY) {
-          direction = -1;
-        } else if (direction == -1 && pos.y <= 0 + limitY) {
-          direction = 1;
-        }
-
-        var y = Mathf.Lerp(pos.y, direction == 1 ? maxY : 0f, Time.deltaTime * speed);
-        imgTrans.localPosition = new Vector3(pos.x, y, pos.z);
-      } else {
+      if (isPickingUp) {
         transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * pickupSpeed);
       }
     }

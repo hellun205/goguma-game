@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Audio;
 using Entity.Item;
 using Entity.Player;
 using Inventory.QuickSlot;
@@ -37,6 +38,15 @@ namespace Inventory {
 
     private QuickSlotController quickSlotCtrl => PlayerController.Instance.quickSlotCtrler;
 
+    [SerializeField]
+    private string animParameter;
+
+    private Animator anim;
+    
+    [Header("sound")]
+    [SerializeField]
+    private AudioData dragSound;
+
     public void SetItem(Item item = null, byte count = 0) {
       this.item = item;
       this.count = count;
@@ -50,17 +60,19 @@ namespace Inventory {
     
 
     private void Awake() {
-
+      anim = GetComponent<Animator>();
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
       if (item == null) return;
       toolTip.gameObject.SetActive(true);
+      anim.SetBool(animParameter , true);
       Refresh();
     }
 
     public void OnPointerExit(PointerEventData eventData) {
       toolTip.gameObject.SetActive(false);
+      anim.SetBool(animParameter , false);
     }
 
     public void OnPointerMove(PointerEventData eventData) {
@@ -84,6 +96,8 @@ namespace Inventory {
       drgImg.gameObject.SetActive(true);
       inven.dragedIdx = index;
       inven.isDragging = true;
+      // anim.SetBool(animParameter , false);
+      AudioManager.Play(dragSound);
     }
 
     public void OnDrag(PointerEventData eventData) {

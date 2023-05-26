@@ -31,16 +31,13 @@ namespace Entity {
     public event EntityManager.entityEvent onGet;
     public event EntityManager.entityEvent onRelease;
 
+    [SerializeField]
     protected BoxCollider2D col;
 
     protected virtual void OnBecameInvisible() {
       if (canDespawn) {
         Release();
       }
-    }
-
-    protected virtual void Awake() {
-      col = GetComponent<BoxCollider2D>();
     }
 
     /// <summary>

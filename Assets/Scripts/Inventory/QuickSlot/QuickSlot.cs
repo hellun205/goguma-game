@@ -1,4 +1,5 @@
-﻿using Entity.Item;
+﻿using Audio;
+using Entity.Item;
 using Entity.Player;
 using TMPro;
 using UnityEngine;
@@ -34,6 +35,10 @@ namespace Inventory.QuickSlot {
     public byte index;
 
     private Image drgImg => InventoryController.Instance.dragImg;
+
+    [Header("Sound")]
+    [SerializeField]
+    private AudioData dragSound;
 
     private void Awake() {
       inven.onItemChanged += InventoryItemChanged;
@@ -76,6 +81,7 @@ namespace Inventory.QuickSlot {
         controller.AssignSlot(index, invIdx.Value);
       }
       controller.CallSlotChanged();
+      AudioManager.Play(dragSound);
     }
 
     public void OnPointerClick(PointerEventData eventData) {
@@ -89,6 +95,7 @@ namespace Inventory.QuickSlot {
       drgImg.gameObject.SetActive(true);
       controller.dragedIdx = index;
       controller.isDragging = true;
+      AudioManager.Play(dragSound);
     }
 
     public void OnDrag(PointerEventData eventData) {

@@ -67,7 +67,7 @@ namespace Entity.Player {
     private Vector2 attackHitPos = Vector2.zero;
     private Vector2 attackHitSize = Vector2.zero;
 
-    protected override void Awake() {
+    private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);

@@ -33,8 +33,7 @@ namespace Entity.Enemy {
 
     private Coroutine hitCoroutine;
 
-    protected override void Awake() {
-      base.Awake();
+    private void Awake() {
       hpBar = GetComponent<HpBar>();
       rigid = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();

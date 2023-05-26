@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using Dialogue;
 using Entity.Player;
 using Entity.UI;
@@ -14,14 +15,14 @@ namespace Entity.Npc {
 
     public Npc npcData;
 
-    public float MessageWidth = 150f;
-
     [InspectorName("Position")]
     public Transform MessageBoxPosition;
 
     private MessageBox messageBox;
 
     private Animator anim;
+
+    private Coroutine messageCoroutine;
 
     public new Vector3 position {
       get => base.position;
@@ -36,22 +37,26 @@ namespace Entity.Npc {
     }
 
     private void Start() {
-      StartMessage();
+      // messageCoroutine = StartCoroutine(ShowMessage(12f));
     }
 
-    private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
+    // private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
+
+    private IEnumerator ShowMessage(float delay) {
+      while (true) {
+        yield return new WaitForSeconds(delay);
+        
+        var msgData = new MessageData(npcData.messages.Random());
+        messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
+        SetTalking(true);
+        messageBox.ShowMessage(msgData, () => SetTalking(false));
+        RefreshPosition();
+      }
+    } 
 
     private void StopMessage() {
-      CancelInvoke(nameof(ShowMessageRandom));
+      if (messageCoroutine is not null) StopCoroutine(messageCoroutine);
       SetTalking(false);
-    }
-
-    private void ShowMessageRandom() {
-      var msgData = new MessageData(npcData.messages.Random());
-      messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
-      SetTalking(true);
-      messageBox.ShowMessage(msgData, () => SetTalking(false));
-      RefreshPosition();
     }
 
     private void RefreshPosition() {
@@ -78,7 +83,7 @@ namespace Entity.Npc {
 
     public override void OnGet() {
       base.OnGet();
-      StartMessage();
+      messageCoroutine = StartCoroutine(ShowMessage(12f));
     }
 
     public override void OnRelease() {
