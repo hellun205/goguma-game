@@ -103,7 +103,7 @@ namespace Entity {
       onGetBefore?.Invoke();
       var entity = pools[type].Get();
       onGetAfter?.Invoke(entity);
-      entity.OnRelease();
+      entity.OnGet();
       return entity;
       
     }

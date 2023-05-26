@@ -91,6 +91,7 @@ namespace Entity.Player {
     }
 
     private void Update() {
+      DebugKey();
       if (curCoolTime > 0) curCoolTime -= Time.deltaTime;
 
       if (curEndTime > 0) curEndTime -= Time.deltaTime;
@@ -125,6 +126,14 @@ namespace Entity.Player {
       };
       if (slotIdx != -1)
         quickSlotCtrler.SetIndex((byte)slotIdx);
+    }
+
+    private void DebugKey() {
+      if (Input.GetKeyDown(KeyCode.F6)) {
+        Entity.SummonEnemy(new Vector2(position.x + 3f, 5f));
+      } else if (Input.GetKeyDown(KeyCode.F7)) {
+        Entity.SummonItem(new Vector2(position.x + 3f, 5f), ItemManager.GetInstance().GetWithCode("appleBuff"), 20);
+      }
     }
 
     private void OnChangedSlot(byte slotIdx) {
@@ -196,14 +205,12 @@ namespace Entity.Player {
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;
       attackHitPos.x *= (int)movement.currentDirection;
-      Debug.Log(attackHitPos.x);
-      Debug.Log(attackHitSize.x);
-      
+
       var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
       foreach (var hitCol in colliders) {
         if (hitCol.CompareTag("Enemy")) {
           var enemy = hitCol.GetComponent<EnemyController>();
-          enemy.Hit(weaponDmg * skill.damagePercent);
+          enemy.Hit(weaponDmg * skill.damagePercent, position.x);
         }
       }
     }
@@ -246,16 +253,10 @@ namespace Entity.Player {
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
 
-      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple", position: new Vector2(2f, 5f));
-
       var testNpc = (NpcController)EntityManager.Get(EntityType.Npc);
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
-      InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
-      var testEnemy = (EnemyController)EntityManager.Get(EntityType.Enemy);
-      testEnemy.position = new Vector3(5f, 0f);
     }
 
     private void CheckNpc() {
@@ -292,11 +293,6 @@ namespace Entity.Player {
       if (left > 0) {
         ThrowItem(data.item, left);
       }
-    }
-
-    private void SummonTestItem() {
-      var testItem = (ItemController)EntityManager.Get(EntityType.Item);
-      testItem.SetItem("appleBuff", count: 32, position: new Vector2(4f, 5f));
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>

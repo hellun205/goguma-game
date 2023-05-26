@@ -1,6 +1,4 @@
-﻿using System;
-using Entity.Item;
-using Entity.UI;
+﻿using Entity.Item;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,7 +6,7 @@ namespace Entity {
   /// <summary>
   /// 기본적인 엔티티의 기능을 가진 컴포넌트 입니다.
   /// </summary>
-  public abstract class Entity : MonoBehaviour {
+  public abstract partial class Entity : MonoBehaviour {
     /// <summary>
     /// 엔티티의 이름을 가져옵니다.
     /// </summary>
