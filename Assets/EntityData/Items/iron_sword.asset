@@ -47,26 +47,26 @@ MonoBehaviour:
     zCoolTime: 0.2
     zKeepComboTime: 0.5
     xSkill:
-    - damagePercent: 0
-      endTime: 0.6
-      animParameter: 0
-      hitBoxPos: {x: 0, y: 0}
-      hitBoxSize: {x: 0, y: 0}
+    - damagePercent: 0.2
+      endTime: 0.58
+      animParameter: 3
+      hitBoxPos: {x: -0.24, y: -0.24}
+      hitBoxSize: {x: 1.46, y: 0.56}
       sound: 
       soundDelay: 0
-    - damagePercent: 0
-      endTime: 0.6
-      animParameter: 0
-      hitBoxPos: {x: 0, y: 0}
-      hitBoxSize: {x: 0, y: 0}
+    - damagePercent: 3.2
+      endTime: 0.37
+      animParameter: 4
+      hitBoxPos: {x: 0.61, y: -0.12}
+      hitBoxSize: {x: 1.47, y: 0.2}
       sound: 
       soundDelay: 0
-    - damagePercent: 0
-      endTime: 0.6
-      animParameter: 0
-      hitBoxPos: {x: 0, y: 0}
-      hitBoxSize: {x: 0, y: 0}
+    - damagePercent: 1.9
+      endTime: 0.4
+      animParameter: 5
+      hitBoxPos: {x: 0.27, y: -0.24}
+      hitBoxSize: {x: 2.14, y: 0.56}
       sound: 
       soundDelay: 0
-    xCoolTime: 0
-    xKeepComboTime: 3
+    xCoolTime: 1
+    xKeepComboTime: 0.8
