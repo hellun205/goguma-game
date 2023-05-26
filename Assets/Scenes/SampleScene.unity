@@ -2703,7 +2703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSrcs: {fileID: 519420028}
-  volume: 0.5
+  volume: 0.252
   clips:
   - name: jump
     audioClip: {fileID: 8300000, guid: 37d208fb6483b4b4588f949fb45bad32, type: 3}

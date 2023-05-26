@@ -1,4 +1,5 @@
 ﻿using System;
+using Audio;
 using UnityEngine;
 
 namespace Entity.Player.Attack {
@@ -16,8 +17,6 @@ namespace Entity.Player.Attack {
     public Vector2 hitBoxSize;
 
     [Header("Sound")]
-    public string sound;
-
-    public float soundDelay = 0f;
+    public AudioData sound;
   }
 }

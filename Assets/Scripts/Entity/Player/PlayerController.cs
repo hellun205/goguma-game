@@ -200,7 +200,7 @@ namespace Entity.Player {
       anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
       // anim.SetTrigger("attack");
-      AudioManager.Play(skill.sound, skill.soundDelay);
+      AudioManager.Play(skill.sound);
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;

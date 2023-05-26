@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Audio;
+using UnityEngine;
 using Window;
 
 namespace Entity.Player {
@@ -34,6 +35,7 @@ namespace Entity.Player {
         jumpPower = status.jumpPower;
         Move(horizontal);
         if (Input.GetKeyDown(KeyCode.Space)) {
+          AudioManager.Play("jump");
           Jump();
         }
       }
