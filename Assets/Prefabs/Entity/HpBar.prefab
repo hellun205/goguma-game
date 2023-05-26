@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1458798496635590242}
   - component: {fileID: 6426890368439725138}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: redSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7655407757550943245}
   - component: {fileID: 5990202183455514519}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: yellowSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 3964647919391617137}
   - component: {fileID: 5139036314839383603}
   - component: {fileID: 7844994838201628527}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5227915920284656811}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 1065881033658597466}
   - component: {fileID: 8074808504689978517}
   - component: {fileID: 6873164438357981122}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7559605400465727542}
   - component: {fileID: 1381983470079571550}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: HpBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   - component: {fileID: 4463401029298950512}
   - component: {fileID: 1586331101679061560}
   - component: {fileID: 5153549841152699991}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -509,7 +509,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 305969003091229720}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}

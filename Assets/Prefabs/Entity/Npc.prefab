@@ -41,7 +41,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1110954321598639396}
   - component: {fileID: 1110954321598639397}
-  - component: {fileID: 7979178463144817817}
   - component: {fileID: 1110954321598639398}
   - component: {fileID: 1110954321598639399}
   - component: {fileID: 1110954321598639392}
@@ -122,22 +121,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &7979178463144817817
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1110954321598639393}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.45289767}
-  serializedVersion: 2
-  m_Radius: 0.05
 --- !u!61 &1110954321598639398
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -148,7 +131,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.00000011920929, y: 0.139014}
