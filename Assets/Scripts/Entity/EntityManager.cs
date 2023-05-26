@@ -70,9 +70,9 @@ namespace Entity {
     /// <param name="data">엔티티 풀 관리에 대한 데이터</param>
     /// <returns>만들어진 객체</returns>
     private Entity OnCreateObject(EntityPoolManageData data) {
-      var obj = Instantiate(data.prefab);
+      var parent = data.isUI ? uiEntityCollection : entityCollection;
+      var obj = Instantiate(data.prefab, parent);
       
-      obj.transform.SetParent(obj is UIEntity ? uiEntityCollection : entityCollection);
       return obj;
     }
 
@@ -103,7 +103,7 @@ namespace Entity {
       onGetBefore?.Invoke();
       var entity = pools[type].Get();
       onGetAfter?.Invoke(entity);
-      entity.OnRelease();
+      entity.OnGet();
       return entity;
       
     }

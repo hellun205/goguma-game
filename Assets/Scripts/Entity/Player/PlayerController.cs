@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using Audio;
+﻿using Audio;
 using Dialogue;
 using Entity.Enemy;
 using Entity.Item;
 using Entity.Npc;
+using Entity.Player.Attack;
 using Inventory;
-using Player.Attack;
+using Inventory.QuickSlot;
 using UnityEngine;
 using Window;
 
@@ -16,10 +15,11 @@ namespace Entity.Player {
     public static PlayerController Instance { get; private set; }
 
     // Components
-    private Rigidbody2D rb;
+    // private Rigidbody2D rb;
     private Animator anim;
     private PlayerMovement movement;
-    private AudioSource audioSrc;
+    // private AudioSource audioSrc;
+    private HpBar hpBar;
 
     // Inspector Settings
     [SerializeField]
@@ -37,145 +37,226 @@ namespace Entity.Player {
     [SerializeField]
     private float pickupDistance;
 
-    [SerializeField]
-    private Weapon[] weapons;
-
-    [SerializeField]
-    private Weapons currentWeapon = 0;
-
-    [SerializeField]
-    private SkillType currentAttack = 0;
 
     [SerializeField]
     private Sprite avatar;
 
+    public QuickSlotController quickSlotCtrler;
+
+    [Header("Hand")]
+    [SerializeField]
+    private SpriteRenderer[] hands;
+
     // Variables
-    private bool hasWeapon => anim.GetBool("hasWeapon");
-    private float curCoolTime;
-    private float curEndTime;
     private float distanceY;
     public Dialogue.Speaker speakerData => new Dialogue.Speaker(entityName, avatar, AvatarPosition.Left);
     public bool isInputCooldown => movement.isInputCooldown;
     public PlayerStatus status;
     public Inventory.Inventory inventory;
 
+    // Attack Vars
+    private float curCoolTime;
+    private float curEndTime;
+    private float curKeepTime;
+    private byte combo;
+    private KeyCode skillType;
+    private float tempCoolTime;
+    private bool cooled;
+    private bool isEnd;
+    
+    private Vector2 attackHitPos = Vector2.zero;
+    private Vector2 attackHitSize = Vector2.zero;
+
     protected override void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
       DontDestroyOnLoad(gameObject);
 
-      rb = GetComponent<Rigidbody2D>();
+      // rb = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
       movement = GetComponent<PlayerMovement>();
-      audioSrc = GetComponent<AudioSource>();
+      // audioSrc = GetComponent<AudioSource>();
       col = GetComponent<BoxCollider2D>();
+      hpBar = GetComponent<HpBar>();
+
+      quickSlotCtrler.onSlotChanged += OnChangedSlot;
 
       distanceY = col.bounds.extents.y - 0.1f;
       inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
-      InventoryController.Instance.data = inventory;
+      InventoryController.Instance.inventory = inventory;
       canDespawn = false;
-    }
+      quickSlotCtrler.SetIndex(0);
 
-
-    private void OnDestroy() {
-      if (Instance == this) Instance = null;
+      DisableAllHand();
     }
 
     private void Update() {
+      DebugKey();
+      if (curCoolTime > 0) curCoolTime -= Time.deltaTime;
+
+      if (curEndTime > 0) curEndTime -= Time.deltaTime;
+      else {
+        if (isEnd) {
+          curKeepTime = 0;
+          combo = 0;
+          isEnd = false;
+        }
+
+        movement.canFlip = true;
+      }
+
+      if (curKeepTime > 0) curKeepTime -= Time.deltaTime;
+      else {
+        anim.SetBool("isAttack", false);
+        if (!cooled) {
+          cooled = true;
+          curCoolTime = tempCoolTime;
+        }
+      }
+
       if (movement.isInputCooldown || InputBoxWindow.isEnabled) return;
 
-      TryAttack();
+      TryInteract();
       CheckNpc();
       CheckItems();
+
+      if (!Input.anyKeyDown) return;
+      int slotIdx = Input.inputString switch {
+        "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
+      };
+      if (slotIdx != -1)
+        quickSlotCtrler.SetIndex((byte)slotIdx);
     }
 
-    private void TryAttack() {
-      if (!hasWeapon || DialogueController.Instance.isEnabled ) return;
+    private void DebugKey() {
+      if (Input.GetKeyDown(KeyCode.F6)) {
+        Entity.SummonEnemy(new Vector2(position.x + 3f, 5f));
+      } else if (Input.GetKeyDown(KeyCode.F7)) {
+        Entity.SummonItem(new Vector2(position.x + 3f, 5f), ItemManager.GetInstance().GetWithCode("appleBuff"), 20);
+      }
+    }
 
-      if (curCoolTime <= 0) {
-        foreach (var key in attackKeys) {
-          if (Input.GetKey(key)) {
-            Attack(weapons.Get(currentWeapon), key.GetSkill());
-            break;
-          }
+    private void OnChangedSlot(byte slotIdx) {
+      var item = quickSlotCtrler.GetItem(slotIdx);
+      DisableAllHand();
+      switch (item) {
+        case null:
+          anim.SetInteger("weaponType", 0);
+          return;
+
+        case WeaponItem weapon: {
+          var hand = hands[(int)weapon.weaponType];
+          hand.gameObject.SetActive(true);
+          hand.sprite = weapon.weaponSprite;
+          anim.SetInteger("weaponType", (int)weapon.weaponType);
+          break;
+        }
+
+        default: {
+          var hand = hands[0];
+          hand.gameObject.SetActive(true);
+          hand.sprite = item.sprite;
+          anim.SetInteger("weaponType", 0);
+          break;
+        }
+      }
+    }
+
+    private void DisableAllHand() {
+      foreach (var hand in hands) {
+        hand.gameObject.SetActive(false);
+      }
+    }
+
+    private void Attack(Skill skill, KeyCode key) {
+      var comboSkill = skill.GetComboSkill(key);
+
+      if (!(curCoolTime <= 0) || !(curEndTime <= 0)) return;
+      cooled = false;
+      if (skillType == key && curKeepTime > 0) {
+        combo++;
+        if (combo < comboSkill.skills.Length) {
+          var curSkill = comboSkill.skills[combo];
+          StartAttack(skill.damage, curSkill, comboSkill.keepComboTime, comboSkill.coolTime);
+        }
+
+        if (combo + 1 >= comboSkill.skills.Length) {
+          isEnd = true;
         }
       } else {
-        curCoolTime -= Time.deltaTime;
-      }
-
-      if (curEndTime <= 0) {
-        EndAttack();
-      } else {
-        curEndTime -= Time.deltaTime;
+        skillType = key;
+        StartAttack(skill.damage, comboSkill.skills[0], comboSkill.keepComboTime, comboSkill.coolTime);
+        combo = 0;
       }
     }
 
-    private void Attack(Weapon weapon, SkillType atkType) {
-      var attack = weapon.Attacks.Get(atkType);
+    private void StartAttack(float weaponDmg, ComboSkill skill, float keepComboTime, float coolTime) {
+      curKeepTime = keepComboTime;
+      tempCoolTime = coolTime;
+      curEndTime = skill.endTime;
 
+      // Debug.Log(skill.animParameter);
       movement.canFlip = false;
-      currentAttack = atkType;
-      anim.SetInteger("weaponType", (int) weapon.type);
-      anim.SetInteger("attackType", (int) atkType);
+      anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
-      anim.SetTrigger("attack");
-      curCoolTime = attack.coolTime;
-      curEndTime = attack.endTime;
+      // anim.SetTrigger("attack");
+      AudioManager.Play(skill.sound);
 
-      // audioSrc.clip = attack.sound;
-      // audioSrc.PlayDelayed(attack.soundDelay);
-      // AudioManager.Play(attack.sound, attack.soundDelay);
-      AudioManager.Play(attack.sound, attack.soundDelay);
+      attackHitPos = skill.hitBoxPos;
+      attackHitSize = skill.hitBoxSize;
+      attackHitPos.x *= (int)movement.currentDirection;
 
-      var colliders = Physics2D.OverlapBoxAll(attack.hitBoxPos.position, attack.hitBoxSize, 0);
-      foreach (var col in colliders) {
-        if (col.CompareTag("Enemy")) {
-          var enemy = col.GetComponent<EnemyController>();
-          enemy.Hit(weapon.damage * attack.damagePercent);
+      var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
+      foreach (var hitCol in colliders) {
+        if (hitCol.CompareTag("Enemy")) {
+          var enemy = hitCol.GetComponent<EnemyController>();
+          enemy.Hit(weaponDmg * skill.damagePercent, position.x);
         }
       }
-    }
-
-    private void EndAttack() {
-      anim.SetBool("isAttack", false);
-      movement.canFlip = true;
     }
 
     private void OnDrawGizmos() {
-      // Attack HitBox Gizmos
-      // if (isStarted) {
-      //   var attack = weapons.Get(currentWeapon).Attacks.Get(currentAttack);
-      //   Gizmos.color = Color.red;
-      //   Gizmos.DrawWireCube(attack.hitBoxPos.position, attack.hitBoxSize);
-      // }
-      // 
-      // Check Npc Ray Gizmos
-      // var pos = transform.position;
-      // Gizmos.color = Color.yellow;
-      // Gizmos.DrawRay(new Vector2(pos.x, pos.y - distanceY), (movement.wasLeft ? Vector2.right : Vector2.left) * checkNpcDistance);
+      Gizmos.DrawWireCube(transform.position + (Vector3)attackHitPos, attackHitSize);
     }
 
-    public bool ChangeWeapon(Weapons type) {
-      if (!weapons.Select(weapon => weapon.type).Contains(type)) return false;
+    private void TryInteract() {
+      foreach (var key in attackKeys) {
+        if (Input.GetKeyDown(key)) {
+          var item = quickSlotCtrler.GetItem();
 
-      currentWeapon = type;
-      anim.SetInteger("weaponType", (int) type);
-      anim.SetBool("hasWeapon", type != Weapons.None);
+          switch (item) {
+            case null:
+              return;
 
-      return true;
+            case WeaponItem weapon: {
+              Attack(weapon.skill, key);
+              break;
+            }
+
+            case UseableItem useable: {
+              useable.OnQuickClick();
+              break;
+            }
+            // default: {
+            //   var hand = hands[0];
+            //   
+            //   break;
+            // }
+          }
+        }
+      }
     }
 
     private void Start() {
-      ChangeWeapon(Weapons.Sword);
       GetComponent<NameTag>().OnGetEntity(this);
-      var testItem = (ItemController) EntityManager.Get(EntityType.Item);
-      testItem.SetItem("apple", position: new Vector2(2f, 5f));
+      hpBar.OnGetEntity(this);
+      hpBar.maxHp = status.maxHp;
+      hpBar.curHp = status.hp;
 
-      var testNpc = (NpcController) EntityManager.Get(EntityType.Npc);
+      var testNpc = (NpcController)EntityManager.Get(EntityType.Npc);
       testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
 
-      InvokeRepeating(nameof(SummonTestItem), 0f, 3f);
-      inventory.GainItem(ItemManager.Instance.GetWithCode("apple"));
+      inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
     }
 
     private void CheckNpc() {
@@ -183,7 +264,7 @@ namespace Entity.Player {
 
       var pos = transform.position;
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY),
-        movement.direction, checkNpcDistance, layerMask);
+        movement.dirVector, checkNpcDistance, layerMask);
 
       if (hit && hit.transform.CompareTag("Npc")) {
         var npc = hit.transform.GetComponent<NpcController>();
@@ -194,7 +275,7 @@ namespace Entity.Player {
 
     private void CheckItems() {
       var pos = transform.position;
-      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.direction, pickupDistance, layerMask);
+      var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.dirVector, pickupDistance, layerMask);
       if (hit && hit.transform.CompareTag("Item")) {
         var item = hit.transform.GetComponent<ItemController>();
         if (!item.isPickingUp && !item.isThrowing)
@@ -205,7 +286,7 @@ namespace Entity.Player {
     public void EnableInputCooldown() => movement.EnableInputCooldown();
 
     private void OnPickUpItem((Item.Item item, byte count) data) {
-      Debug.Log($"get: {data.item._name}, count: {data.count}");
+      // Debug.Log($"get: {data.item._name}, count: {data.count}");
       AudioManager.Play("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
@@ -214,12 +295,7 @@ namespace Entity.Player {
       }
     }
 
-    private void SummonTestItem() {
-      var testItem = (ItemController) EntityManager.Get(EntityType.Item);
-      testItem.SetItem("appleBuff", count: 32, position: new Vector2(4f, 5f));
-    }
-
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte) (movement.direction == Vector2.left ? -1 : 1));
+      base.ThrowItem(item, count, (sbyte)(movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }

@@ -1,9 +1,7 @@
-﻿using UnityEngine.EventSystems;
-
-namespace Entity.Item {
+﻿namespace Entity.Item {
   public interface IInteractable {
-    public abstract void OnLeftClick();
-    public abstract void OnMiddleClick();
-    public abstract void OnRightClick();
+    public void OnRightClick();
+
+    public void OnQuickClick();
   }
 }

@@ -1,4 +1,5 @@
-﻿using Entity.Item.Useable;
+﻿using Audio;
+using Entity.Item.Useable;
 using Entity.Player;
 using UnityEngine;
 using Utils;
@@ -14,14 +15,12 @@ namespace Entity.Item {
     
     public abstract UseableType u_type { get; }
 
+    public AudioData audioWhenUse;
+
     public virtual void Use() {
       onUse?.Invoke(this);
     }
-
-    public virtual void OnLeftClick() {
-    }
-    public virtual void OnMiddleClick() {
-    }
+    
     public virtual void OnRightClick() {
       WindowManager.Ask("아이템 사용",
         $"{nameColor.GetTag(_name)}(을)를 사용하시겠습니까?",
@@ -31,8 +30,12 @@ namespace Entity.Item {
         });
     }
 
+    public void OnQuickClick() {
+      Use();
+    }
+
     protected void Consume(ushort count = 1) {
-      Debug.Log(PlayerController.Instance.inventory.LoseItem(this, count));
+      PlayerController.Instance.inventory.LoseItem(this, count);
     }
   }
 }

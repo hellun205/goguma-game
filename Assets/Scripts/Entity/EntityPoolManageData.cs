@@ -20,5 +20,7 @@ namespace Entity {
     /// 풀의 최대 개수를 가져옵니다.
     /// </summary>
     public byte maxCount;
+
+    public bool isUI = false;
   }
 }

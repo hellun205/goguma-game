@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Pool;
@@ -8,60 +9,44 @@ namespace Window {
   public class WindowManager : MonoBehaviour {
     public static WindowManager Instance { get; private set; }
 
-    private IObjectPool<MessageBoxWindow> msgBoxPool;
-    private IObjectPool<InputBoxWindow> inputBoxPool;
-
-    [FormerlySerializedAs("prefab")]
-    [SerializeField]
-    private MessageBoxWindow msgbox;
-
-    [SerializeField]
-    private InputBoxWindow inputBox;
+    public Dictionary<WindowType, IObjectPool<BaseWindow>> pools;
 
     [SerializeField]
     private RectTransform container;
 
+    [SerializeField]
+    private BaseWindow[] prefabs;
+
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(this);
-
-      msgBoxPool = new ObjectPool<MessageBoxWindow>(
-        () => {
-          var window = Instantiate(msgbox, container);
-          window.pool = msgBoxPool;
-          return window;
-        }, window => window.gameObject.SetActive(true),
-        window => {
-          window.Set();
-          window.gameObject.SetActive(false);
-        },
-        window => Destroy(window.gameObject));
-
-      inputBoxPool = new ObjectPool<InputBoxWindow>(
-        () => {
-          var window = Instantiate(inputBox, container);
-          window.pool = inputBoxPool;
-          return window;
-        }, window => window.gameObject.SetActive(true),
-        window => {
-          window.Set();
-          window.gameObject.SetActive(false);
-        },
-        window => Destroy(window.gameObject));
+      pools = new Dictionary<WindowType, IObjectPool<BaseWindow>>();
+      foreach (WindowType type in Enum.GetValues(typeof(WindowType))) {
+        pools.Add(type, new ObjectPool<BaseWindow>(
+          () => Instantiate(prefabs[(int) type], container),
+          window => window.gameObject.SetActive(true),
+          window => {
+            window.SetDefault();
+            window.gameObject.SetActive(false);
+          },
+          window => Destroy(window.gameObject)));
+      }
     }
 
     public void ShowMsgBox(string title, string text, string yesText = "예", string noText = "아니요",
                            UnityAction<bool> callback = null) {
-      var window = msgBoxPool.Get();
-      window.title = title;
-      window.Set(text, yesText, noText, callback);
+      var window = pools[WindowType.MessageBox].Get();
+      if (window is not MessageBoxWindow msgBox) return;
+      msgBox.title = title;
+      msgBox.Set(text, yesText, noText, callback);
     }
 
     public void ShowInputBox(string title, string text, UnityAction<string> callback, string defValue = "",
                              string confirm = "확인", string cancel = "취소") {
-      var window = inputBoxPool.Get();
-      window.title = title;
-      window.Set(text, confirm, cancel, defValue, callback);
+      var window = pools[WindowType.InputBox].Get();
+      if (window is not InputBoxWindow inputBox) return;
+      inputBox.title = title;
+      inputBox.Set(text, confirm, cancel, defValue, callback);
       InputBoxWindow.isEnabled = true;
     }
 
@@ -75,5 +60,28 @@ namespace Window {
     public static void Read(string title, UnityAction<string> callback, string text = "", string defValue = "",
                             string confirm = "확인", string cancel = "취소")
       => Instance.ShowInputBox(title, text, callback, defValue, confirm, cancel);
+
+    public static void ReadInt(string title, UnityAction<int> callback, string text = "", int defValue = 0,
+                               string confirm = "확인", string cancel = "취소", 
+                               int minValue = Int32.MinValue, int maxValue = Int32.MaxValue) {
+      string @return = "";
+      int returnInt;
+
+      void ShowInputBox() {
+        Instance.ShowInputBox(title, text, str => {
+          if (Int32.TryParse(str, out returnInt)) {
+            if (returnInt > maxValue || returnInt < minValue) {
+              Show(title, $"{minValue}~{maxValue} 사이의 값을 입력하세요.", callBack: ShowInputBox);
+            } else {
+              callback.Invoke(returnInt);
+            }
+          } else {
+            Show(title, "정수를 입력하세요", callBack: ShowInputBox);
+          }
+        }, defValue.ToString(), confirm, cancel);
+      }
+
+      ShowInputBox();
+    }
   }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Inventory {
   public class InventoryController : MonoBehaviour {
@@ -11,14 +13,14 @@ namespace Inventory {
 
     public bool activeInventory { get; private set; } = false;
 
-    private Inventory _data;
+    private Inventory _inventory;
 
-    public Inventory data {
-      get => _data;
+    public Inventory inventory {
+      get => _inventory;
       set {
-        _data = value;
+        _inventory = value;
         SetCount(value.slotCount);
-        _data.onItemChanged += Refresh;
+        _inventory.onItemChanged += Refresh;
       }
     }
 
@@ -39,6 +41,15 @@ namespace Inventory {
     private List<Slot> slots = new List<Slot>();
 
     public const byte horizontalCount = 4;
+
+    public Image dragImg;
+
+    [HideInInspector]
+    public byte dragedIdx;
+
+    [FormerlySerializedAs("isDraging")]
+    [HideInInspector]
+    public bool isDragging;
 
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;
@@ -70,6 +81,7 @@ namespace Inventory {
 
       for (var i = 0; i < slotCount; i++) {
         var slot = Instantiate(slotPrefab, content);
+        slot.index = (byte)i;
         slots.Add(slot);
       }
     }
@@ -84,8 +96,12 @@ namespace Inventory {
     }
 
     public void Refresh() {
-      for (var i = 0; i < data.items.Count; i++) {
-        slots[i].SetItem(data.items[i].item, data.items[i].count);
+      for (var i = 0; i < inventory.items.Count; i++) {
+        var item = inventory.items[i];
+        if (item.HasValue)
+          slots[i].SetItem(item.Value.item, item.Value.count);
+        else
+          slots[i].SetItem();
       }
     }
   }

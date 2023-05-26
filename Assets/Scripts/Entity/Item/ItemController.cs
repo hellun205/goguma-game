@@ -72,7 +72,7 @@ namespace Entity.Item {
       }
     }
 
-    public void SetItem(Item item, byte count = 1, Vector3? position = null) {
+    public void SetItem(Item item, byte count = 1, Vector2? position = null) {
       this.data = (item, count);
       if (item == null) {
         entityName = string.Empty;
@@ -94,7 +94,7 @@ namespace Entity.Item {
         transform.position = position.Value;
     }
 
-    public void SetItem(string uniqueName, byte count = 1, Vector3? position = null) =>
+    public void SetItem(string uniqueName, byte count = 1, Vector2? position = null) =>
       SetItem(ItemManager.Instance.GetWithCode(uniqueName), count, position);
 
 

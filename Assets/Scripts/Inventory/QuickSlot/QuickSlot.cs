@@ -1,0 +1,103 @@
+﻿using Entity.Item;
+using Entity.Player;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using Image = UnityEngine.UI.Image;
+
+namespace Inventory.QuickSlot {
+  public class QuickSlot : MonoBehaviour, IDropHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler,
+                           IEndDragHandler {
+    public Inventory inven => PlayerController.Instance.inventory;
+
+    public byte? invenIndex = null;
+
+    [HideInInspector]
+    public byte count = 1;
+
+    [Header("UI Object")]
+    [SerializeField]
+    private Image slotImg;
+
+    [SerializeField]
+    private Image iconImg;
+
+    [SerializeField]
+    private TextMeshProUGUI countTMP;
+
+    public RectTransform rectTransform { get; private set; }
+
+    [HideInInspector]
+    public QuickSlotController controller;
+
+    [HideInInspector]
+    public byte index;
+
+    private Image drgImg => InventoryController.Instance.dragImg;
+
+    private void Awake() {
+      inven.onItemChanged += InventoryItemChanged;
+      rectTransform = GetComponent<RectTransform>();
+    }
+
+    private void InventoryItemChanged() {
+      if (invenIndex.HasValue) {
+        var item = inven[invenIndex.Value];
+        iconImg.sprite = item.item.sprite8x ;
+        countTMP.text = item.count == 1 ? "" : item.count.ToString();
+      } else {
+        iconImg.sprite = ItemManager.GetInstance().noneSprite;
+        countTMP.text = "";
+      }
+      
+      controller.CallSlotChanged();;
+    }
+
+    public void SetIndex(byte? index = null) {
+      invenIndex = index;
+      InventoryItemChanged();
+    }
+
+    public void SetEnabled(bool enable) {
+      var color = slotImg.color;
+      color.a = enable ? 1f : 0.5f;
+      slotImg.color = color;
+      iconImg.color = color;
+    }
+
+    public void OnDrop(PointerEventData eventData) {
+      var invenCtrl = InventoryController.Instance;
+      if (invenCtrl.isDragging) {
+        var draggedIdx = invenCtrl.dragedIdx;
+        controller.AssignSlot(index, draggedIdx);
+      } else if (controller.isDragging) {
+        var invIdx = controller.slots[controller.dragedIdx].invenIndex;
+        controller.AssignSlot(controller.dragedIdx, null);
+        controller.AssignSlot(index, invIdx.Value);
+      }
+      controller.CallSlotChanged();
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+      if (eventData.button == PointerEventData.InputButton.Left) {
+        controller.SetIndex(index);
+      }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) {
+      drgImg.sprite = iconImg.sprite;
+      drgImg.gameObject.SetActive(true);
+      controller.dragedIdx = index;
+      controller.isDragging = true;
+    }
+
+    public void OnDrag(PointerEventData eventData) {
+      drgImg.transform.position = eventData.position;
+    }
+
+    public void OnEndDrag(PointerEventData eventData) {
+      drgImg.gameObject.SetActive(false);
+      controller.isDragging = false;
+    }
+  }
+}

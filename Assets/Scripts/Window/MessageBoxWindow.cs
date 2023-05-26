@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 namespace Window {
   public class MessageBoxWindow : BaseWindow {
+    public override WindowType type => WindowType.MessageBox;
+
     [Header("UI Object - Message Box")]
     [SerializeField]
     private TextMeshProUGUI textTMP;
@@ -33,8 +35,6 @@ namespace Window {
     public string falseBtnText = "아니오";
 
     public UnityEvent<bool> onBtnClick;
-    
-    public IObjectPool<MessageBoxWindow> pool { private get; set; }
 
     protected override void OnValidate() {
       base.OnValidate();
@@ -42,6 +42,8 @@ namespace Window {
       trueBtnTMP.text = trueBtnText;
       falseBtnTMP.text = falseBtnText;
     }
+
+    public override void SetDefault() => Set();
 
     protected override void Awake() {
       base.Awake();
@@ -63,8 +65,6 @@ namespace Window {
       OnValidate();
     }
 
-    protected override void OnCloseButtonClick() => pool.Release(this);
-    
     private void Update() {
       if (Input.GetKeyDown(KeyCode.Return)) {
         onBtnClick?.Invoke(true);

@@ -29,5 +29,10 @@
     /// 아이템
     /// </summary>
     Item,
+    
+    /// <summary>
+    /// 체력 바
+    /// </summary>
+    HpBar,
   }
 }

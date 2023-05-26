@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 namespace Window {
   public class InputBoxWindow : BaseWindow {
+    public override WindowType type => WindowType.InputBox;
+    
     [Header("UI Object - Input Box")]
     [SerializeField]
     private TextMeshProUGUI textTMP;
@@ -45,8 +47,6 @@ namespace Window {
 
     [CanBeNull]
     public UnityAction<string> onSubmit;
-    
-    public IObjectPool<InputBoxWindow> pool { private get; set; }
 
     protected override void OnValidate() {
       base.OnValidate();
@@ -56,6 +56,8 @@ namespace Window {
       inputField.text = inputText;
       placeholderTMP.text = placeholder;
     }
+
+    public override void SetDefault() => Set();
 
     protected override void Awake() {
       base.Awake();
@@ -75,15 +77,15 @@ namespace Window {
       OnValidate();
     }
 
-    protected override void OnCloseButtonClick() {
-      isEnabled = false;
-      pool.Release(this);
-    }
-    
     private void Update() {
-      if (Input.GetKeyDown(KeyCode.Return)) {
-        onSubmit?.Invoke(inputField.text);
-      }
+      if (!Input.GetKeyDown(KeyCode.Return)) return;
+      onSubmit?.Invoke(inputField.text);
+      OnCloseButtonClick();
+    }
+
+    protected override void OnCloseButtonClick() {
+      base.OnCloseButtonClick();
+      isEnabled = false;
     }
   }
 }

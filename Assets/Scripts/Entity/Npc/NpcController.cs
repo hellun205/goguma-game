@@ -36,7 +36,7 @@ namespace Entity.Npc {
     }
 
     private void Start() {
-      // StartMessage();
+      StartMessage();
     }
 
     private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
@@ -55,7 +55,7 @@ namespace Entity.Npc {
     }
 
     private void RefreshPosition() {
-      if (messageBox.position != MessageBoxPosition.position)
+      if (messageBox.position != (Vector2)MessageBoxPosition.position)
         messageBox.position = MessageBoxPosition.position;
     }
 
