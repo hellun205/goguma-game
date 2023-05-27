@@ -7,11 +7,13 @@ namespace Entity.Player.Attack  {
     public float damage;
     
     [Header("Z Skill")]
+    public Sprite zSprite;
     public ComboSkill[] zSkill;
     public float zCoolTime;
     public float zKeepComboTime = 2f;
     
     [Header("X Skill")]
+    public Sprite xSprite;
     public ComboSkill[] xSkill;
     public float xCoolTime;
     public float xKeepComboTime = 2f;

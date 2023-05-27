@@ -6,6 +6,7 @@ using Entity.Npc;
 using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
+using UI;
 using UnityEngine;
 using Window;
 
@@ -17,7 +18,9 @@ namespace Entity.Player {
     // Components
     // private Rigidbody2D rb;
     private Animator anim;
+
     private PlayerMovement movement;
+
     // private AudioSource audioSrc;
     private HpBar hpBar;
 
@@ -42,6 +45,7 @@ namespace Entity.Player {
     private Sprite avatar;
 
     public QuickSlotController quickSlotCtrler;
+    public SkillPanel skillPanel;
 
     [Header("Hand")]
     [SerializeField]
@@ -55,6 +59,7 @@ namespace Entity.Player {
     public Inventory.Inventory inventory;
 
     // Attack Vars
+    private bool canCooldown = false;
     private float curCoolTime;
     private float curEndTime;
     private float curKeepTime;
@@ -63,7 +68,7 @@ namespace Entity.Player {
     private float tempCoolTime;
     private bool cooled;
     private bool isEnd;
-    
+
     private Vector2 attackHitPos = Vector2.zero;
     private Vector2 attackHitSize = Vector2.zero;
 
@@ -71,6 +76,8 @@ namespace Entity.Player {
     private SpriteRenderer effect;
 
     private static readonly int WeaponType = Animator.StringToHash("weaponType");
+    private bool isAttacking;
+    private const float useCoolTime = 0.4f;
 
     private void Awake() {
       if (Instance == null) Instance = this;
@@ -93,11 +100,20 @@ namespace Entity.Player {
       quickSlotCtrler.SetIndex(0);
 
       DisableAllHand();
+
+      skillPanel.SetCooldown(1f ,1f);
+      skillPanel.SetActive(0f);
     }
 
     private void Update() {
       DebugKey();
-      if (curCoolTime > 0) curCoolTime -= Time.deltaTime;
+
+      skillPanel.SetCooldown(curCoolTime);
+      skillPanel.SetActive(curEndTime);
+
+      if (canCooldown && curCoolTime > 0) curCoolTime -= Time.deltaTime;
+      
+      if (isAttacking && curCoolTime <= 0) isAttacking = false;
 
       if (curEndTime > 0) curEndTime -= Time.deltaTime;
       else {
@@ -129,8 +145,10 @@ namespace Entity.Player {
       int slotIdx = Input.inputString switch {
         "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
       };
-      if (slotIdx != -1)
-        quickSlotCtrler.SetIndex((byte)slotIdx);
+      if (slotIdx != -1) {
+        quickSlotCtrler.SetIndex((byte) slotIdx);
+        AudioManager.Play("click");
+      }
     }
 
     private void DebugKey() {
@@ -142,16 +160,35 @@ namespace Entity.Player {
     }
 
     private void OnChangedSlot(byte slotIdx) {
+      if (!isAttacking && quickSlotCtrler.previousIndex != slotIdx) {
+        const float changeCoolTime = 0.2f;
+        curCoolTime = changeCoolTime;
+        skillPanel.SetCooldown(changeCoolTime, changeCoolTime);
+      }
+      
       var item = quickSlotCtrler.GetItem(slotIdx);
       DisableAllHand();
+      skillPanel.z.img.sprite = skillPanel.noneSprite;
+      skillPanel.x.img.sprite = skillPanel.noneSprite;
       anim.SetInteger(WeaponType, 0);
-      if (item is null) return;
+      canCooldown = item is not null;
+      if (!canCooldown) return; // item is null => return
       SpriteRenderer hand;
       switch (item) {
         case WeaponItem weapon: {
-          hand = hands[(int)weapon.weaponType];
+          hand = hands[(int) weapon.weaponType];
           hand.sprite = weapon.weaponSprite;
-          anim.SetInteger(WeaponType, (int)weapon.weaponType);
+          anim.SetInteger(WeaponType, (int) weapon.weaponType);
+          skillPanel.z.img.sprite = weapon.skill.zSprite;
+          skillPanel.x.img.sprite = weapon.skill.xSprite;
+          break;
+        }
+
+        case UseableItem useable: {
+          hand = hands[0];
+          hand.sprite = item.sprite;
+          skillPanel.z.img.sprite = item.sprite8x;
+          skillPanel.x.img.sprite = item.sprite8x;
           break;
         }
 
@@ -196,9 +233,12 @@ namespace Entity.Player {
     }
 
     private void StartAttack(float weaponDmg, ComboSkill skill, float keepComboTime, float coolTime) {
+      isAttacking = true;
       curKeepTime = keepComboTime;
       tempCoolTime = coolTime;
       curEndTime = skill.endTime;
+      skillPanel.SetActive(skill.endTime, skill.endTime);
+      skillPanel.SetCooldown(0f, coolTime);
 
       // Debug.Log(skill.animParameter);
       movement.canFlip = false;
@@ -209,7 +249,7 @@ namespace Entity.Player {
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;
-      attackHitPos.x *= (int)movement.currentDirection;
+      attackHitPos.x *= (int) movement.currentDirection;
 
       var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
       foreach (var hitCol in colliders) {
@@ -221,7 +261,7 @@ namespace Entity.Player {
     }
 
     private void OnDrawGizmos() {
-      Gizmos.DrawWireCube(transform.position + (Vector3)attackHitPos, attackHitSize);
+      Gizmos.DrawWireCube(transform.position + (Vector3) attackHitPos, attackHitSize);
     }
 
     private void TryInteract() {
@@ -239,7 +279,12 @@ namespace Entity.Player {
             }
 
             case UseableItem useable: {
-              useable.OnQuickClick();
+              if (curCoolTime <= 0) {
+                useable.OnQuickClick();
+                curCoolTime = useCoolTime;
+                skillPanel.SetCooldown(useCoolTime, useCoolTime);
+              }
+
               break;
             }
             // default: {
@@ -300,6 +345,6 @@ namespace Entity.Player {
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte)(movement.currentDirection == Direction.Left ? -1 : 1));
+      base.ThrowItem(item, count, (sbyte) (movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }

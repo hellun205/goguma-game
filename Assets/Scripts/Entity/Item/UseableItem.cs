@@ -1,7 +1,6 @@
 ﻿using Audio;
 using Entity.Item.Useable;
 using Entity.Player;
-using UnityEngine;
 using Utils;
 using Window;
 
@@ -17,7 +16,10 @@ namespace Entity.Item {
 
     public AudioData audioWhenUse;
 
+    public float cooldown = 0f;
+
     public virtual void Use() {
+      AudioManager.Play(audioWhenUse);
       onUse?.Invoke(this);
     }
     

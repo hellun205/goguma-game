@@ -94,6 +94,7 @@ namespace Inventory {
     public void OnBeginDrag(PointerEventData eventData) {
       if (item is null) return;
       drgImg.sprite = item.sprite8x;
+      drgImg.color = item.spriteColor;
       drgImg.gameObject.SetActive(true);
       inven.dragedIdx = index;
       inven.isDragging = true;

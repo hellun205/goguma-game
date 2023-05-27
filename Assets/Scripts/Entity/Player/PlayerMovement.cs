@@ -33,6 +33,7 @@ namespace Entity.Player {
         var horizontal = Input.GetAxisRaw("Horizontal");
         moveSpeed = status.moveSpeed;
         jumpPower = status.jumpPower;
+        animator.SetFloat("moveSpeed", Mathf.Max(1f, status.moveSpeed));
         Move(horizontal);
         if (Input.GetKeyDown(KeyCode.Space)) {
           AudioManager.Play("jump");

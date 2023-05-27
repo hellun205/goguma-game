@@ -1,4 +1,5 @@
-﻿using Audio;
+﻿using System.Linq;
+using Audio;
 using Entity.Item;
 using Entity.Player;
 using TMPro;
@@ -48,9 +49,14 @@ namespace Inventory.QuickSlot {
     private void InventoryItemChanged() {
       if (invenIndex.HasValue) {
         var item = inven[invenIndex.Value];
-        iconImg.sprite = item.item.sprite8x;
-        iconImg.color = item.item.spriteColor;
-        countTMP.text = item.count == 1 ? "" : item.count.ToString();
+        if (item is null) {
+          iconImg.sprite = ItemManager.GetInstance().noneSprite;
+          countTMP.text = "";
+        } else {
+          iconImg.sprite = item.Value.item.sprite8x;
+          iconImg.color = item.Value.item.spriteColor;
+          countTMP.text = item.Value.count == 1 ? "" : item.Value.count.ToString();
+        }
       } else {
         iconImg.sprite = ItemManager.GetInstance().noneSprite;
         countTMP.text = "";
@@ -75,9 +81,13 @@ namespace Inventory.QuickSlot {
       var invenCtrl = InventoryController.Instance;
       if (invenCtrl.isDragging) {
         var draggedIdx = invenCtrl.dragedIdx;
+        foreach (var slot in controller.slots.Where(slot => slot.invenIndex == draggedIdx)) {
+          controller.AssignSlot(slot.index, null);
+        }
         controller.AssignSlot(index, draggedIdx);
       } else if (controller.isDragging) {
         var invIdx = controller.slots[controller.dragedIdx].invenIndex;
+        if (invIdx is null) return;
         controller.AssignSlot(controller.dragedIdx, null);
         controller.AssignSlot(index, invIdx.Value);
       }

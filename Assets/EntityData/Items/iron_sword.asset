@@ -17,12 +17,13 @@ MonoBehaviour:
   descriptions: "\uC77C\uBC18\uC801\uC778 \uAC80\uC774\uB2E4."
   sprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
   sprite8x: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
-  spriteColor: {r: 0.8301887, g: 0.3250267, b: 0.3250267, a: 1}
-  effectColor: {r: 1, g: 0, b: 0, a: 1}
+  spriteColor: {r: 1, g: 1, b: 1, a: 1}
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
   weaponType: 1
   weaponSprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
   skill:
-    damage: 3
+    damage: 5
+    zSprite: {fileID: 21300000, guid: a6fb91b57404bcc4087b2457eee86fc7, type: 3}
     zSkill:
     - damagePercent: 0.9
       endTime: 0.11
@@ -59,6 +60,7 @@ MonoBehaviour:
         loop: 0
     zCoolTime: 0.2
     zKeepComboTime: 0.5
+    xSprite: {fileID: 21300000, guid: a1e804d64827fb44e9c5849ac46ff341, type: 3}
     xSkill:
     - damagePercent: 0.2
       endTime: 0.58
