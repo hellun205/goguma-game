@@ -92,6 +92,7 @@ namespace Inventory {
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
+      if (item is null) return;
       drgImg.sprite = item.sprite8x;
       drgImg.gameObject.SetActive(true);
       inven.dragedIdx = index;
@@ -101,6 +102,7 @@ namespace Inventory {
     }
 
     public void OnDrag(PointerEventData eventData) {
+      if (item is null) return;
       drgImg.transform.position = eventData.position;
     }
 

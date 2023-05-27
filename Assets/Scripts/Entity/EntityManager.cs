@@ -45,6 +45,10 @@ namespace Entity {
     
     public event entityEvent onGetAfter;
 
+    public Vector2 getPosition = Vector2.zero;
+    
+    public Vector2 releasePosition = Vector2.zero;
+
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(this);
@@ -80,13 +84,19 @@ namespace Entity {
     /// 풀 객체를 가져올 때 실행됩니다.
     /// </summary>
     /// <param name="entity">엔티티</param>
-    private void OnGetObject(Entity entity) => entity.gameObject.SetActive(true);
+    private void OnGetObject(Entity entity) {
+      entity.position = getPosition;
+      entity.gameObject.SetActive(true);
+    }
 
     /// <summary>
     /// 풀 객체를 비활성화할 때 실행됩니다.
     /// </summary>
     /// <param name="entity">엔티티</param>
-    private void OnReleaseObject(Entity entity) => entity.gameObject.SetActive(false);
+    private void OnReleaseObject(Entity entity) {
+      entity.gameObject.SetActive(false);
+      entity.position = releasePosition;
+    }
 
     /// <summary>
     /// 풀 객체를 삭제할 때 실행됩니다.
@@ -98,14 +108,15 @@ namespace Entity {
     /// 풀에서 엔티티를 가져옵니다.
     /// </summary>
     /// <param name="type">가져올 엔티티 종류</param>
+    /// <param name="startPosition">위치</param>
     /// <returns>가져온 엔티티</returns>
-    public Entity GetEntity(EntityType type) {
+    public Entity GetEntity(EntityType type, Vector2 startPosition) {
       onGetBefore?.Invoke();
+      getPosition = startPosition;
       var entity = pools[type].Get();
       onGetAfter?.Invoke(entity);
       entity.OnGet();
       return entity;
-      
     }
 
     /// <summary>
@@ -123,8 +134,9 @@ namespace Entity {
     /// 엔티티를 생성합니다.
     /// </summary>
     /// <param name="type">생성할 엔티티 종류</param>
+    /// <param name="pos">생성될 위치</param>
     /// <returns>생성된 엔티티</returns>
-    public static Entity Get(EntityType type) => Instance.GetEntity(type);
+    public static Entity Get(EntityType type, Vector2 pos) => Instance.GetEntity(type, pos);
 
     /// <summary>
     /// 엔티티를 삭제합니다.

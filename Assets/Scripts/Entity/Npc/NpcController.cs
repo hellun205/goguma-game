@@ -24,7 +24,7 @@ namespace Entity.Npc {
 
     private Coroutine messageCoroutine;
 
-    public new Vector3 position {
+    public new Vector2 position {
       get => base.position;
       set {
         base.position = value;
@@ -36,21 +36,13 @@ namespace Entity.Npc {
       anim = GetComponent<Animator>();
     }
 
-    private void Start() {
-      // messageCoroutine = StartCoroutine(ShowMessage(12f));
-    }
-
-    // private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
-
     private IEnumerator ShowMessage(float delay) {
       while (true) {
         yield return new WaitForSeconds(delay);
         
         var msgData = new MessageData(npcData.messages.Random());
-        messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
+        messageBox = Entity.SummonMsgBox(MessageBoxPosition.position, msgData, () => SetTalking(false));
         SetTalking(true);
-        messageBox.ShowMessage(msgData, () => SetTalking(false));
-        RefreshPosition();
       }
     } 
 
@@ -91,15 +83,12 @@ namespace Entity.Npc {
       StopMessage();
     }
 
-    public void Initialize(Npc npc, Vector2? position = null) {
+    public void SetNpc(Npc npc) {
       this.npcData = npc;
       anim.runtimeAnimatorController = npc.animCtrler;
-      if (position.HasValue)
-        transform.position = position.Value;
       entityName = npc._name;
     }
 
-    public void Initialize(string uniqueName, Vector2? position = null) =>
-      Initialize(NpcManager.Instance.GetWithCode(uniqueName), position);
+    public void SetNpc(string uniqueName) => SetNpc(NpcManager.Instance.GetWithCode(uniqueName));
   }
 }

@@ -50,10 +50,9 @@ namespace Entity {
     public virtual void OnRelease() => onRelease?.Invoke(this);
 
     private void ThrowItemB(Item.Item item, byte count, sbyte direction = 1) {
-      var throwItem = (ItemController) EntityManager.Get(EntityType.Item);
-      throwItem.SetItem(item, count);
       var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * direction);
-      throwItem.Throw(new Vector2(startPositionX, position.y), new Vector2(direction * 2f, 3f), 4f);
+      var throwItem = Entity.SummonItem(new Vector2(startPositionX, position.y), item, count);
+      throwItem.Throw(new Vector2(direction * 2f, 3f), 4f);
     }
 
     public void ThrowItem(Item.Item item, ushort count, sbyte direction = 1) {

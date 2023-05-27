@@ -67,6 +67,11 @@ namespace Entity.Player {
     private Vector2 attackHitPos = Vector2.zero;
     private Vector2 attackHitSize = Vector2.zero;
 
+    [SerializeField]
+    private SpriteRenderer effect;
+
+    private static readonly int WeaponType = Animator.StringToHash("weaponType");
+
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(gameObject);
@@ -139,27 +144,27 @@ namespace Entity.Player {
     private void OnChangedSlot(byte slotIdx) {
       var item = quickSlotCtrler.GetItem(slotIdx);
       DisableAllHand();
+      anim.SetInteger(WeaponType, 0);
+      if (item is null) return;
+      SpriteRenderer hand;
       switch (item) {
-        case null:
-          anim.SetInteger("weaponType", 0);
-          return;
-
         case WeaponItem weapon: {
-          var hand = hands[(int)weapon.weaponType];
-          hand.gameObject.SetActive(true);
+          hand = hands[(int)weapon.weaponType];
           hand.sprite = weapon.weaponSprite;
-          anim.SetInteger("weaponType", (int)weapon.weaponType);
+          anim.SetInteger(WeaponType, (int)weapon.weaponType);
           break;
         }
 
         default: {
-          var hand = hands[0];
-          hand.gameObject.SetActive(true);
+          hand = hands[0];
           hand.sprite = item.sprite;
-          anim.SetInteger("weaponType", 0);
           break;
         }
       }
+
+      hand.color = item.spriteColor;
+      effect.color = item.effectColor;
+      hand.gameObject.SetActive(true);
     }
 
     private void DisableAllHand() {
@@ -253,8 +258,7 @@ namespace Entity.Player {
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
 
-      var testNpc = (NpcController)EntityManager.Get(EntityType.Npc);
-      testNpc.Initialize("TallCarrot", new Vector2(-4.3f, -2.2f));
+      Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
 
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
     }

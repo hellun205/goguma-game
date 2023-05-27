@@ -528,6 +528,7 @@ MonoBehaviour:
     hp: 50
     moveSpeed: 3
     jumpPower: 5
+  effect: {fileID: 16779820}
 --- !u!82 &71035734
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2742,6 +2743,11 @@ MonoBehaviour:
     pitch: 1
     delay: 0
     loop: 0
+  - name: click
+    audioClip: {fileID: 8300000, guid: bb63c0351d82c5e49a7cc72e65f7925d, type: 3}
+    pitch: 1.19
+    delay: 0
+    loop: 0
 --- !u!224 &845825105 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3453038356315128936, guid: 2fd1b4b5a1e1c2d46bdfe5382ec43dc5, type: 3}
@@ -2806,7 +2812,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
+  m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -2849,15 +2855,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 38c4d425ed8db764fae2510ca3c215d5, type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -4030,7 +4036,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1245605063
 Transform:
   m_ObjectHideFlags: 0
@@ -4862,15 +4868,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8301887, g: 0.8301887, b: 0.8301887, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 38c4d425ed8db764fae2510ca3c215d5, type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -5961,6 +5967,8 @@ MonoBehaviour:
     isUI: 0
   entityCollection: {fileID: 803941389}
   uiEntityCollection: {fileID: 1751075563}
+  getPosition: {x: 0, y: 0}
+  releasePosition: {x: 0, y: 0}
 --- !u!4 &2123160864
 Transform:
   m_ObjectHideFlags: 0

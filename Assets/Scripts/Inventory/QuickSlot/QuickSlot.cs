@@ -48,7 +48,8 @@ namespace Inventory.QuickSlot {
     private void InventoryItemChanged() {
       if (invenIndex.HasValue) {
         var item = inven[invenIndex.Value];
-        iconImg.sprite = item.item.sprite8x ;
+        iconImg.sprite = item.item.sprite8x;
+        iconImg.color = item.item.spriteColor;
         countTMP.text = item.count == 1 ? "" : item.count.ToString();
       } else {
         iconImg.sprite = ItemManager.GetInstance().noneSprite;
@@ -67,7 +68,7 @@ namespace Inventory.QuickSlot {
       var color = slotImg.color;
       color.a = enable ? 1f : 0.5f;
       slotImg.color = color;
-      iconImg.color = color;
+      // iconImg.color = color;
     }
 
     public void OnDrop(PointerEventData eventData) {
@@ -87,11 +88,14 @@ namespace Inventory.QuickSlot {
     public void OnPointerClick(PointerEventData eventData) {
       if (eventData.button == PointerEventData.InputButton.Left) {
         controller.SetIndex(index);
+        AudioManager.Play("click");
       }
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
+      if (invenIndex is null) return;
       drgImg.sprite = iconImg.sprite;
+      drgImg.color = iconImg.color;
       drgImg.gameObject.SetActive(true);
       controller.dragedIdx = index;
       controller.isDragging = true;
@@ -99,6 +103,7 @@ namespace Inventory.QuickSlot {
     }
 
     public void OnDrag(PointerEventData eventData) {
+      if (invenIndex is null) return;
       drgImg.transform.position = eventData.position;
     }
 
