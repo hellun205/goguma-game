@@ -6,8 +6,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Inventory {
-  public class InventoryController : MonoBehaviour {
+namespace Inventory
+{
+  public class InventoryController : MonoBehaviour
+  {
     public static InventoryController Instance { get; private set; }
 
     public KeyCode openKey = KeyCode.I;
@@ -16,9 +18,11 @@ namespace Inventory {
 
     private Inventory _inventory;
 
-    public Inventory inventory {
+    public Inventory inventory
+    {
       get => _inventory;
-      set {
+      set
+      {
         _inventory = value;
         SetCount(value.slotCount);
         _inventory.onItemChanged += Refresh;
@@ -59,23 +63,29 @@ namespace Inventory {
     [SerializeField]
     private AudioData openSound;
 
-    private void Awake() {
-      if (Instance == null) Instance = this;
-      else Destroy(this);
+    private void Awake()
+    {
+      if (Instance == null)
+        Instance = this;
+      else
+        Destroy(this);
+
       // DontDestroyOnLoad(gameObject);
       transform.SetAsLastSibling();
       toolTipPanel.gameObject.SetActive(false);
       panel.SetActive(activeInventory);
+
       SetCount(slotCount);
     }
 
-    private void Update() {
-      if (Input.GetKeyDown(openKey)) {
+    private void Update()
+    {
+      if (Input.GetKeyDown(openKey))
         ToggleActive();
-      }
     }
 
-    private void ToggleActive() {
+    private void ToggleActive()
+    {
       activeInventory = !activeInventory;
       Refresh();
       panel.SetActive(activeInventory);
@@ -83,29 +93,36 @@ namespace Inventory {
       AudioManager.Play(openSound);
     }
 
-    public void SetCount(byte count) {
+    public void SetCount(byte count)
+    {
       slotCount = count;
       ClearSlot();
 
-      for (var i = 0; i < slotCount; i++) {
+      for (var i = 0; i < slotCount; i++)
+      {
         var slot = Instantiate(slotPrefab, content);
         slot.index = (byte)i;
         slots.Add(slot);
       }
     }
 
-    private void ClearSlot() {
-      if (slots.Count == 0) return;
-      foreach (var slot in slots) {
+    private void ClearSlot()
+    {
+      if (slots.Count == 0)
+        return;
+
+      foreach (var slot in slots)
         Destroy(slot.gameObject);
-      }
 
       slots.Clear();
     }
 
-    public void Refresh() {
-      for (var i = 0; i < inventory.items.Count; i++) {
+    public void Refresh()
+    {
+      for (var i = 0; i < inventory.items.Count; i++)
+      {
         var item = inventory.items[i];
+
         if (item.HasValue)
           slots[i].SetItem(item.Value.item, item.Value.count);
         else

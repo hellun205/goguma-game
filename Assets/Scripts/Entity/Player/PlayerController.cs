@@ -10,8 +10,10 @@ using UI;
 using UnityEngine;
 using Window;
 
-namespace Entity.Player {
-  public class PlayerController : Entity {
+namespace Entity.Player
+{
+  public class PlayerController : Entity
+  {
     public override EntityType type => EntityType.Player;
     public static PlayerController Instance { get; private set; }
 
@@ -79,9 +81,13 @@ namespace Entity.Player {
     private bool isAttacking;
     private const float useCoolTime = 0.4f;
 
-    private void Awake() {
-      if (Instance == null) Instance = this;
-      else Destroy(gameObject);
+    private void Awake()
+    {
+      if (Instance == null)
+        Instance = this;
+      else
+        Destroy(gameObject);
+
       DontDestroyOnLoad(gameObject);
 
       // rb = GetComponent<Rigidbody2D>();
@@ -101,23 +107,26 @@ namespace Entity.Player {
 
       DisableAllHand();
 
-      skillPanel.SetCooldown(1f ,1f);
+      skillPanel.SetCooldown(1f, 1f);
       skillPanel.SetActive(0f);
     }
 
-    private void Update() {
+    private void Update()
+    {
       DebugKey();
 
       skillPanel.SetCooldown(curCoolTime);
       skillPanel.SetActive(curEndTime);
 
       if (canCooldown && curCoolTime > 0) curCoolTime -= Time.deltaTime;
-      
+
       if (isAttacking && curCoolTime <= 0) isAttacking = false;
 
       if (curEndTime > 0) curEndTime -= Time.deltaTime;
-      else {
-        if (isEnd) {
+      else
+      {
+        if (isEnd)
+        {
           curKeepTime = 0;
           combo = 0;
           isEnd = false;
@@ -126,77 +135,104 @@ namespace Entity.Player {
         movement.canFlip = true;
       }
 
-      if (curKeepTime > 0) curKeepTime -= Time.deltaTime;
-      else {
+      if (curKeepTime > 0)
+        curKeepTime -= Time.deltaTime;
+      else
+      {
         anim.SetBool("isAttack", false);
-        if (!cooled) {
+
+        if (!cooled)
+        {
           cooled = true;
           curCoolTime = tempCoolTime;
         }
       }
 
-      if (movement.isInputCooldown || InputBoxWindow.isEnabled) return;
+      if (movement.isInputCooldown || InputBoxWindow.isEnabled)
+        return;
 
       TryInteract();
       CheckNpc();
       CheckItems();
 
-      if (!Input.anyKeyDown) return;
-      int slotIdx = Input.inputString switch {
-        "1" => 0, "2" => 1, "3" => 2, "4" => 3, "5" => 4, "6" => 5, "7" => 6, "8" => 7, "9" => 8, _ => -1
+      if (!Input.anyKeyDown)
+        return;
+
+      int slotIdx = Input.inputString switch
+      {
+        "1" => 0,
+        "2" => 1,
+        "3" => 2,
+        "4" => 3,
+        "5" => 4,
+        "6" => 5,
+        "7" => 6,
+        "8" => 7,
+        "9" => 8,
+        _ => -1
       };
-      if (slotIdx != -1) {
-        quickSlotCtrler.SetIndex((byte) slotIdx);
+
+      if (slotIdx != -1)
+      {
+        quickSlotCtrler.SetIndex((byte)slotIdx);
         AudioManager.Play("click");
       }
     }
 
-    private void DebugKey() {
-      if (Input.GetKeyDown(KeyCode.F6)) {
+    private void DebugKey()
+    {
+      if (Input.GetKeyDown(KeyCode.F6))
         Entity.SummonEnemy(new Vector2(position.x + 3f, 5f));
-      } else if (Input.GetKeyDown(KeyCode.F7)) {
+      else if (Input.GetKeyDown(KeyCode.F7))
         Entity.SummonItem(new Vector2(position.x + 3f, 5f), ItemManager.GetInstance().GetWithCode("appleBuff"), 20);
-      }
     }
 
-    private void OnChangedSlot(byte slotIdx) {
-      if (!isAttacking && quickSlotCtrler.previousIndex != slotIdx) {
+    private void OnChangedSlot(byte slotIdx)
+    {
+      if (!isAttacking && quickSlotCtrler.previousIndex != slotIdx)
+      {
         const float changeCoolTime = 0.2f;
         curCoolTime = changeCoolTime;
         skillPanel.SetCooldown(changeCoolTime, changeCoolTime);
       }
-      
+
       var item = quickSlotCtrler.GetItem(slotIdx);
       DisableAllHand();
       skillPanel.z.img.sprite = skillPanel.noneSprite;
       skillPanel.x.img.sprite = skillPanel.noneSprite;
       anim.SetInteger(WeaponType, 0);
-      canCooldown = item is not null;
-      if (!canCooldown) return; // item is null => return
+
+      if (item is null)
+        return; // item is null => return
+
       SpriteRenderer hand;
-      switch (item) {
-        case WeaponItem weapon: {
-          hand = hands[(int) weapon.weaponType];
-          hand.sprite = weapon.weaponSprite;
-          anim.SetInteger(WeaponType, (int) weapon.weaponType);
-          skillPanel.z.img.sprite = weapon.skill.zSprite;
-          skillPanel.x.img.sprite = weapon.skill.xSprite;
-          break;
-        }
+      switch (item)
+      {
+        case WeaponItem weapon:
+          {
+            hand = hands[(int)weapon.weaponType];
+            hand.sprite = weapon.weaponSprite;
+            anim.SetInteger(WeaponType, (int)weapon.weaponType);
+            skillPanel.z.img.sprite = weapon.skill.zSprite;
+            skillPanel.x.img.sprite = weapon.skill.xSprite;
+            break;
+          }
 
-        case UseableItem useable: {
-          hand = hands[0];
-          hand.sprite = item.sprite;
-          skillPanel.z.img.sprite = item.sprite8x;
-          skillPanel.x.img.sprite = item.sprite8x;
-          break;
-        }
+        case UseableItem useable:
+          {
+            hand = hands[0];
+            hand.sprite = item.sprite;
+            skillPanel.z.img.sprite = item.sprite8x;
+            skillPanel.x.img.sprite = item.sprite8x;
+            break;
+          }
 
-        default: {
-          hand = hands[0];
-          hand.sprite = item.sprite;
-          break;
-        }
+        default:
+          {
+            hand = hands[0];
+            hand.sprite = item.sprite;
+            break;
+          }
       }
 
       hand.color = item.spriteColor;
@@ -204,35 +240,44 @@ namespace Entity.Player {
       hand.gameObject.SetActive(true);
     }
 
-    private void DisableAllHand() {
-      foreach (var hand in hands) {
+    private void DisableAllHand()
+    {
+      foreach (var hand in hands)
         hand.gameObject.SetActive(false);
-      }
     }
 
-    private void Attack(Skill skill, KeyCode key) {
+    private void Attack(Skill skill, KeyCode key)
+    {
       var comboSkill = skill.GetComboSkill(key);
 
-      if (!(curCoolTime <= 0) || !(curEndTime <= 0)) return;
+      if (curCoolTime > 0 && curEndTime > 0)
+        return;
+
       cooled = false;
-      if (skillType == key && curKeepTime > 0) {
+
+      if (skillType == key && curKeepTime > 0)
+      {
         combo++;
-        if (combo < comboSkill.skills.Length) {
+
+        if (combo < comboSkill.skills.Length)
+        {
           var curSkill = comboSkill.skills[combo];
           StartAttack(skill.damage, curSkill, comboSkill.keepComboTime, comboSkill.coolTime);
         }
 
-        if (combo + 1 >= comboSkill.skills.Length) {
+        if (combo + 1 >= comboSkill.skills.Length)
           isEnd = true;
-        }
-      } else {
+      }
+      else
+      {
         skillType = key;
         StartAttack(skill.damage, comboSkill.skills[0], comboSkill.keepComboTime, comboSkill.coolTime);
         combo = 0;
       }
     }
 
-    private void StartAttack(float weaponDmg, ComboSkill skill, float keepComboTime, float coolTime) {
+    private void StartAttack(float weaponDmg, ComboSkill skill, float keepComboTime, float coolTime)
+    {
       isAttacking = true;
       curKeepTime = keepComboTime;
       tempCoolTime = coolTime;
@@ -249,55 +294,61 @@ namespace Entity.Player {
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;
-      attackHitPos.x *= (int) movement.currentDirection;
+      attackHitPos.x *= (int)movement.currentDirection;
 
       var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
-      foreach (var hitCol in colliders) {
-        if (hitCol.CompareTag("Enemy")) {
+      foreach (var hitCol in colliders)
+      {
+        if (hitCol.CompareTag("Enemy"))
+        {
           var enemy = hitCol.GetComponent<EnemyController>();
           enemy.Hit(weaponDmg * skill.damagePercent, position.x);
         }
       }
     }
 
-    private void OnDrawGizmos() {
-      Gizmos.DrawWireCube(transform.position + (Vector3) attackHitPos, attackHitSize);
+    private void OnDrawGizmos()
+    {
+      Gizmos.DrawWireCube(transform.position + (Vector3)attackHitPos, attackHitSize);
     }
 
-    private void TryInteract() {
-      foreach (var key in attackKeys) {
-        if (Input.GetKeyDown(key)) {
+    private void TryInteract()
+    {
+      foreach (var key in attackKeys)
+      {
+        if (Input.GetKeyDown(key))
+        {
           var item = quickSlotCtrler.GetItem();
 
-          switch (item) {
+          switch (item)
+          {
             case null:
               return;
 
-            case WeaponItem weapon: {
-              Attack(weapon.skill, key);
-              break;
-            }
-
-            case UseableItem useable: {
-              if (curCoolTime <= 0) {
-                useable.OnQuickClick();
-                curCoolTime = useCoolTime;
-                skillPanel.SetCooldown(useCoolTime, useCoolTime);
+            case WeaponItem weapon:
+              {
+                Attack(weapon.skill, key);
+                break;
               }
 
-              break;
-            }
-            // default: {
-            //   var hand = hands[0];
-            //   
-            //   break;
-            // }
+            case UseableItem useable:
+              {
+                if (curCoolTime <= 0)
+                {
+                  useable.OnQuickClick();
+                  curCoolTime = useCoolTime;
+                  skillPanel.SetCooldown(useCoolTime, useCoolTime);
+                }
+
+                break;
+              }
           }
         }
       }
     }
 
-    private void Start() {
+    private void Start()
+    {
       GetComponent<NameTag>().OnGetEntity(this);
       hpBar.OnGetEntity(this);
       hpBar.maxHp = status.maxHp;
@@ -308,25 +359,32 @@ namespace Entity.Player {
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
     }
 
-    private void CheckNpc() {
-      if (!Input.GetKeyDown(meetNpcKey)) return;
+    private void CheckNpc()
+    {
+      if (!Input.GetKeyDown(meetNpcKey))
+        return;
 
       var pos = transform.position;
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY),
         movement.dirVector, checkNpcDistance, layerMask);
 
-      if (hit && hit.transform.CompareTag("Npc")) {
+      if (hit && hit.transform.CompareTag("Npc"))
+      {
         var npc = hit.transform.GetComponent<NpcController>();
 
         npc.Meet();
       }
     }
 
-    private void CheckItems() {
+    private void CheckItems()
+    {
       var pos = transform.position;
       var hit = Physics2D.Raycast(new Vector2(pos.x, pos.y - distanceY), movement.dirVector, pickupDistance, layerMask);
-      if (hit && hit.transform.CompareTag("Item")) {
+
+      if (hit && hit.transform.CompareTag("Item"))
+      {
         var item = hit.transform.GetComponent<ItemController>();
+
         if (!item.isPickingUp && !item.isThrowing)
           item.PickUp(transform, OnPickUpItem);
       }
@@ -334,17 +392,18 @@ namespace Entity.Player {
 
     public void EnableInputCooldown() => movement.EnableInputCooldown();
 
-    private void OnPickUpItem((Item.Item item, byte count) data) {
+    private void OnPickUpItem((Item.Item item, byte count) data)
+    {
       // Debug.Log($"get: {data.item._name}, count: {data.count}");
       AudioManager.Play("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
-      if (left > 0) {
+
+      if (left > 0)
         ThrowItem(data.item, left);
-      }
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte) (movement.currentDirection == Direction.Left ? -1 : 1));
+      base.ThrowItem(item, count, (sbyte)(movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }

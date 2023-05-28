@@ -9,8 +9,10 @@ using UnityEngine.Pool;
 using UnityEngine.UI;
 using Utils;
 
-namespace Buff {
-  public class Buff : MonoBehaviour, IPointerClickHandler {
+namespace Buff
+{
+  public class Buff : MonoBehaviour, IPointerClickHandler
+  {
     [Header("UI Object")]
     [SerializeField]
     private Image iconImg;
@@ -30,20 +32,21 @@ namespace Buff {
 
     public bool isEnabled;
 
-    private void Update() {
+    private void Update()
+    {
       if (!isEnabled) return;
 
-      if (time < endTime) {
+      if (time < endTime)
         time += Time.deltaTime;
-      } else {
+      else
         End();
-      }
 
       slider.value = time / endTime;
       leftTimeTMP.text = (endTime - time).GetTimeStr();
     }
 
-    public void Set(BuffItem item) {
+    public void Set(BuffItem item)
+    {
       this.item = item;
       this.endTime = item.time;
       time = 0f;
@@ -52,16 +55,17 @@ namespace Buff {
       isEnabled = true;
     }
 
-    private void End() {
+    private void End()
+    {
       isEnabled = false;
       PlayerController.Instance.status -= item.increase;
       BuffManager.Instance.Remove(this);
     }
 
-    public void OnPointerClick(PointerEventData eventData) {
-      if (eventData.button == PointerEventData.InputButton.Right) {
+    public void OnPointerClick(PointerEventData eventData)
+    {
+      if (eventData.button == PointerEventData.InputButton.Right)
         End();
-      }
     }
   }
 }

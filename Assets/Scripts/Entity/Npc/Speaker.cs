@@ -1,5 +1,7 @@
-﻿namespace Entity.Npc {
-  public enum Speaker {
+﻿namespace Entity.Npc
+{
+  public enum Speaker
+  {
     Player,
     Npc
   }

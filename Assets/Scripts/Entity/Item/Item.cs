@@ -5,8 +5,10 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
 
-namespace Entity.Item {
-  public abstract class Item : UnityEngine.ScriptableObject {
+namespace Entity.Item
+{
+  public abstract class Item : UnityEngine.ScriptableObject
+  {
     [Header("Item")]
     public string _name;
 
@@ -21,7 +23,7 @@ namespace Entity.Item {
     public Sprite sprite8x;
 
     public Color spriteColor = Color.white;
-    
+
     public Color effectColor = Color.white;
 
     public abstract ItemType type { get; }
@@ -33,13 +35,11 @@ namespace Entity.Item {
 
     protected string Bar => "bar".GetStyleTag("───────────────────");
 
-    protected string ValueColorTag(float value) => (value > 0 ? "increase" :"decrease").GetStyleTag(value.ToThousandsFormat());
+    protected string ValueColorTag(float value) => (value > 0 ? "increase" : "decrease").GetStyleTag(value.ToThousandsFormat());
 
-    
-
-    protected string GetStringTag(string style, string value) {
+    protected string GetStringTag(string style, string value)
+    {
       return string.IsNullOrEmpty(value) ? String.Empty : style.GetStyleTag(value);
     }
-    
   }
 }

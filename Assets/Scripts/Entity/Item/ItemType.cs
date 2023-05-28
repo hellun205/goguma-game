@@ -1,5 +1,7 @@
-﻿namespace Entity.Item {
-  public enum ItemType {
+﻿namespace Entity.Item
+{
+  public enum ItemType
+  {
     Normal,
     Weapon,
     Wearable,
@@ -7,8 +9,10 @@
     Money,
   }
 
-  public static class ItemTypeExtensions {
-    public static string GetString(this ItemType type) => type switch {
+  public static class ItemTypeExtensions
+  {
+    public static string GetString(this ItemType type) => type switch
+    {
       ItemType.Money => "화폐",
       ItemType.Normal => "일반",
       ItemType.Useable => "사용",

@@ -3,15 +3,18 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Utils {
-  public static class StringUtils {
+namespace Utils
+{
+  public static class StringUtils
+  {
     public static string ToThousandsFormat(this float value) => $"{value:#,###}";
 
     public static string GetTag(this Color color, string text) => $"<color=#{color.ToHexString()}>{text}</color>";
 
     public static string GetStyleTag(this string style, string text) => $"<style=\"{style}\">{text}</style>";
-    
-    public static string GetValueTag(string text, float value) {
+
+    public static string GetValueTag(string text, float value)
+    {
       if (value == 0) return string.Empty;
 
       var sb = new StringBuilder("<style=\"");
@@ -23,21 +26,27 @@ namespace Utils {
       return sb.ToString();
     }
 
-    public static string GetTimeStr(this float time, string second = "s", string minute = "m", string hour = "h") {
+    public static string GetTimeStr(this float time, string second = "s", string minute = "m", string hour = "h")
+    {
       var intTime = Mathf.RoundToInt(time);
       int rem;
       int div;
       int value;
       string str;
-      if (intTime >= 3600) {
+      if (intTime >= 3600)
+      {
         div = Math.DivRem(intTime, 3600, out rem);
         value = div;
         str = hour;
-      } else if (intTime >= 60) {
+      }
+      else if (intTime >= 60)
+      {
         div = Math.DivRem(intTime, 60, out rem);
         value = div;
         str = minute;
-      } else {
+      }
+      else
+      {
         value = intTime;
         str = second;
       }
