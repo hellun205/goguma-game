@@ -6221,6 +6221,10 @@ MonoBehaviour:
     prefab: {fileID: 6560473075134663028, guid: 60ba78d96edb16547819b808cd541b00, type: 3}
     maxCount: 30
     isUI: 0
+  - type: 7
+    prefab: {fileID: 3734029138900567733, guid: 051696dc818d4a94198202907ad00195, type: 3}
+    maxCount: 10
+    isUI: 1
   entityCollection: {fileID: 803941389}
   uiEntityCollection: {fileID: 1751075563}
   getPosition: {x: 0, y: 0}

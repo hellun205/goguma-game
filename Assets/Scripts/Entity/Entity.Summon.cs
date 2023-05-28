@@ -49,5 +49,11 @@ namespace Entity {
 
       return entity;
     }
+
+    public static DamageText SummonHitDamage(Vector2 position, int damage) {
+      var entity = EntityManager.Get(EntityType.DamageText, position) as DamageText;
+      entity.Show(damage);
+      return entity;
+    }
   }
 }

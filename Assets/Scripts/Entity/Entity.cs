@@ -40,6 +40,8 @@ namespace Entity {
       }
     }
 
+    public void Translate(float x, float y) => position = new Vector2(position.x + x, position.y + y);
+
     /// <summary>
     /// 엔티티를 삭제합니다.
     /// </summary>
