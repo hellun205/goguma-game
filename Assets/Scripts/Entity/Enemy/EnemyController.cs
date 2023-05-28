@@ -33,8 +33,7 @@ namespace Entity.Enemy {
 
     private Coroutine hitCoroutine;
 
-    protected override void Awake() {
-      base.Awake();
+    private void Awake() {
       hpBar = GetComponent<HpBar>();
       rigid = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
@@ -44,7 +43,10 @@ namespace Entity.Enemy {
     public void Hit(float damage, float playerXPos, float knockBack = 1f) {
       if (!canHit) return;
       var knockDir = playerXPos < position.x ? new Vector2(1, 2) : new Vector2(-1, 2);
-
+      
+      // hit damage
+      Entity.SummonHitDamage(position, Mathf.RoundToInt(damage));
+      
       // hp
       status.hp = Mathf.Max(status.hp - damage, 0f);
       hpBar.curHp = status.hp;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Audio;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -54,10 +55,15 @@ namespace Inventory {
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;
 
+    [Header("sound")]
+    [SerializeField]
+    private AudioData openSound;
+
     private void Awake() {
       if (Instance == null) Instance = this;
       else Destroy(this);
       // DontDestroyOnLoad(gameObject);
+      transform.SetAsLastSibling();
       toolTipPanel.gameObject.SetActive(false);
       panel.SetActive(activeInventory);
       SetCount(slotCount);
@@ -73,6 +79,8 @@ namespace Inventory {
       activeInventory = !activeInventory;
       Refresh();
       panel.SetActive(activeInventory);
+      toolTipPanel.gameObject.SetActive(false);
+      AudioManager.Play(openSound);
     }
 
     public void SetCount(byte count) {

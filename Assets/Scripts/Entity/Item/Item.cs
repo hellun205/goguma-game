@@ -21,6 +21,8 @@ namespace Entity.Item {
     public Sprite sprite8x;
 
     public Color spriteColor = Color.white;
+    
+    public Color effectColor = Color.white;
 
     public abstract ItemType type { get; }
 

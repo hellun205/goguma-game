@@ -34,5 +34,10 @@
     /// 체력 바
     /// </summary>
     HpBar,
+    
+    /// <summary>
+    /// 히트 데미지
+    /// </summary>
+    DamageText,
   }
 }

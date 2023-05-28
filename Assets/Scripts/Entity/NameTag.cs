@@ -8,7 +8,6 @@ namespace Entity {
   /// 엔티티의 이름을 표시 하는 컴포넌트
   /// </summary>
   public class NameTag : MonoBehaviour {
-
     /// <summary>
     /// 이름표 엔티티
     /// </summary>
@@ -24,8 +23,10 @@ namespace Entity {
 
     [SerializeField]
     private float distance = 0.1f;
-    
+
     private float colDistance;
+
+    private Vector2 GetPos() => new Vector2(entity.position.x, entity.position.y + colDistance + distance);
 
     private void Awake() {
       entity = GetComponent<Entity>();
@@ -35,26 +36,13 @@ namespace Entity {
     }
 
     private void Update() {
-      Refresh();
-    }
-
-    /// <summary>
-    /// 새로고침 합니다.
-    /// </summary>
-    private void Refresh() {
-      var pos = entity.position;
       displayText.text = entity.entityName;
-      displayText.position = new Vector3(pos.x, pos.y + colDistance+ distance);;
+      displayText.position = GetPos();
     }
-
-    private void Init() {
-      displayText = (DisplayText) EntityManager.Get(EntityType.DisplayText);
-      Refresh();
-    }
-
+    
     public void OnGetEntity(Entity entity) {
       if (entity == this.entity) {
-        Init();
+        displayText = Entity.SummonDisplayText(GetPos(), entity.entityName);
       }
     }
 
@@ -64,5 +52,9 @@ namespace Entity {
       }
     }
 
+    private void OnDestroy() {
+      EntityManager.Instance.onGetAfter -= OnGetEntity;
+      EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
+    }
   }
 }

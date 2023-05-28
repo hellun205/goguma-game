@@ -22,6 +22,9 @@ namespace Inventory.QuickSlot {
     [HideInInspector]
     public byte dragedIdx;
 
+    [HideInInspector]
+    public byte previousIndex;
+
     private void Awake() {
       slots.AddRange(GetComponentsInChildren<QuickSlot>());
       for (var i = 0; i < slots.Count; i++) {
@@ -34,6 +37,7 @@ namespace Inventory.QuickSlot {
     }
 
     public void SetIndex(byte index) {
+      previousIndex = slotIndex;
       slotIndex = index;
       for (var i = 0; i < slots.Count; i++) {
         slots[i].SetEnabled(i == index);
@@ -51,7 +55,7 @@ namespace Inventory.QuickSlot {
     [CanBeNull]
     public Item GetItem(byte slotIdx) {
       var idx = slots[slotIdx].invenIndex;
-      return idx is null ? null : inven[idx.Value].item;
+      return idx is null ? null : (inven[idx.Value].HasValue ? inven[idx.Value].Value.item : null);
     }
 
     public void CallSlotChanged() => CallSlotChanged(slotIndex);

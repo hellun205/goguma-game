@@ -12,7 +12,5 @@ namespace Entity.Item {
     public Sprite weaponSprite;
 
     public Skill skill;
-
-
   }
 }

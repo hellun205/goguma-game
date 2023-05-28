@@ -1,5 +1,4 @@
-﻿using System;
-using Entity.UI;
+﻿using Entity.UI;
 using UnityEngine;
 
 namespace Entity {
@@ -18,6 +17,8 @@ namespace Entity {
 
     private float colDistance;
 
+    private Vector2 GetPos() => new Vector2(entity.position.x, entity.position.y + colDistance + distance);
+
     private void Awake() {
       entity = GetComponent<Entity>();
       colDistance = col.bounds.extents.y;
@@ -26,8 +27,7 @@ namespace Entity {
     }
 
     private void Update() {
-      var pos = entity.position;
-      hpBar.position = new Vector3(pos.x, pos.y + colDistance+ distance);
+      hpBar.position = GetPos();
       hpBar.maxValue = maxHp;
       hpBar.value = curHp;
     }
@@ -46,7 +46,12 @@ namespace Entity {
     }
 
     public void LoadHpBar() {
-      hpBar = (HealthBar) EntityManager.Get(EntityType.HpBar);
+      hpBar = Entity.SummonHpBar(GetPos(), curHp, maxHp);
+    }
+
+    private void OnDestroy() {
+      EntityManager.Instance.onGetAfter -= OnGetEntity;
+      EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
     }
   }
 }

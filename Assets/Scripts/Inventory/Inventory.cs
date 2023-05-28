@@ -83,7 +83,8 @@ namespace Inventory {
                   where item_.HasValue && item_.Value.item == item
                   select items.IndexOf(item_)).ToArray();
       foreach (var i in linq) {
-        var itemCount = this[i].count;
+        if (!this[i].HasValue) continue;
+        var itemCount = this[i].Value.count;
         if (count < itemCount) {
           items[i] = (item, (byte) (itemCount - count));
           break;
@@ -122,6 +123,6 @@ namespace Inventory {
       }
     }
 
-    public (Item item, byte count) this[int idx] => items[idx].Value;
+    public (Item item, byte count)? this[int idx] => items[idx];
   }
 }

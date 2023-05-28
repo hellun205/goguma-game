@@ -27,7 +27,6 @@
     /// 메시지 박스에 대한 정보를 생성합니다.
     /// </summary>
     /// <param name="text">표시 할 내용</param>
-    /// <param name="line">내용의 길이(줄)</param>
     /// <param name="exitTime">표시 시간</param>
     public MessageData(string text, float exitTime = 0f) {
       this.text = text;

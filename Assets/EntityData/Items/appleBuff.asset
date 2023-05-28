@@ -20,6 +20,14 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: fd345bc73658bc34a82a5d43e7dd0fc3, type: 3}
   sprite8x: {fileID: 21300000, guid: 76fe784a9b7109a4f999c7d749b2f2a4, type: 3}
   spriteColor: {r: 1, g: 1, b: 1, a: 1}
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  audioWhenUse:
+    name: 
+    audioClip: {fileID: 8300000, guid: 97b495f489fc08847accfb24f6536f21, type: 3}
+    pitch: 1
+    delay: 0
+    loop: 0
+  cooldown: 0
   increase:
     maxHp: 5
     hp: 0

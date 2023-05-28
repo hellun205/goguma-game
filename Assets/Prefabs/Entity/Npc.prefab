@@ -203,6 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: 
   canDespawn: 0
+  col: {fileID: 1110954321598639398}
   npcData: {fileID: 0}
   MessageWidth: 150
   MessageBoxPosition: {fileID: 1110954320620565174}

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
 using Dialogue;
 using Entity.Player;
 using Entity.UI;
@@ -14,8 +15,6 @@ namespace Entity.Npc {
 
     public Npc npcData;
 
-    public float MessageWidth = 150f;
-
     [InspectorName("Position")]
     public Transform MessageBoxPosition;
 
@@ -23,7 +22,9 @@ namespace Entity.Npc {
 
     private Animator anim;
 
-    public new Vector3 position {
+    private Coroutine messageCoroutine;
+
+    public new Vector2 position {
       get => base.position;
       set {
         base.position = value;
@@ -35,23 +36,19 @@ namespace Entity.Npc {
       anim = GetComponent<Animator>();
     }
 
-    private void Start() {
-      StartMessage();
-    }
-
-    private void StartMessage() => InvokeRepeating(nameof(ShowMessageRandom), 6f, 12f);
+    private IEnumerator ShowMessage(float delay) {
+      while (true) {
+        yield return new WaitForSeconds(delay);
+        
+        var msgData = new MessageData(npcData.messages.Random());
+        messageBox = Entity.SummonMsgBox(MessageBoxPosition.position, msgData, () => SetTalking(false));
+        SetTalking(true);
+      }
+    } 
 
     private void StopMessage() {
-      CancelInvoke(nameof(ShowMessageRandom));
+      if (messageCoroutine is not null) StopCoroutine(messageCoroutine);
       SetTalking(false);
-    }
-
-    private void ShowMessageRandom() {
-      var msgData = new MessageData(npcData.messages.Random());
-      messageBox = (MessageBox) EntityManager.Get(EntityType.MessageBox);
-      SetTalking(true);
-      messageBox.ShowMessage(msgData, () => SetTalking(false));
-      RefreshPosition();
     }
 
     private void RefreshPosition() {
@@ -78,7 +75,7 @@ namespace Entity.Npc {
 
     public override void OnGet() {
       base.OnGet();
-      StartMessage();
+      messageCoroutine = StartCoroutine(ShowMessage(12f));
     }
 
     public override void OnRelease() {
@@ -86,15 +83,12 @@ namespace Entity.Npc {
       StopMessage();
     }
 
-    public void Initialize(Npc npc, Vector2? position = null) {
+    public void SetNpc(Npc npc) {
       this.npcData = npc;
       anim.runtimeAnimatorController = npc.animCtrler;
-      if (position.HasValue)
-        transform.position = position.Value;
       entityName = npc._name;
     }
 
-    public void Initialize(string uniqueName, Vector2? position = null) =>
-      Initialize(NpcManager.Instance.GetWithCode(uniqueName), position);
+    public void SetNpc(string uniqueName) => SetNpc(NpcManager.Instance.GetWithCode(uniqueName));
   }
 }
