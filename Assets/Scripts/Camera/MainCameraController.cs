@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Entity;
+using UnityEngine;
 using Entity.Player;
 
 namespace Camera
@@ -32,7 +34,7 @@ namespace Camera
     /// 카메라의 위치를 제한할지 설정합니다.
     /// </summary>
     public bool clamp = false;
-
+    
     private void Awake()
     {
       if (Instance == null)
@@ -41,6 +43,10 @@ namespace Camera
         Destroy(gameObject);
 
       DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
 
     }
 
@@ -65,5 +71,6 @@ namespace Camera
 
       transform.position = Vector3.Lerp(transform.position, targetPos, smoothing * Time.fixedDeltaTime);
     }
+    
   }
 }

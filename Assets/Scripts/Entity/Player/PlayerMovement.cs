@@ -1,4 +1,6 @@
 ﻿using Audio;
+using Camera;
+using Dialogue;
 using UnityEngine;
 using Window;
 
@@ -34,13 +36,15 @@ namespace Entity.Player
         curInputCooldown += Time.deltaTime;
       else
       {
-        if (InputBoxWindow.isEnabled) return;
+        var interactable = !InputBoxWindow.isEnabled &&
+                           !DialogueController.Instance.isEnabled;
+        
         var horizontal = Input.GetAxisRaw("Horizontal");
         moveSpeed = status.moveSpeed;
         jumpPower = status.jumpPower;
         animator.SetFloat("moveSpeed", Mathf.Max(1f, status.moveSpeed));
-        Move(horizontal);
-        if (Input.GetKeyDown(KeyCode.Space))
+        Move(interactable ? horizontal : 0f);
+        if (interactable  && Input.GetKeyDown(KeyCode.Space) && canJump)
         {
           AudioManager.Play("jump");
           Jump();

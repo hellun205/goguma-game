@@ -148,7 +148,9 @@ namespace Entity.Player
         }
       }
 
-      if (movement.isInputCooldown || InputBoxWindow.isEnabled)
+      if (movement.isInputCooldown || 
+          InputBoxWindow.isEnabled ||
+          DialogueController.Instance.isEnabled)
         return;
 
       TryInteract();
@@ -201,9 +203,10 @@ namespace Entity.Player
       skillPanel.z.img.sprite = skillPanel.noneSprite;
       skillPanel.x.img.sprite = skillPanel.noneSprite;
       anim.SetInteger(WeaponType, 0);
-
+      canCooldown = item is not null;
+      
       if (item is null)
-        return; // item is null => return
+        return;
 
       SpriteRenderer hand;
       switch (item)
@@ -250,7 +253,7 @@ namespace Entity.Player
     {
       var comboSkill = skill.GetComboSkill(key);
 
-      if (curCoolTime > 0 && curEndTime > 0)
+      if (curCoolTime > 0 || curEndTime > 0)
         return;
 
       cooled = false;
