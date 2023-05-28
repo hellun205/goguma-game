@@ -3,11 +3,13 @@ using System.Collections;
 using Entity.UI;
 using UnityEngine;
 
-namespace Entity {
+namespace Entity
+{
   /// <summary>
   /// 엔티티의 이름을 표시 하는 컴포넌트
   /// </summary>
-  public class NameTag : MonoBehaviour {
+  public class NameTag : MonoBehaviour
+  {
     /// <summary>
     /// 이름표 엔티티
     /// </summary>
@@ -28,31 +30,34 @@ namespace Entity {
 
     private Vector2 GetPos() => new Vector2(entity.position.x, entity.position.y + colDistance + distance);
 
-    private void Awake() {
+    private void Awake()
+    {
       entity = GetComponent<Entity>();
       colDistance = col.bounds.extents.y;
       EntityManager.Instance.onGetAfter += OnGetEntity;
       EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
     }
 
-    private void Update() {
+    private void Update()
+    {
       displayText.text = entity.entityName;
       displayText.position = GetPos();
     }
-    
-    public void OnGetEntity(Entity entity) {
-      if (entity == this.entity) {
+
+    public void OnGetEntity(Entity entity)
+    {
+      if (entity == this.entity)
         displayText = Entity.SummonDisplayText(GetPos(), entity.entityName);
-      }
     }
 
-    public void OnReleasedEntity(Entity entity) {
-      if (entity == this.entity) {
+    public void OnReleasedEntity(Entity entity)
+    {
+      if (entity == this.entity)
         displayText.Release();
-      }
     }
 
-    private void OnDestroy() {
+    private void OnDestroy()
+    {
       EntityManager.Instance.onGetAfter -= OnGetEntity;
       EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
     }

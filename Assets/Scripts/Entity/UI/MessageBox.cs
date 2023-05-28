@@ -3,11 +3,13 @@ using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
-namespace Entity.UI {
+namespace Entity.UI
+{
   /// <summary>
   /// 메시지 박스 엔티티 컴포넌트
   /// </summary>
-  public class MessageBox : UIEntity {
+  public class MessageBox : UIEntity
+  {
     public override EntityType type => EntityType.MessageBox;
 
     /// <summary>
@@ -27,7 +29,8 @@ namespace Entity.UI {
     /// </summary>
     /// <param name="messageData">메시지 박스를 설정 할 데이터</param>
     /// <param name="endCallback">메시지 박스가 종료된 후 실행 할 콜백함수</param>
-    public void ShowMessage(MessageData messageData, [CanBeNull] Action endCallback = null) {
+    public void ShowMessage(MessageData messageData, [CanBeNull] Action endCallback = null)
+    {
       text.text = messageData.text;
       callBack = endCallback;
       RefreshPosition();
@@ -37,7 +40,8 @@ namespace Entity.UI {
     /// <summary>
     /// 메시지 박스를 종료합니다.
     /// </summary>
-    public void Close()  {
+    public void Close()
+    {
       callBack?.Invoke();
       Release();
     }

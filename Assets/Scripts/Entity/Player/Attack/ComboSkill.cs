@@ -2,11 +2,13 @@
 using Audio;
 using UnityEngine;
 
-namespace Entity.Player.Attack {
+namespace Entity.Player.Attack
+{
   [Serializable]
-  public class ComboSkill {
+  public class ComboSkill
+  {
     public float damagePercent = 1f;
-    
+
     public float endTime;
 
     public int animParameter;

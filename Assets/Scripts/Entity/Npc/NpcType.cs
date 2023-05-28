@@ -1,5 +1,7 @@
-﻿namespace Entity.Npc {
-  public enum NpcType {
+﻿namespace Entity.Npc
+{
+  public enum NpcType
+  {
     None,
     Shop,
     Chest,

@@ -2,21 +2,24 @@
 using UnityEngine;
 using Window;
 
-namespace Entity.Player {
-  public class PlayerMovement : Movement {
+namespace Entity.Player
+{
+  public class PlayerMovement : Movement
+  {
     public bool isInputCooldown => curInputCooldown < inputCooldown;
     public float inputCooldown = 0.5f;
     private float curInputCooldown;
 
     [SerializeField]
     private KeyCode jumpKey = KeyCode.Space;
-    
+
     private PlayerStatus status => controller.status;
 
     // Components
     private PlayerController controller;
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
       base.Awake();
       animator = GetComponent<Animator>();
       controller = GetComponent<PlayerController>();
@@ -24,18 +27,21 @@ namespace Entity.Player {
       curInputCooldown = inputCooldown;
     }
 
-    protected override void Update() {
+    protected override void Update()
+    {
       base.Update();
-      if (isInputCooldown) {
+      if (isInputCooldown)
         curInputCooldown += Time.deltaTime;
-      } else {
+      else
+      {
         if (InputBoxWindow.isEnabled) return;
         var horizontal = Input.GetAxisRaw("Horizontal");
         moveSpeed = status.moveSpeed;
         jumpPower = status.jumpPower;
         animator.SetFloat("moveSpeed", Mathf.Max(1f, status.moveSpeed));
         Move(horizontal);
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
           AudioManager.Play("jump");
           Jump();
         }

@@ -1,8 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Entity.Item {
-  public class ItemController : Entity {
+namespace Entity.Item
+{
+  public class ItemController : Entity
+  {
     public override EntityType type => EntityType.Item;
 
     public (Item item, byte count) data;
@@ -21,7 +23,7 @@ namespace Entity.Item {
 
     [HideInInspector]
     public bool isPickingUp;
-    
+
     [HideInInspector]
     public bool isThrowing;
 
@@ -29,30 +31,35 @@ namespace Entity.Item {
 
     private Action<(Item item, byte count)> callback;
 
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
       rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update() {
-      if (isPickingUp) {
+    private void Update()
+    {
+      if (isPickingUp)
         transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * pickupSpeed);
-      }
     }
 
-    public void SetItem(Item item, byte count = 1) {
+    public void SetItem(Item item, byte count = 1)
+    {
       this.data = (item, count);
-      if (item == null) {
+      if (item == null)
+      {
         entityName = string.Empty;
-        for (var i = 0; i < sprRenderers.Length; i++) {
+        for (var i = 0; i < sprRenderers.Length; i++)
+        {
           sprRenderers[i].sprite = ItemManager.GetInstance().noneSprite;
           sprRenderers[i].enabled = false;
         }
 
         return;
       }
-      
+
       entityName = $"{item._name}{(count == 1 ? "" : $"x{count}")}";
-      for (var i = 0; i < sprRenderers.Length; i++) {
+      for (var i = 0; i < sprRenderers.Length; i++)
+      {
         sprRenderers[i].sprite = item.sprite;
         sprRenderers[i].enabled = countSprite[i] <= data.count;
       }
@@ -62,32 +69,43 @@ namespace Entity.Item {
       SetItem(ItemManager.Instance.GetWithCode(uniqueName), count);
 
 
-    public void PickUp(Transform target, Action<(Item item, byte count)> callback) {
+    public void PickUp(Transform target, Action<(Item item, byte count)> callback)
+    {
       this.callback = callback;
       this.target = target;
       isPickingUp = true;
     }
 
-    public override void Release() {
+    public override void Release()
+    {
       SetItem(item: null);
       isPickingUp = false;
       base.Release();
     }
 
-    private void OnTriggerStay2D(Collider2D col) {
-      if (isPickingUp) {
-        if (col.transform.name == target.name) {
+    private void OnTriggerStay2D(Collider2D col)
+    {
+      if (isPickingUp)
+      {
+        if (col.transform.name == target.name)
+        {
           callback.Invoke(data);
           Release();
         }
-      } else if (col.CompareTag("Item")) {
+      }
+      else if (col.CompareTag("Item"))
+      {
         var item = col.GetComponent<ItemController>();
-        if (item.data.item == this.data.item && item.data.count != byte.MaxValue) {
+        if (item.data.item == this.data.item && item.data.count != byte.MaxValue)
+        {
           var plus = item.data.count + this.data.count;
-          if (plus <= byte.MaxValue) {
-            item.SetItem(item.data.item, (byte) (item.data.count + this.data.count));
+          if (plus <= byte.MaxValue)
+          {
+            item.SetItem(item.data.item, (byte)(item.data.count + this.data.count));
             this.Release();
-          } else {
+          }
+          else
+          {
             var left = plus - byte.MaxValue;
             item.SetItem(item.data.item, byte.MaxValue);
             this.SetItem(this.data.item, (byte)left);
@@ -96,14 +114,13 @@ namespace Entity.Item {
       }
     }
 
-    public void Throw(Vector2 direction, float power) {
+    public void Throw(Vector2 direction, float power)
+    {
       rb.velocity = direction.normalized * power;
       isThrowing = true;
       Invoke(nameof(EndThrowing), 2f);
     }
 
     private void EndThrowing() => isThrowing = false;
-
-
   }
 }

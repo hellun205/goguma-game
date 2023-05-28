@@ -4,9 +4,11 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Entity.Npc {
+namespace Entity.Npc
+{
   [Serializable]
-  public abstract class Npc : UnityEngine.ScriptableObject {
+  public abstract class Npc : UnityEngine.ScriptableObject
+  {
     public abstract NpcType type { get; }
 
     [Header("Npc")]

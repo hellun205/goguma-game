@@ -1,5 +1,7 @@
-﻿namespace Entity.Item.Useable {
-  public enum UseableType {
+﻿namespace Entity.Item.Useable
+{
+  public enum UseableType
+  {
     Potion,
     Buff
   }

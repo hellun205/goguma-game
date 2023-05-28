@@ -2,9 +2,11 @@
 using UnityEngine.Serialization;
 using Utils;
 
-namespace Entity.Player {
+namespace Entity.Player
+{
   [Serializable]
-  public struct PlayerStatus {
+  public struct PlayerStatus
+  {
     public float maxHp;
 
     public float hp;
@@ -14,14 +16,16 @@ namespace Entity.Player {
     [FormerlySerializedAs("jumpSpeed")]
     public float jumpPower;
 
-    public static PlayerStatus operator +(PlayerStatus a, PlayerStatus b) => new PlayerStatus() {
+    public static PlayerStatus operator +(PlayerStatus a, PlayerStatus b) => new PlayerStatus()
+    {
       maxHp = a.maxHp + b.maxHp,
       hp = a.hp + b.hp,
       moveSpeed = a.moveSpeed + b.moveSpeed,
       jumpPower = a.jumpPower + b.jumpPower,
     };
 
-    public static PlayerStatus operator -(PlayerStatus a, PlayerStatus b) => new PlayerStatus() {
+    public static PlayerStatus operator -(PlayerStatus a, PlayerStatus b) => new PlayerStatus()
+    {
       maxHp = a.maxHp - b.maxHp,
       hp = a.hp - b.hp,
       moveSpeed = a.moveSpeed - b.moveSpeed,

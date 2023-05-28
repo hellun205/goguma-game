@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Entity.UI {
+namespace Entity.UI
+{
   /// <summary>
   /// DisplayText 엔티티의 컴포넌트
   /// </summary>
-  public class DisplayText : UIEntity {
+  public class DisplayText : UIEntity
+  {
     public override EntityType type => EntityType.DisplayText;
 
     /// <summary>
@@ -26,15 +28,15 @@ namespace Entity.UI {
     /// <summary>
     /// 표시할 내용을 지정합니다.
     /// </summary>
-    public string text {
+    public string text
+    {
       get => textTMP.text;
       set => textTMP.text = value;
     }
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
       base.Awake();
     }
-
-    // private void OnBecameInvisible() => pool.Release(this);
   }
 }

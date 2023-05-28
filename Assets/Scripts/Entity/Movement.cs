@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
-namespace Entity {
-  public class Movement : MonoBehaviour {
+namespace Entity
+{
+  public class Movement : MonoBehaviour
+  {
     protected new Rigidbody2D rigidbody;
 
     [Header("Movement - basic")]
@@ -13,7 +15,8 @@ namespace Entity {
     [HideInInspector]
     public float direction;
 
-    public Vector2 dirVector => currentDirection switch {
+    public Vector2 dirVector => currentDirection switch
+    {
       Direction.Left => Vector2.left,
       Direction.None => Vector2.zero,
       Direction.Right => Vector2.right,
@@ -49,7 +52,8 @@ namespace Entity {
 
     protected Animator animator;
 
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
       rigidbody = GetComponent<Rigidbody2D>();
       animator = GetComponent<Animator>();
 
@@ -60,22 +64,23 @@ namespace Entity {
       checkDistanceY = bounds.extents.y + 0.05f;
     }
 
-    protected virtual void FixedUpdate() {
+    protected virtual void FixedUpdate()
+    {
       transform.Translate(direction * moveSpeed * Time.fixedDeltaTime, 0f, 0f);
     }
 
-    protected virtual void Update() {
-      // var velocity = rigidbody.velocity;
-      // velocity.x = direction * moveSpeed;
-      // rigidbody.velocity = velocity;
-
+    protected virtual void Update()
+    {
       animator.SetBool(walkingAnim, Mathf.Abs(direction) > 0);
       CheckGround();
       Flip();
     }
 
-    protected virtual void Jump() {
-      if (!canJump) return;
+    protected virtual void Jump()
+    {
+      if (!canJump)
+        return;
+
       SetJump(true);
       rigidbody.velocity = Vector2.up * jumpPower;
     }
@@ -84,7 +89,8 @@ namespace Entity {
 
     protected void Move(Direction dir) => direction = (float)dir;
 
-    protected void CheckGround() {
+    protected void CheckGround()
+    {
       const float distance = 0.1f;
       var pos = GetColliderCenter();
       var leftVector = new Vector2(pos.x - checkDistanceX, pos.y - checkDistanceY);
@@ -96,20 +102,26 @@ namespace Entity {
       Debug.DrawRay(leftVector, Vector3.down * distance, Color.green);
       Debug.DrawRay(rightVector, Vector3.down * distance, Color.green);
 
-      var check = (hitLeft && hitLeft.transform.CompareTag(groundTag)) ||
-                  (hitRight && hitRight.transform.CompareTag(groundTag));
+      var check = (
+        hitLeft
+          && hitLeft.transform.CompareTag(groundTag))
+          || hitRight
+            && hitRight.transform.CompareTag(groundTag);
 
       canJump = check;
       SetJump(!check);
-      // Debug.Log(check);
     }
 
     protected void SetJump(bool value) => animator.SetBool(jumpingAnim, value);
 
-    protected void Flip() {
-      if (!canFlip) return;
+    protected void Flip()
+    {
+      if (!canFlip)
+        return;
+
       var scale = transform.localScale;
-      scale.x = direction switch {
+      scale.x = direction switch
+      {
         > 0 => Mathf.Abs(scale.x),
         < 0 => -Mathf.Abs(scale.x),
         _ => scale.x
@@ -119,7 +131,8 @@ namespace Entity {
       currentDirection = scale.x > 0 ? Direction.Right : Direction.Left;
     }
 
-    protected Vector2 GetColliderCenter() {
+    protected Vector2 GetColliderCenter()
+    {
       var position = (Vector2)transform.position;
       var offset = collider.offset;
 
