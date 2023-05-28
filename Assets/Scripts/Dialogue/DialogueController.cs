@@ -8,11 +8,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Dialogue {
+namespace Dialogue
+{
   /// <summary>
   /// 플레이어와, Npc 등 대화 기능에 관련된 컨트롤러 입니다. (싱글톤)
   /// </summary>
-  public class DialogueController : MonoBehaviour {
+  public class DialogueController : MonoBehaviour
+  {
     /// <summary>
     /// 현재 인스턴스를 가져옵니다. (싱글톤)
     /// </summary>
@@ -134,32 +136,32 @@ namespace Dialogue {
     /// 현재 대화의 글자 배열
     /// </summary>
     private char[] curText;
-    
+
     /// <summary>
     /// 현재 대화의 글자 인덱스
     /// </summary>
     private int curTextIndex;
-    
+
     /// <summary>
     /// 현재 글자를 적고 있는지 여부
     /// </summary>
     private bool isWriting;
-    
+
     /// <summary>
     /// 여러 개의 대화를 실행하고 있는지 여부
     /// </summary>
     private bool isMulti;
-    
+
     /// <summary>
     /// 여러 개의 대화 데이터 리스트
     /// </summary>
     private DialogueData[] multiList;
-    
+
     /// <summary>
     /// 여러 개의 대화 중 현재 대화 번호
     /// </summary>
     private int multIndex;
-    
+
     /// <summary>
     /// 질문 형식 대화 데이터
     /// <param name="isAsk">질문 형식인지 여부</param>
@@ -167,13 +169,14 @@ namespace Dialogue {
     /// <param name="no">아니요 버튼 텍스트</param>
     /// </summary>
     private (bool isAsk, string yes, string no) ask;
-    
+
     /// <summary>
     /// 대화가 종료된 후 콜백합니다.
     /// </summary>
     private Action<bool> callback;
 
-    private void Awake() {
+    private void Awake()
+    {
       if (Instance == null) Instance = this;
       else Destroy(this);
       // DontDestroyOnLoad(gameObject);
@@ -189,7 +192,8 @@ namespace Dialogue {
     /// </summary>
     /// <param name="speaker">현재 말하는 사람의 정보</param>
     /// <param name="isAsk">대화 형식이 질문 형식인지 여부</param>
-    private void ResetUI(Speaker speaker = null, bool isAsk = false) {
+    private void ResetUI(Speaker speaker = null, bool isAsk = false)
+    {
       speakerName.text = string.Empty;
       text.text = string.Empty;
       speakerName.alignment = TextAlignmentOptions.TopLeft;
@@ -200,9 +204,11 @@ namespace Dialogue {
       nextBtn.gameObject.SetActive(false);
       previousBtn.gameObject.SetActive(false);
 
-      if (speaker == null) return;
+      if (speaker == null)
+        return;
 
-      switch (speaker.avatarPosition) {
+      switch (speaker.avatarPosition)
+      {
         case AvatarPosition.Left:
           leftAvatar.gameObject.SetActive(true);
           leftAvatar.sprite = speaker.avatarSprite;
@@ -225,31 +231,40 @@ namespace Dialogue {
     /// <summary>
     /// 키 입력을 확인하고, 키에 따라 함수 실행
     /// </summary>
-    private void Update() {
-      if (!isEnabled || PlayerController.Instance.isInputCooldown) return;
-      
+    private void Update()
+    {
+      if (!isEnabled || PlayerController.Instance.isInputCooldown)
+        return;
+
       // 스킵
-      if (Input.GetKeyDown(nextKey) && isWriting) {
-        if (!skipable) return;
-        for (var i = curTextIndex; i < curText.Length; i++) {
+      if (Input.GetKeyDown(nextKey) && isWriting)
+      {
+        if (!skipable)
+          return;
+
+        for (var i = curTextIndex; i < curText.Length; i++)
           text.text += curText[i];
-        }
+
         EndWriting();
         PlayerController.Instance.EnableInputCooldown();
       }
-      
-      if (PlayerController.Instance.isInputCooldown) return;
-      if (ask.isAsk) {
-        // 예
-        if (Input.GetKeyDown(yesKey)) NextOrCloseOrYes();
-        // 아니요
-        else if (Input.GetKeyDown(noKey)) PreviousOrNo();
-        
-      } else {
-        // 다음 / 확인
-        if (Input.GetKeyDown(nextKey)) {
+
+      if (PlayerController.Instance.isInputCooldown)
+        return;
+
+      if (ask.isAsk)
+      {
+        if (Input.GetKeyDown(yesKey))
           NextOrCloseOrYes();
-        }
+        else if (Input.GetKeyDown(noKey))
+          PreviousOrNo();
+
+      }
+      else
+      {
+        // 다음 / 확인
+        if (Input.GetKeyDown(nextKey))
+          NextOrCloseOrYes();
       }
     }
 
@@ -257,10 +272,13 @@ namespace Dialogue {
     /// 대화 창을 닫습니다.
     /// </summary>
     /// <param name="btn"></param>
-    private void Close(bool? btn = null) {
+    private void Close(bool? btn = null)
+    {
       panel.SetActive(false);
       isEnabled = false;
-      if (btn.HasValue) callback?.Invoke(btn.Value);
+
+      if (btn.HasValue)
+        callback?.Invoke(btn.Value);
     }
 
     /// <summary>
@@ -269,8 +287,11 @@ namespace Dialogue {
     /// <param name="dialogue">대화 데이터</param>
     /// <param name="callback">대화 종료 후 콜백(참 반환)</param>
     /// <param name="isAsk">대화 형식이 질문 형식인지 여부</param>
-    public void ShowDialogue(DialogueData dialogue, [CanBeNull] Action<bool> callback = null, bool isAsk = false) {
-      if (isEnabled) return;
+    public void ShowDialogue(DialogueData dialogue, [CanBeNull] Action<bool> callback = null, bool isAsk = false)
+    {
+      if (isEnabled)
+        return;
+
       isEnabled = true;
       panel.gameObject.SetActive(true);
       ResetUI(dialogue.speaker, isAsk);
@@ -286,8 +307,11 @@ namespace Dialogue {
     /// </summary>
     /// <param name="dialogues">대화 데이터 묶음</param>
     /// <param name="callback">대화 종료 후 콜백(참 반환)</param>
-    public void ShowDialogues(DialogueData[] dialogues, [CanBeNull] Action<bool> callback = null) {
-      if (isEnabled) return;
+    public void ShowDialogues(DialogueData[] dialogues, [CanBeNull] Action<bool> callback = null)
+    {
+      if (isEnabled)
+        return;
+
       isEnabled = true;
       panel.gameObject.SetActive(true);
       isMulti = true;
@@ -304,7 +328,8 @@ namespace Dialogue {
     /// <param name="callback">대화 종료 후 콜백(예: 참, 아니요: 거짓 반환)</param>
     /// <param name="yesText">예 버튼의 텍스트</param>
     /// <param name="noText">아니요 버튼의 텍스트</param>
-    public void Ask(DialogueData dialogue, Action<bool> callback, string yesText = "예", string noText = "아니요") {
+    public void Ask(DialogueData dialogue, Action<bool> callback, string yesText = "예", string noText = "아니요")
+    {
       ask.yes = yesText;
       ask.no = noText;
       ShowDialogue(dialogue, callback, true);
@@ -313,7 +338,8 @@ namespace Dialogue {
     /// <summary>
     /// 다음 대화를 설정하고, 글자를 적기 시작합니다.
     /// </summary>
-    private void SetMultiDialogue() {
+    private void SetMultiDialogue()
+    {
       var dialogue = multiList[multIndex];
       ResetUI(dialogue.speaker);
       curText = dialogue.text.ToCharArray();
@@ -323,7 +349,8 @@ namespace Dialogue {
     /// <summary>
     /// 글자를 적기 시작합니다.
     /// </summary>
-    private void StartWrite() {
+    private void StartWrite()
+    {
       curTextIndex = 0;
       isWriting = true;
       PlayerController.Instance.EnableInputCooldown();
@@ -333,8 +360,10 @@ namespace Dialogue {
     /// <summary>
     /// 다음 글자를 적습니다.
     /// </summary>
-    private void Write() {
-      if (curText.Length <= curTextIndex) {
+    private void Write()
+    {
+      if (curText.Length <= curTextIndex)
+      {
         EndWriting();
         return;
       }
@@ -346,7 +375,8 @@ namespace Dialogue {
     /// <summary>
     /// 대화를 중단하고, 버튼들을 활성화 합니다.
     /// </summary>
-    private void EndWriting() {
+    private void EndWriting()
+    {
       isWriting = false;
       CancelInvoke("Write");
       ShowBtns();
@@ -355,20 +385,28 @@ namespace Dialogue {
     /// <summary>
     /// 대화 창의 버튼들을 활성화하고, 형식에 따라 버튼의 모양새를 바꿉니다.
     /// </summary>
-    private void ShowBtns() {
+    private void ShowBtns()
+    {
       SetBtnColor(ask.isAsk, yesColor, noColor, defaultColor);
       Debug.Log(ask.isAsk);
-      if (ask.isAsk) {
+
+      if (ask.isAsk)
+      {
         nextBtnText.text = ask.yes;
         previousBtnText.text = ask.no;
         previousBtn.gameObject.SetActive(true);
         nextBtn.gameObject.SetActive(true);
-      } else {
-        if (isMulti) {
+      }
+      else
+      {
+        if (isMulti)
+        {
           nextBtnText.text = (multIndex < multiList.Length - 1 ? "다음" : "확인");
           previousBtn.gameObject.SetActive(multIndex > 0);
           nextBtn.gameObject.SetActive(true);
-        } else {
+        }
+        else
+        {
           nextBtnText.text = "확인";
           nextBtn.gameObject.SetActive(true);
         }
@@ -378,29 +416,33 @@ namespace Dialogue {
     /// <summary>
     /// 대화 창의 버튼들을 비활성화 합니다.
     /// </summary>
-    private void HideBtns() {
+    private void HideBtns()
+    {
       nextBtn.gameObject.SetActive(false);
       previousBtn.gameObject.SetActive(false);
     }
 
     public void OnNextButtonClick() => NextOrCloseOrYes();
-    
+
     public void OnPreviousButtonClick() => PreviousOrNo();
 
     /// <summary>
     /// 다음, 확인 또는 예(질문)
     /// </summary>
-    private void NextOrCloseOrYes() {
-      if (ask.isAsk) {
+    private void NextOrCloseOrYes()
+    {
+      if (ask.isAsk)
         Close(true);
-      } else {
-        if (isMulti && multIndex < multiList.Length - 1) {
+      else
+      {
+        if (isMulti && multIndex < multiList.Length - 1)
+        {
           multIndex++;
           HideBtns();
           SetMultiDialogue();
-        } else {
-          Close(true);
         }
+        else
+          Close(true);
       }
 
       PlayerController.Instance.EnableInputCooldown();
@@ -409,11 +451,15 @@ namespace Dialogue {
     /// <summary>
     /// 이전 또는 아니요(질문)
     /// </summary>
-    private void PreviousOrNo() {
-      if (ask.isAsk) {
+    private void PreviousOrNo()
+    {
+      if (ask.isAsk)
         Close(false);
-      } else {
-        if (multIndex <= 0) return;
+      else
+      {
+        if (multIndex <= 0)
+          return;
+
         multIndex--;
         HideBtns();
         SetMultiDialogue();
@@ -429,11 +475,15 @@ namespace Dialogue {
     /// <param name="yesColor">예 버튼 색</param>
     /// <param name="noColor">아니요 버튼 색</param>
     /// <param name="defColor">일반 버튼 색</param>
-    private void SetBtnColor(bool isAsk, Color yesColor, Color noColor, Color defColor) {
-      if (isAsk) {
+    private void SetBtnColor(bool isAsk, Color yesColor, Color noColor, Color defColor)
+    {
+      if (isAsk)
+      {
         nextBtnImg.color = yesColor;
         previousBtnImg.color = noColor;
-      } else {
+      }
+      else
+      {
         nextBtnImg.color = defColor;
         previousBtnImg.color = defColor;
       }
