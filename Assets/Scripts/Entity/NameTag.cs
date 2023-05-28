@@ -8,7 +8,6 @@ namespace Entity {
   /// 엔티티의 이름을 표시 하는 컴포넌트
   /// </summary>
   public class NameTag : MonoBehaviour {
-
     /// <summary>
     /// 이름표 엔티티
     /// </summary>
@@ -19,39 +18,31 @@ namespace Entity {
     /// </summary>
     private Entity entity;
 
-    /// <summary>
-    /// 이름표의 위치
-    /// </summary>
     [SerializeField]
-    private Transform position;
+    private Collider2D col;
+
+    [SerializeField]
+    private float distance = 0.1f;
+
+    private float colDistance;
+
+    private Vector2 GetPos() => new Vector2(entity.position.x, entity.position.y + colDistance + distance);
 
     private void Awake() {
       entity = GetComponent<Entity>();
-      // Init();
+      colDistance = col.bounds.extents.y;
       EntityManager.Instance.onGetAfter += OnGetEntity;
       EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
     }
 
     private void Update() {
-      Refresh();
-    }
-
-    /// <summary>
-    /// 새로고침 합니다.
-    /// </summary>
-    private void Refresh() {
       displayText.text = entity.entityName;
-      displayText.position = position.position;
+      displayText.position = GetPos();
     }
-
-    private void Init() {
-      displayText = (DisplayText) EntityManager.Get(EntityType.DisplayText);
-      Refresh();
-    }
-
+    
     public void OnGetEntity(Entity entity) {
       if (entity == this.entity) {
-        Init();
+        displayText = Entity.SummonDisplayText(GetPos(), entity.entityName);
       }
     }
 
@@ -61,5 +52,9 @@ namespace Entity {
       }
     }
 
+    private void OnDestroy() {
+      EntityManager.Instance.onGetAfter -= OnGetEntity;
+      EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
+    }
   }
 }

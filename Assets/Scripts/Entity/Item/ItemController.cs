@@ -1,8 +1,5 @@
 ﻿using System;
-using Entity.UI;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Entity.Item {
   public class ItemController : Entity {
@@ -16,24 +13,7 @@ namespace Entity.Item {
     [SerializeField]
     private byte[] countSprite;
 
-    [SerializeField]
-    private Transform imgTrans;
-
-    private NameTag nTag;
     private Rigidbody2D rb;
-    private int direction = 1;
-
-    [SerializeField]
-    [Range(0.2f, 0.4f)]
-    private float maxY = 0.2f;
-
-    [SerializeField]
-    [Range(0f, 0.1f)]
-    private float limitY = 0.05f;
-
-    [SerializeField]
-    [Range(0.1f, 5f)]
-    private float speed = 10f;
 
     [SerializeField]
     [Range(1f, 10f)]
@@ -49,30 +29,17 @@ namespace Entity.Item {
 
     private Action<(Item item, byte count)> callback;
 
-    private void Awake() {
-      nTag = GetComponent<NameTag>();
+    protected virtual void Awake() {
       rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update() {
-      if (!isPickingUp) {
-        var pos = imgTrans.localPosition;
-
-        // transform.Rotate(Vector3.up * (Time.fixedDeltaTime * 10f));
-        if (direction == 1 && pos.y >= maxY - limitY) {
-          direction = -1;
-        } else if (direction == -1 && pos.y <= 0 + limitY) {
-          direction = 1;
-        }
-
-        var y = Mathf.Lerp(pos.y, direction == 1 ? maxY : 0f, Time.deltaTime * speed);
-        imgTrans.localPosition = new Vector3(pos.x, y, pos.z);
-      } else {
+      if (isPickingUp) {
         transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * pickupSpeed);
       }
     }
 
-    public void SetItem(Item item, byte count = 1, Vector3? position = null) {
+    public void SetItem(Item item, byte count = 1) {
       this.data = (item, count);
       if (item == null) {
         entityName = string.Empty;
@@ -89,13 +56,10 @@ namespace Entity.Item {
         sprRenderers[i].sprite = item.sprite;
         sprRenderers[i].enabled = countSprite[i] <= data.count;
       }
-
-      if (position.HasValue)
-        transform.position = position.Value;
     }
 
-    public void SetItem(string uniqueName, byte count = 1, Vector3? position = null) =>
-      SetItem(ItemManager.Instance.GetWithCode(uniqueName), count, position);
+    public void SetItem(string uniqueName, byte count = 1) =>
+      SetItem(ItemManager.Instance.GetWithCode(uniqueName), count);
 
 
     public void PickUp(Transform target, Action<(Item item, byte count)> callback) {
@@ -132,8 +96,7 @@ namespace Entity.Item {
       }
     }
 
-    public void Throw(Vector2 startPosition, Vector2 direction, float power) {
-      position = startPosition;
+    public void Throw(Vector2 direction, float power) {
       rb.velocity = direction.normalized * power;
       isThrowing = true;
       Invoke(nameof(EndThrowing), 2f);

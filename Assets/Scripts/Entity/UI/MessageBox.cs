@@ -31,7 +31,7 @@ namespace Entity.UI {
       text.text = messageData.text;
       callBack = endCallback;
       RefreshPosition();
-      Invoke("Close", messageData.exitTime);
+      Invoke(nameof(Close), messageData.exitTime);
     }
 
     /// <summary>
@@ -41,6 +41,5 @@ namespace Entity.UI {
       callBack?.Invoke();
       Release();
     }
-    
   }
 }
