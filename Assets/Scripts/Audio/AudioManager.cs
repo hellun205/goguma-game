@@ -31,7 +31,10 @@ namespace Audio
 
     public void PlaySound(AudioData audioData, float delay = 0f)
     {
-      var src = srcs.Where(source => !source.isPlaying).ToArray()[0];
+      var src = srcs.FirstOrDefault(source => !source.isPlaying);
+      if (src is null)
+        return;
+      
       src.clip = audioData.audioClip;
       src.pitch = audioData.pitch;
       src.loop = audioData.loop;
@@ -39,11 +42,11 @@ namespace Audio
     }
 
     public void PlaySound(string clipName, float delay = 0f) =>
-      PlaySound(clips.Where(clip => clip.name == clipName).Single(), delay);
+      PlaySound(clips.Single(clip => clip.name == clipName), delay);
 
     public void SetVolumes(float value)
     {
-      if (srcs != null && srcs.Count > 0)
+      if (srcs is not null && srcs.Count > 0)
         foreach (var src in srcs)
           src.volume = value;
     }

@@ -8,6 +8,7 @@ using Inventory;
 using Inventory.QuickSlot;
 using UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Window;
 
 namespace Entity.Player
@@ -357,9 +358,10 @@ namespace Entity.Player
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
 
-      Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
+      // Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
 
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
+      SceneManager.LoadScene("Scenes/Maps/Test");
     }
 
     private void CheckNpc()

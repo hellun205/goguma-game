@@ -9,6 +9,7 @@ TagManager:
   - Npc
   - EntityCollection
   - Item
+  - PlayerStartPosition
   layers:
   - Default
   - TransparentFX
@@ -48,6 +49,12 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 84177943
+    locked: 0
+  - name: Npc
+    uniqueID: 1429639693
     locked: 0
   - name: Item
     uniqueID: 1623085697

@@ -34,6 +34,10 @@ namespace Camera
     /// 카메라의 위치를 제한할지 설정합니다.
     /// </summary>
     public bool clamp = false;
+
+    public Vector2 add;
+
+    public ParallaxBG parallaxBG;
     
     private void Awake()
     {
@@ -61,7 +65,7 @@ namespace Camera
     private void FollowPlayer()
     {
       var targetPos = PlayerController.Instance.transform.position;
-      targetPos = new Vector3(targetPos.x, targetPos.y, this.transform.position.z);
+      targetPos = new Vector3(targetPos.x + add.x, targetPos.y + add.y, this.transform.position.z);
 
       if (clamp)
       {
