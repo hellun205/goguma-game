@@ -758,6 +758,9 @@ MonoBehaviour:
   canFlip: 1
   currentDirection: 0
   groundTag: Ground
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
   walkingAnim: isWalking
   jumpingAnim: isJumping
   inputCooldown: 0.3

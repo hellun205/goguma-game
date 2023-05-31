@@ -40,8 +40,8 @@ namespace Entity
 
     private float checkDistanceY;
 
-    // [SerializeField]
-    // private LayerMask layerMask;
+    [SerializeField]
+    private LayerMask layerMask;
 
     [Header("Animation Parameters")]
     [SerializeField]
@@ -61,7 +61,7 @@ namespace Entity
 
       var bounds = collider.bounds;
       checkDistanceX = bounds.extents.x;
-      checkDistanceY = bounds.extents.y + 0.35f;
+      checkDistanceY = bounds.extents.y + 0.1f;
     }
 
     protected virtual void FixedUpdate()
@@ -91,19 +91,19 @@ namespace Entity
 
     protected void CheckGround()
     {
-      const float distance = 0.25f;
+      const float distance = 0.3f;
       var pos = GetColliderCenter();
-      var leftVector = new Vector2(pos.x - checkDistanceX, pos.y - checkDistanceY);
-      var rightVector = new Vector2(pos.x + checkDistanceX, pos.y - checkDistanceY);
+      var leftVector = new Vector2(pos.x, pos.y - checkDistanceY);
 
-      var hitLeft = Physics2D.Raycast(leftVector, Vector2.down, distance);
-      var hitRight = Physics2D.Raycast(pos, Vector2.down, distance);
+      var hitLeft = Physics2D.Raycast(leftVector, Vector2.down, distance, layerMask);
+      // var hitRight = Physics2D.Raycast(pos, Vector2.down, distance, layerMask);
 
       Debug.DrawRay(leftVector, Vector3.down * distance, Color.green);
-      Debug.DrawRay(rightVector, Vector3.down * distance, Color.green);
 
-      var check = (hitLeft && hitLeft.transform.CompareTag(groundTag))
-          || (hitRight && hitRight.transform.CompareTag(groundTag));
+      // var check = (hitLeft && hitLeft.transform.CompareTag(groundTag))
+      //     || (hitRight && hitRight.transform.CompareTag(groundTag));
+
+      var check = (hitLeft && hitLeft.transform.CompareTag(groundTag));
 
       canJump = check;
       SetJump(!check);
