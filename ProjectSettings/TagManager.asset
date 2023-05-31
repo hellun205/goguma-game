@@ -10,6 +10,7 @@ TagManager:
   - EntityCollection
   - Item
   - PlayerStartPosition
+  - UIEntityCollection
   layers:
   - Default
   - TransparentFX

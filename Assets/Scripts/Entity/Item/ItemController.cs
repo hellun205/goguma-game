@@ -5,7 +5,8 @@ namespace Entity.Item
 {
   public class ItemController : Entity
   {
-    public override EntityType type => EntityType.Item;
+    public static EntityType Type => EntityType.Item; 
+    public override EntityType type => Type;
 
     public (Item item, byte count) data;
 
@@ -42,7 +43,7 @@ namespace Entity.Item
         transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * pickupSpeed);
     }
 
-    public void SetItem(Item item, byte count = 1)
+    public void Init(Item item, byte count = 1)
     {
       this.data = (item, count);
       if (item == null)
@@ -65,8 +66,8 @@ namespace Entity.Item
       }
     }
 
-    public void SetItem(string uniqueName, byte count = 1) =>
-      SetItem(ItemManager.Instance.GetWithCode(uniqueName), count);
+    public void Init(string uniqueName, byte count = 1) =>
+      Init(ItemManager.Instance.GetWithCode(uniqueName), count);
 
 
     public void PickUp(Transform target, Action<(Item item, byte count)> callback)
@@ -78,7 +79,7 @@ namespace Entity.Item
 
     public override void Release()
     {
-      SetItem(item: null);
+      Init(item: null);
       isPickingUp = false;
       base.Release();
     }
@@ -101,14 +102,14 @@ namespace Entity.Item
           var plus = item.data.count + this.data.count;
           if (plus <= byte.MaxValue)
           {
-            item.SetItem(item.data.item, (byte)(item.data.count + this.data.count));
+            item.Init(item.data.item, (byte)(item.data.count + this.data.count));
             this.Release();
           }
           else
           {
             var left = plus - byte.MaxValue;
-            item.SetItem(item.data.item, byte.MaxValue);
-            this.SetItem(this.data.item, (byte)left);
+            item.Init(item.data.item, byte.MaxValue);
+            this.Init(this.data.item, (byte)left);
           }
         }
       }

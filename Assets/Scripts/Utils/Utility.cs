@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Utils
 {
@@ -15,6 +16,16 @@ namespace Utils
         return screenPos;
 
       return screenPoint;
+    }
+    
+    public static T GetTypeProperty<T>(this Type type, string propertyName = "Type")
+    {
+      var _type = type.GetProperty(propertyName);
+      if (_type is not null)
+        return (T) _type.GetValue(null);
+      
+      Debug.LogError("Can't find type property");
+      return default;
     }
   }
 }

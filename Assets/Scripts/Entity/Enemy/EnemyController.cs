@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using Entity.UI;
 using JetBrains.Annotations;
+using Manager;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,8 +10,8 @@ namespace Entity.Enemy
 {
   public class EnemyController : Entity
   {
-    public override EntityType type => EntityType.Enemy;
-
+    public static EntityType Type => EntityType.Enemy; 
+    public override EntityType type => Type;
 
     public EnemyStatus status;
 
@@ -51,7 +53,7 @@ namespace Entity.Enemy
         : new Vector2(-1, 2);
 
       // hit damage
-      Entity.SummonHitDamage(position, Mathf.RoundToInt(damage));
+      Managers.Entity.GetEntity<DamageText>(position, x => x.damage = Mathf.RoundToInt(damage));
 
       // hp
       status.hp = Mathf.Max(status.hp - damage, 0f);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Entity.UI;
+using Manager;
 using UnityEngine;
 
 namespace Entity
@@ -47,7 +48,7 @@ namespace Entity
     public void OnGetEntity(Entity entity)
     {
       if (entity == this.entity)
-        displayText = Entity.SummonDisplayText(GetPos(), entity.entityName);
+        displayText = Managers.Entity.GetEntity<DisplayText>(GetPos(), x => x.text = entity.entityName);
     }
 
     public void OnReleasedEntity(Entity entity)

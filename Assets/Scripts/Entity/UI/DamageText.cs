@@ -9,7 +9,8 @@ namespace Entity.UI
 {
   public class DamageText : UIEntity
   {
-    public override EntityType type => EntityType.DamageText;
+    public static EntityType Type => EntityType.DamageText; 
+    public override EntityType type => Type;
 
     [Header("UI Object")]
     [SerializeField]
