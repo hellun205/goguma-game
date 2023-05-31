@@ -364,6 +364,7 @@ namespace Entity.Player
       // Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
 
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
+      inventory.GainItem(ItemManager.Instance.GetWithCode("sword"));
       SceneManager.LoadScene("Scenes/Maps/Test");
     }
 

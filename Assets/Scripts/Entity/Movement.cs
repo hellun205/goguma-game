@@ -61,7 +61,7 @@ namespace Entity
 
       var bounds = collider.bounds;
       checkDistanceX = bounds.extents.x;
-      checkDistanceY = bounds.extents.y + 0.05f;
+      checkDistanceY = bounds.extents.y + 0.35f;
     }
 
     protected virtual void FixedUpdate()
@@ -91,7 +91,7 @@ namespace Entity
 
     protected void CheckGround()
     {
-      const float distance = 0.1f;
+      const float distance = 0.25f;
       var pos = GetColliderCenter();
       var leftVector = new Vector2(pos.x - checkDistanceX, pos.y - checkDistanceY);
       var rightVector = new Vector2(pos.x + checkDistanceX, pos.y - checkDistanceY);
@@ -102,11 +102,8 @@ namespace Entity
       Debug.DrawRay(leftVector, Vector3.down * distance, Color.green);
       Debug.DrawRay(rightVector, Vector3.down * distance, Color.green);
 
-      var check = (
-        hitLeft
-          && hitLeft.transform.CompareTag(groundTag))
-          || hitRight
-            && hitRight.transform.CompareTag(groundTag);
+      var check = (hitLeft && hitLeft.transform.CompareTag(groundTag))
+          || (hitRight && hitRight.transform.CompareTag(groundTag));
 
       canJump = check;
       SetJump(!check);
