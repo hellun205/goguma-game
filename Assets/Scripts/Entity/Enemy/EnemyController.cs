@@ -10,7 +10,7 @@ namespace Entity.Enemy
 {
   public class EnemyController : Entity
   {
-    public static EntityType Type => EntityType.Enemy; 
+    public static EntityType Type => EntityType.Enemy;
     public override EntityType type => Type;
 
     public EnemyStatus status;
@@ -53,7 +53,7 @@ namespace Entity.Enemy
         : new Vector2(-1, 2);
 
       // hit damage
-      Managers.Entity.GetEntity<DamageText>(position, x => x.damage = Mathf.RoundToInt(damage));
+      Managers.Entity.GetEntity<DamageText>(position, x => x.Init(Mathf.RoundToInt(damage)));
 
       // hp
       status.hp = Mathf.Max(status.hp - damage, 0f);
@@ -93,33 +93,47 @@ namespace Entity.Enemy
 
     protected virtual IEnumerator DeadCoroutine() => ChangeColorSmooth(Color.clear, 3f, Remove);
 
+    // protected IEnumerator ChangeColorSmooth(Color toColor, float smoothing = 3f, [CanBeNull] Action callback = null)
+    // {
+    //   while (true)
+    //   {
+    //     var color = spriteRenderer.color;
+    //
+    //     float colorLerp(float a, float b)
+    //     {
+    //       var _a = Mathf.Lerp(a, b + (a < b ? 0.4f : -0.4f), Time.deltaTime * smoothing);
+    //       return a < b ? Mathf.Min(_a, b) : Mathf.Max(_a, b);
+    //     }
+    //
+    //     if (!color.Equals(toColor))
+    //     {
+    //       color.r = colorLerp(color.r, toColor.r);
+    //       color.g = colorLerp(color.g, toColor.g);
+    //       color.b = colorLerp(color.b, toColor.b);
+    //       color.a = colorLerp(color.a, toColor.a);
+    //       spriteRenderer.color = color;
+    //       yield return new WaitForNextFrameUnit();
+    //     }
+    //     else
+    //     {
+    //       callback?.Invoke();
+    //       yield break;
+    //     }
+    //   }
+    // }
+
     protected IEnumerator ChangeColorSmooth(Color toColor, float smoothing = 3f, [CanBeNull] Action callback = null)
     {
-      while (true)
+      var timer = 0f;
+      var start = spriteRenderer.color;
+      while (spriteRenderer.color != toColor)
       {
-        var color = spriteRenderer.color;
-
-        float colorLerp(float a, float b)
-        {
-          var _a = Mathf.Lerp(a, b + (a < b ? 0.4f : -0.4f), Time.deltaTime * smoothing);
-          return a < b ? Mathf.Min(_a, b) : Mathf.Max(_a, b);
-        }
-
-        if (!color.Equals(toColor))
-        {
-          color.r = colorLerp(color.r, toColor.r);
-          color.g = colorLerp(color.g, toColor.g);
-          color.b = colorLerp(color.b, toColor.b);
-          color.a = colorLerp(color.a, toColor.a);
-          spriteRenderer.color = color;
-          yield return new WaitForNextFrameUnit();
-        }
-        else
-        {
-          callback?.Invoke();
-          yield break;
-        }
+        yield return new WaitForEndOfFrame();
+        spriteRenderer.color = Color.Lerp(start, toColor, timer);
+        timer += Time.deltaTime * smoothing;
       }
+
+      callback?.Invoke();
     }
 
     protected virtual void Initialize()
@@ -127,18 +141,20 @@ namespace Entity.Enemy
       status.hp = status.maxHp;
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
-      canHit = true;
-      spriteRenderer.color = Color.white;
+      canHit = false;
+      StartCoroutine(ChangeColorSmooth(Color.white, 4f, callback: () => canHit = true));
     }
 
     protected virtual void Remove()
     {
+      spriteRenderer.color = Color.clear;
       Release();
     }
 
     public override void OnGet()
     {
       base.OnGet();
+      spriteRenderer.color = Color.clear;
       Initialize();
     }
   }

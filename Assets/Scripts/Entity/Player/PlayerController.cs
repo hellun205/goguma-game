@@ -187,9 +187,9 @@ namespace Entity.Player
     private void DebugKey()
     {
       if (Input.GetKeyDown(KeyCode.F6))
-        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x + 3f, 5f));
+        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
       else if (Input.GetKeyDown(KeyCode.F7))
-        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x + 3f, 5f),
+        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
           x => x.Init("appleBuff"));
     }
 

@@ -60,7 +60,7 @@ namespace Entity.UI
       }
     }
 
-    public void Show(int damage)
+    public void Init(int damage)
     {
       this.damage = damage;
 
