@@ -6,6 +6,7 @@ using Entity.Npc;
 using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
+using Manager;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,8 @@ namespace Entity.Player
 {
   public class PlayerController : Entity
   {
-    public override EntityType type => EntityType.Player;
+    public static EntityType Type => EntityType.Player; 
+    public override EntityType type => Type;
     public static PlayerController Instance { get; private set; }
 
     // Components
@@ -101,8 +103,8 @@ namespace Entity.Player
       quickSlotCtrler.onSlotChanged += OnChangedSlot;
 
       distanceY = col.bounds.extents.y - 0.1f;
-      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
-      InventoryController.Instance.inventory = inventory;
+      inventory = new Inventory.Inventory(InventoryManager.horizontalCount * 7);
+      InventoryManager.Instance.inventory = inventory;
       canDespawn = false;
       quickSlotCtrler.SetIndex(0);
 
@@ -149,7 +151,7 @@ namespace Entity.Player
         }
       }
 
-      if (movement.isInputCooldown || 
+      if (movement.isInputCooldown ||
           InputBoxWindow.isEnabled ||
           DialogueController.Instance.isEnabled)
         return;
@@ -172,22 +174,23 @@ namespace Entity.Player
         "7" => 6,
         "8" => 7,
         "9" => 8,
-        _ => -1
+        _   => -1
       };
 
       if (slotIdx != -1)
       {
-        quickSlotCtrler.SetIndex((byte)slotIdx);
-        AudioManager.Play("click");
+        quickSlotCtrler.SetIndex((byte) slotIdx);
+        Managers.Audio.PlaySFX("click");
       }
     }
 
     private void DebugKey()
     {
       if (Input.GetKeyDown(KeyCode.F6))
-        Entity.SummonEnemy(new Vector2(position.x + 3f, 5f));
+        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x + 3f, 5f));
       else if (Input.GetKeyDown(KeyCode.F7))
-        Entity.SummonItem(new Vector2(position.x + 3f, 5f), ItemManager.GetInstance().GetWithCode("appleBuff"), 20);
+        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x + 3f, 5f),
+          x => x.Init("appleBuff"));
     }
 
     private void OnChangedSlot(byte slotIdx)
@@ -205,7 +208,7 @@ namespace Entity.Player
       skillPanel.x.img.sprite = skillPanel.noneSprite;
       anim.SetInteger(WeaponType, 0);
       canCooldown = item is not null;
-      
+
       if (item is null)
         return;
 
@@ -213,30 +216,30 @@ namespace Entity.Player
       switch (item)
       {
         case WeaponItem weapon:
-          {
-            hand = hands[(int)weapon.weaponType];
-            hand.sprite = weapon.weaponSprite;
-            anim.SetInteger(WeaponType, (int)weapon.weaponType);
-            skillPanel.z.img.sprite = weapon.skill.zSprite;
-            skillPanel.x.img.sprite = weapon.skill.xSprite;
-            break;
-          }
+        {
+          hand = hands[(int) weapon.weaponType];
+          hand.sprite = weapon.weaponSprite;
+          anim.SetInteger(WeaponType, (int) weapon.weaponType);
+          skillPanel.z.img.sprite = weapon.skill.zSprite;
+          skillPanel.x.img.sprite = weapon.skill.xSprite;
+          break;
+        }
 
         case UseableItem useable:
-          {
-            hand = hands[0];
-            hand.sprite = item.sprite;
-            skillPanel.z.img.sprite = item.sprite8x;
-            skillPanel.x.img.sprite = item.sprite8x;
-            break;
-          }
+        {
+          hand = hands[0];
+          hand.sprite = item.sprite;
+          skillPanel.z.img.sprite = item.sprite8x;
+          skillPanel.x.img.sprite = item.sprite8x;
+          break;
+        }
 
         default:
-          {
-            hand = hands[0];
-            hand.sprite = item.sprite;
-            break;
-          }
+        {
+          hand = hands[0];
+          hand.sprite = item.sprite;
+          break;
+        }
       }
 
       hand.color = item.spriteColor;
@@ -294,11 +297,11 @@ namespace Entity.Player
       anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
       // anim.SetTrigger("attack");
-      AudioManager.Play(skill.sound);
+      Managers.Audio.PlaySFX(skill.audio);
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;
-      attackHitPos.x *= (int)movement.currentDirection;
+      attackHitPos.x *= (int) movement.currentDirection;
 
       var colliders = Physics2D.OverlapBoxAll(position + attackHitPos, attackHitSize, 0);
       foreach (var hitCol in colliders)
@@ -313,7 +316,7 @@ namespace Entity.Player
 
     private void OnDrawGizmos()
     {
-      Gizmos.DrawWireCube(transform.position + (Vector3)attackHitPos, attackHitSize);
+      Gizmos.DrawWireCube(transform.position + (Vector3) attackHitPos, attackHitSize);
     }
 
     private void TryInteract()
@@ -330,22 +333,22 @@ namespace Entity.Player
               return;
 
             case WeaponItem weapon:
-              {
-                Attack(weapon.skill, key);
-                break;
-              }
+            {
+              Attack(weapon.skill, key);
+              break;
+            }
 
             case UseableItem useable:
+            {
+              if (curCoolTime <= 0)
               {
-                if (curCoolTime <= 0)
-                {
-                  useable.OnQuickClick();
-                  curCoolTime = useCoolTime;
-                  skillPanel.SetCooldown(useCoolTime, useCoolTime);
-                }
-
-                break;
+                useable.OnQuickClick();
+                curCoolTime = useCoolTime;
+                skillPanel.SetCooldown(useCoolTime, useCoolTime);
               }
+
+              break;
+            }
           }
         }
       }
@@ -400,15 +403,15 @@ namespace Entity.Player
     private void OnPickUpItem((Item.Item item, byte count) data)
     {
       // Debug.Log($"get: {data.item._name}, count: {data.count}");
-      AudioManager.Play("pickup_item");
+      Managers.Audio.PlaySFX("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
-      InventoryController.Instance.Refresh();
+      InventoryManager.Instance.Refresh();
 
       if (left > 0)
         ThrowItem(data.item, left);
     }
 
     public void ThrowItem(Item.Item item, ushort count) =>
-      base.ThrowItem(item, count, (sbyte)(movement.currentDirection == Direction.Left ? -1 : 1));
+      base.ThrowItem(item, count, (sbyte) (movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }

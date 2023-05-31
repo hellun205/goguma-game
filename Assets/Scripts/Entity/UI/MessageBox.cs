@@ -10,7 +10,8 @@ namespace Entity.UI
   /// </summary>
   public class MessageBox : UIEntity
   {
-    public override EntityType type => EntityType.MessageBox;
+    public static EntityType Type => EntityType.MessageBox; 
+    public override EntityType type => Type;
 
     /// <summary>
     /// 메시지 박스의 내용을 표시할 TextMeshProUGUI 컴포넌트를 가져옵니다.
@@ -29,11 +30,10 @@ namespace Entity.UI
     /// </summary>
     /// <param name="messageData">메시지 박스를 설정 할 데이터</param>
     /// <param name="endCallback">메시지 박스가 종료된 후 실행 할 콜백함수</param>
-    public void ShowMessage(MessageData messageData, [CanBeNull] Action endCallback = null)
+    public void Init(MessageData messageData, [CanBeNull] Action endCallback = null)
     {
       text.text = messageData.text;
       callBack = endCallback;
-      RefreshPosition();
       Invoke(nameof(Close), messageData.exitTime);
     }
 

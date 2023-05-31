@@ -10,7 +10,8 @@ namespace Entity.UI
   /// </summary>
   public class DisplayText : UIEntity
   {
-    public override EntityType type => EntityType.DisplayText;
+    public static EntityType Type => EntityType.DisplayText; 
+    public override EntityType type => Type;
 
     /// <summary>
     /// 내용을 표시 할 TextmeshProUGUI 컴포넌트를 가져옵니다.

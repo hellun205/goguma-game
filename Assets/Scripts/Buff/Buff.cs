@@ -2,6 +2,7 @@
 using Entity.Item;
 using Entity.Item.Useable;
 using Entity.Player;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;

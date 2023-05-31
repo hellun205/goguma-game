@@ -4,12 +4,16 @@ using Utils;
 namespace Entity.UI
 {
   /// <summary>
-  /// UI형식의 엔티티의 기능을 가진 클래스 입니다.
+  /// UI Entity component
   /// </summary>
   public abstract class UIEntity : Entity
   {
-    [HideInInspector]
-    public RectTransform rectTransform;
+    protected RectTransform rectTransform { get; private set; }
+
+    private static UnityEngine.Camera cam;
+    
+    private static RectTransform container;
+
     private Vector3 _position;
 
     public override Vector2 position
@@ -18,23 +22,15 @@ namespace Entity.UI
       set
       {
         _position = value;
-        RefreshPosition();
+        rectTransform.anchoredPosition = container.WorldToScreenSpace(_position);
       }
     }
+
     protected virtual void Awake()
     {
       rectTransform = GetComponent<RectTransform>();
-      _position = rectTransform.position.ScreenToWorldPoint();
-    }
-
-    protected virtual void Update()
-    {
-      RefreshPosition();
-    }
-
-    protected void RefreshPosition()
-    {
-      rectTransform.position = position.WorldToScreenPoint();
+      cam ??= UnityEngine.Camera.main;
+      container ??= GameObject.Find("UIEntityContainer").GetComponent<RectTransform>();
     }
   }
 }

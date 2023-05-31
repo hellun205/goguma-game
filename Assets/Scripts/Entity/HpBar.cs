@@ -1,4 +1,5 @@
 ﻿using Entity.UI;
+using Manager;
 using UnityEngine;
 
 namespace Entity
@@ -53,7 +54,7 @@ namespace Entity
 
     public void LoadHpBar()
     {
-      hpBar = Entity.SummonHpBar(GetPos(), curHp, maxHp);
+      hpBar = Managers.Entity.GetEntity<HealthBar>(GetPos(), x => x.Init(curHp, maxHp));
     }
 
     private void OnDestroy()

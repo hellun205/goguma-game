@@ -5,7 +5,8 @@ namespace Entity.UI
 {
   public class HealthBar : UIEntity
   {
-    public override EntityType type => EntityType.HpBar;
+    public static EntityType Type => EntityType.HpBar; 
+    public override EntityType type => Type;
 
     private const float smoothing = 2f;
 
@@ -31,14 +32,19 @@ namespace Entity.UI
       }
     }
 
-    protected override void Update()
+    protected void Update()
     {
-      base.Update();
       yellowSlider.value = Mathf.Lerp(
         yellowSlider.value,
         redSlider.value,
         Time.deltaTime * smoothing
       );
+    }
+
+    public void Init(float value, float maxValue)
+    {
+      this.value = value;
+      this.maxValue = maxValue;
     }
   }
 }

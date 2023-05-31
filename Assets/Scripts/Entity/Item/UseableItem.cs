@@ -1,6 +1,7 @@
 ﻿using Audio;
 using Entity.Item.Useable;
 using Entity.Player;
+using Manager;
 using Utils;
 using Window;
 
@@ -22,7 +23,7 @@ namespace Entity.Item
 
     public virtual void Use()
     {
-      AudioManager.Play(audioWhenUse);
+      Managers.Audio.PlaySFX("eat apple"); 
       onUse?.Invoke(this);
     }
 
