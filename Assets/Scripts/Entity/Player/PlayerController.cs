@@ -297,7 +297,7 @@ namespace Entity.Player
       anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
       // anim.SetTrigger("attack");
-      Managers.Audio.PlaySFX("skill.sound");
+      Managers.Audio.PlaySFX(skill.audio);
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;

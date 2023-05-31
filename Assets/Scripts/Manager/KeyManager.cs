@@ -13,5 +13,7 @@ namespace Manager
     public KeyCode interact3 = KeyCode.C;
 
     public KeyCode jump = KeyCode.Space;
+
+    public KeyCode option = KeyCode.Escape;
   }
 }

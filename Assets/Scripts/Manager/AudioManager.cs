@@ -15,8 +15,8 @@ namespace Manager
 
     private AudioSource _bgmPlayer;
     
-    private float _bgmVol;
-    private float _sfxVol;
+    private float _bgmVol = 1f;
+    private float _sfxVol = 1f;
     public float BGMVolume
     {
       get => _bgmVol;
@@ -74,6 +74,7 @@ namespace Manager
           _sfxPlayer.Add(_sfxGO.AddComponent<AudioSource>());
 
         var player = _sfxPlayer.First(source => !source.isPlaying);
+        player.volume = _sfxVol;
         PlaySound(player, sound);
       }
       else

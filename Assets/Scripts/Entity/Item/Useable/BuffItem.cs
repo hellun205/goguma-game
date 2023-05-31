@@ -1,5 +1,6 @@
 ﻿using Buff;
 using Entity.Player;
+using Manager;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;

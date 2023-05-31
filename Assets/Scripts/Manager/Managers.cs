@@ -6,6 +6,7 @@
     public static InventoryManager Inventory { get; private set; }
     public static KeyManager Key { get; private set; }
     public static EntityManager Entity { get; private set; }
+    public static Option Option { get; private set; }
     
 
     protected override void Awake()
@@ -15,6 +16,7 @@
       Inventory = FindObjectOfType<InventoryManager>();
       Key = FindObjectOfType<KeyManager>();
       Entity = FindObjectOfType<EntityManager>();
+      Option = FindObjectOfType<Option>();
     }
   }
 }
