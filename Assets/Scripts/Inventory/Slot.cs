@@ -27,14 +27,14 @@ namespace Inventory
     [SerializeField]
     private TextMeshProUGUI countTMP;
 
-    private ItemToolTip toolTip => InventoryController.Instance.toolTipPanel;
+    private ItemToolTip toolTip => InventoryManager.Instance.toolTipPanel;
 
-    private Image drgImg => InventoryController.Instance.dragImg;
+    private Image drgImg => InventoryManager.Instance.dragImg;
 
     [HideInInspector]
     public byte index;
 
-    private InventoryController inven => InventoryController.Instance;
+    private InventoryManager InventoryManager => InventoryManager.Instance;
 
     [SerializeField]
     private Sprite noneSprite;
@@ -112,10 +112,10 @@ namespace Inventory
       drgImg.sprite = item.sprite8x;
       drgImg.color = item.spriteColor;
       drgImg.gameObject.SetActive(true);
-      inven.dragedIdx = index;
-      inven.isDragging = true;
+      InventoryManager.dragedIdx = index;
+      InventoryManager.isDragging = true;
       // anim.SetBool(animParameter , false);
-      Managers.Audio.PlaySFX("dragSound");
+      Managers.Audio.PlaySFX("drag_item");
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -129,19 +129,19 @@ namespace Inventory
     public void OnEndDrag(PointerEventData eventData)
     {
       drgImg.gameObject.SetActive(false);
-      inven.isDragging = false;
+      InventoryManager.isDragging = false;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-      if (inven.isDragging)
+      if (InventoryManager.isDragging)
       {
-        var list = quickSlotCtrl.slots.Where(x => x.invenIndex == inven.dragedIdx);
+        var list = quickSlotCtrl.slots.Where(x => x.invenIndex == InventoryManager.dragedIdx);
 
         foreach (var qSlot in list)
           qSlot.invenIndex = index;
 
-        inven.inventory.Move(inven.dragedIdx, index);
+        InventoryManager.inventory.Move(InventoryManager.dragedIdx, index);
       }
     }
   }

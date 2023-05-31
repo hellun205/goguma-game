@@ -102,8 +102,8 @@ namespace Entity.Player
       quickSlotCtrler.onSlotChanged += OnChangedSlot;
 
       distanceY = col.bounds.extents.y - 0.1f;
-      inventory = new Inventory.Inventory(InventoryController.horizontalCount * 7);
-      InventoryController.Instance.inventory = inventory;
+      inventory = new Inventory.Inventory(InventoryManager.horizontalCount * 7);
+      InventoryManager.Instance.inventory = inventory;
       canDespawn = false;
       quickSlotCtrler.SetIndex(0);
 
@@ -403,7 +403,7 @@ namespace Entity.Player
       // Debug.Log($"get: {data.item._name}, count: {data.count}");
       Managers.Audio.PlaySFX("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
-      InventoryController.Instance.Refresh();
+      InventoryManager.Instance.Refresh();
 
       if (left > 0)
         ThrowItem(data.item, left);

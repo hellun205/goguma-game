@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Entity.Item;
 using Entity.Player;
+using Manager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Window;
@@ -11,7 +12,7 @@ namespace Inventory
   {
     public void OnDrop(PointerEventData eventData)
     {
-      var invenCtrl = InventoryController.Instance;
+      var invenCtrl = InventoryManager.Instance;
       var inven = invenCtrl.inventory;
       var quickCtrl = PlayerController.Instance.quickSlotCtrler;
 

@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Audio;
-using Manager;
+﻿using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Inventory
+namespace Manager
 {
-  public class InventoryController : MonoBehaviour
+  public class InventoryManager : SingleTon<InventoryManager>
   {
-    public static InventoryController Instance { get; private set; }
-
-    public KeyCode openKey = KeyCode.I;
-
     public bool activeInventory { get; private set; } = false;
 
-    private Inventory _inventory;
+    private Inventory.Inventory _inventory;
 
-    public Inventory inventory
+    public Inventory.Inventory inventory
     {
       get => _inventory;
       set
       {
+        if (_inventory is not null) 
+          _inventory.onItemChanged -= Refresh;
         _inventory = value;
         SetCount(value.slotCount);
         _inventory.onItemChanged += Refresh;
@@ -53,26 +47,15 @@ namespace Inventory
     [HideInInspector]
     public byte dragedIdx;
 
-    [FormerlySerializedAs("isDraging")]
     [HideInInspector]
     public bool isDragging;
 
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;
 
-    [Header("sound")]
-    [SerializeField]
-    private AudioData openSound;
-
-    private void Awake()
+    protected override void Awake()
     {
-      if (Instance == null)
-        Instance = this;
-      else
-        Destroy(this);
-
-      // DontDestroyOnLoad(gameObject);
-      transform.SetAsLastSibling();
+      base.Awake();
       toolTipPanel.gameObject.SetActive(false);
       panel.SetActive(activeInventory);
 
@@ -81,7 +64,7 @@ namespace Inventory
 
     private void Update()
     {
-      if (Input.GetKeyDown(openKey))
+      if (Input.GetKeyDown(Managers.Key.openInventory))
         ToggleActive();
     }
 
@@ -91,7 +74,7 @@ namespace Inventory
       Refresh();
       panel.SetActive(activeInventory);
       toolTipPanel.gameObject.SetActive(false);
-      Managers.Audio.PlaySFX("openSound");
+      Managers.Audio.PlaySFX("open_inventory");
     }
 
     public void SetCount(byte count)
