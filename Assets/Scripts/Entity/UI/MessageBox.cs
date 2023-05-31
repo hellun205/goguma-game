@@ -33,7 +33,6 @@ namespace Entity.UI
     {
       text.text = messageData.text;
       callBack = endCallback;
-      RefreshPosition();
       Invoke(nameof(Close), messageData.exitTime);
     }
 

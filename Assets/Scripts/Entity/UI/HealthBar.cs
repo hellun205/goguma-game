@@ -31,9 +31,8 @@ namespace Entity.UI
       }
     }
 
-    protected override void Update()
+    protected void Update()
     {
-      base.Update();
       yellowSlider.value = Mathf.Lerp(
         yellowSlider.value,
         redSlider.value,
