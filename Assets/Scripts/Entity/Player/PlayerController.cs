@@ -6,6 +6,7 @@ using Entity.Npc;
 using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
+using Manager;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -178,7 +179,7 @@ namespace Entity.Player
       if (slotIdx != -1)
       {
         quickSlotCtrler.SetIndex((byte)slotIdx);
-        AudioManager.Play("click");
+        Managers.Audio.PlaySFX("click");
       }
     }
 
@@ -294,7 +295,7 @@ namespace Entity.Player
       anim.SetInteger("attackType", skill.animParameter);
       anim.SetBool("isAttack", true);
       // anim.SetTrigger("attack");
-      AudioManager.Play(skill.sound);
+      Managers.Audio.PlaySFX("skill.sound");
 
       attackHitPos = skill.hitBoxPos;
       attackHitSize = skill.hitBoxSize;
@@ -400,7 +401,7 @@ namespace Entity.Player
     private void OnPickUpItem((Item.Item item, byte count) data)
     {
       // Debug.Log($"get: {data.item._name}, count: {data.count}");
-      AudioManager.Play("pickup_item");
+      Managers.Audio.PlaySFX("pickup_item");
       var left = inventory.GainItem(data.item, data.count);
       InventoryController.Instance.Refresh();
 

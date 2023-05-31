@@ -1,6 +1,7 @@
 ﻿using Audio;
 using Camera;
 using Dialogue;
+using Manager;
 using UnityEngine;
 using Window;
 
@@ -46,7 +47,7 @@ namespace Entity.Player
         Move(interactable ? horizontal : 0f);
         if (interactable  && Input.GetKeyDown(KeyCode.Space) && canJump)
         {
-          AudioManager.Play("jump");
+          Managers.Audio.PlaySFX("jump");
           Jump();
         }
       }

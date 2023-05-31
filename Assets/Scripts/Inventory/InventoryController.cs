@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Audio;
+using Manager;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -90,7 +91,7 @@ namespace Inventory
       Refresh();
       panel.SetActive(activeInventory);
       toolTipPanel.gameObject.SetActive(false);
-      AudioManager.Play(openSound);
+      Managers.Audio.PlaySFX("openSound");
     }
 
     public void SetCount(byte count)

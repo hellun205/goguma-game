@@ -3,6 +3,7 @@ using Audio;
 using Entity.Item;
 using Entity.Player;
 using Inventory.QuickSlot;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -114,7 +115,7 @@ namespace Inventory
       inven.dragedIdx = index;
       inven.isDragging = true;
       // anim.SetBool(animParameter , false);
-      AudioManager.Play(dragSound);
+      Managers.Audio.PlaySFX("dragSound");
     }
 
     public void OnDrag(PointerEventData eventData)

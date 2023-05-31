@@ -2,6 +2,7 @@
 using Audio;
 using Entity.Item;
 using Entity.Player;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -114,7 +115,7 @@ namespace Inventory.QuickSlot
       }
 
       controller.CallSlotChanged();
-      AudioManager.Play(dragSound);
+      Managers.Audio.PlaySFX("dragSound");
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -122,7 +123,7 @@ namespace Inventory.QuickSlot
       if (eventData.button == PointerEventData.InputButton.Left)
       {
         controller.SetIndex(index);
-        AudioManager.Play("click");
+        Managers.Audio.PlaySFX("click");
       }
     }
 
@@ -136,7 +137,7 @@ namespace Inventory.QuickSlot
       controller.isDragging = true;
 
       drgImg.gameObject.SetActive(true);
-      AudioManager.Play(dragSound);
+      Managers.Audio.PlaySFX("dragSound");
     }
 
     public void OnDrag(PointerEventData eventData)
