@@ -1,9 +1,8 @@
 using System;
 using System.Collections;
+using Animation;
 using Entity.UI;
-using JetBrains.Annotations;
 using Manager;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Entity.Enemy
@@ -17,6 +16,8 @@ namespace Entity.Enemy
 
     [SerializeField]
     protected Color hitColor = Color.red;
+
+    protected Color defaultColor;
 
     protected bool canHit = true;
 
@@ -35,13 +36,24 @@ namespace Entity.Enemy
 
     protected HpBar hpBar;
 
-    private Coroutine hitCoroutine;
+    // Animation
+    protected SmoothColor animColor;
+    protected StraightFade animFade;
 
-    private void Awake()
+    protected virtual void Awake()
     {
       hpBar = GetComponent<HpBar>();
       rigid = GetComponent<Rigidbody2D>();
       anim = GetComponent<Animator>();
+
+      defaultColor = spriteRenderer.color;
+      animColor = new SmoothColor(this, defaultColor, value => spriteRenderer.color = value);
+      animFade = new StraightFade(this, () => spriteRenderer.color, 1f, value => spriteRenderer.color = value)
+      {
+        timeout = 1f
+      };
+      animFade.onEnded += sender => Remove();
+      
       Initialize();
     }
 
@@ -62,7 +74,6 @@ namespace Entity.Enemy
       if (status.hp == 0f)
       {
         canHit = false;
-        StopHit();
         OnDead(knockDir, knockBack * 2f);
 
         return;
@@ -72,54 +83,16 @@ namespace Entity.Enemy
       rigid.AddForce(knockDir * (knockBackPower * knockBack));
 
       // color
-      StopHit();
       spriteRenderer.color = hitColor;
-      hitCoroutine = StartCoroutine(HitCoroutine());
+      animColor.Start(spriteRenderer.color, Color.white, 3.5f);
     }
-
-    private void StopHit()
-    {
-      if (hitCoroutine is not null) StopCoroutine(hitCoroutine);
-    }
-
-    protected virtual IEnumerator HitCoroutine() => ChangeColorSmooth(Color.white, 3.5f);
+    
 
     protected virtual void OnDead(Vector2 knockDir, float knockBack)
     {
       anim.SetBool(deadAnimParam, true);
       rigid.AddForce(knockDir * (knockBackPower * knockBack));
-      StartCoroutine(DeadCoroutine());
-    }
-
-    protected virtual IEnumerator DeadCoroutine() => ChangeColorSmooth(Color.clear, 3f, Remove);
-
-    protected IEnumerator ChangeColorSmooth(Color toColor, float smoothing = 3f, [CanBeNull] Action callback = null)
-    {
-      while (true)
-      {
-        var color = spriteRenderer.color;
-
-        float colorLerp(float a, float b)
-        {
-          var _a = Mathf.Lerp(a, b + (a < b ? 0.4f : -0.4f), Time.deltaTime * smoothing);
-          return a < b ? Mathf.Min(_a, b) : Mathf.Max(_a, b);
-        }
-
-        if (!color.Equals(toColor))
-        {
-          color.r = colorLerp(color.r, toColor.r);
-          color.g = colorLerp(color.g, toColor.g);
-          color.b = colorLerp(color.b, toColor.b);
-          color.a = colorLerp(color.a, toColor.a);
-          spriteRenderer.color = color;
-          yield return new WaitForNextFrameUnit();
-        }
-        else
-        {
-          callback?.Invoke();
-          yield break;
-        }
-      }
+      animFade.FadeOut(3f);
     }
 
     protected virtual void Initialize()
@@ -128,7 +101,7 @@ namespace Entity.Enemy
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
       canHit = true;
-      spriteRenderer.color = Color.white;
+      spriteRenderer.color = defaultColor;
     }
 
     protected virtual void Remove()

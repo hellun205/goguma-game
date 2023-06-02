@@ -4,7 +4,6 @@ using Utils;
 
 namespace Animation
 {
-  [Obsolete]
   public abstract class Fade<T> : Lerper<T, Color> where T : Fade<T>
   {
     private const float fadeInValue = 1f;
@@ -24,7 +23,7 @@ namespace Animation
       return new Color(color.r, color.g, color.b, Mathf.Lerp(a.a, b.a, t));
     };
 
-    protected override EqualDelegate endChecker => (a, b) => a.IsEqual(b);
+    protected override EqualDelegate endChecker => (a, b) => Mathf.Approximately(a.a, b.a);
 
     public void FadeIn(float speed) => Start(fadeInValue, speed);
 
