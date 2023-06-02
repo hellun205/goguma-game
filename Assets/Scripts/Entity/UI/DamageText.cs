@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Animation;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,7 +17,9 @@ namespace Entity.UI
     [SerializeField]
     private TextMeshProUGUI tmp;
 
-    private Coroutine fadeOut;
+    private SmoothVector2 animSizeUp;
+    private SmoothVector2 animSizeDown;
+    private Straight
 
     public int damage
     {

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using Utils;
 
 namespace Animation
 {
-  public abstract class Smooth<T, TValue> : Lerper<T, TValue> where T : Smooth<T, TValue>
+  public sealed class SmoothFade : Fade<SmoothFade>
   {
-    public Smooth(MonoBehaviour sender, TValue startValue, Action<TValue> onValueChanged) :
-      base(sender, startValue, onValueChanged)
+    public SmoothFade(MonoBehaviour sender, Func<Color> colorPointer, float startValue, Action<Color> onValueChanged) :
+      base(sender, colorPointer, startValue, onValueChanged)
     {
     }
 

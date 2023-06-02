@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using Utils;
 
 namespace Animation
 {
-  public abstract class Straight<T, TValue> : Lerper<T, TValue> where T : Straight<T, TValue>
+  public sealed class StraightFade : Fade<StraightFade>
   {
-    protected Straight(MonoBehaviour sender, TValue startValue, Action<TValue> onValueChanged) :
-      base(sender, startValue, onValueChanged)
+    public StraightFade(MonoBehaviour sender, Func<Color> colorPointer, float startValue, Action<Color> onValueChanged) :
+      base(sender, colorPointer, startValue, onValueChanged)
     {
     }
-    
+
     protected override IEnumerator Routine()
     {
       value = startValue;
