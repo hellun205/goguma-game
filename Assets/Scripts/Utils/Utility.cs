@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Utils
@@ -27,5 +29,14 @@ namespace Utils
       Debug.LogError("Can't find type property");
       return default;
     }
+    
+    public static T Random<T>(this IEnumerable<T> enumerable) {
+      var enumerable1 = enumerable as T[] ?? enumerable.ToArray();
+      return enumerable1[UnityEngine.Random.Range(0, enumerable1.Count())];
+    }
+
+    public static bool IsEqual(this Color a, Color b) =>
+      Mathf.Approximately(a.a, b.a) && Mathf.Approximately(a.r, b.r) &&
+      Mathf.Approximately(a.g, b.g) && Mathf.Approximately(a.b, b.b);
   }
 }

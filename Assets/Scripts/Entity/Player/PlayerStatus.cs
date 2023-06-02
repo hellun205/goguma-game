@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine.Serialization;
 using Utils;
+using String = Utils.String;
 
 namespace Entity.Player
 {
@@ -33,9 +34,9 @@ namespace Entity.Player
     };
 
     public string GetInfo() =>
-      StringUtils.GetValueTag("최대 체력", maxHp) +
-      StringUtils.GetValueTag("체력", hp) +
-      StringUtils.GetValueTag("이동 속도", moveSpeed) +
-      StringUtils.GetValueTag("점프력", jumpPower);
+      String.GetValueTag("최대 체력", maxHp) +
+      String.GetValueTag("체력", hp) +
+      String.GetValueTag("이동 속도", moveSpeed) +
+      String.GetValueTag("점프력", jumpPower);
   }
 }
