@@ -5,7 +5,6 @@ using Utils;
 
 namespace Animation
 {
-  [Obsolete("has bug",true)]
   public sealed class SmoothFade : Fade<SmoothFade>
   {
     public SmoothFade(MonoBehaviour sender, Func<Color> colorPointer, float startValue, Action<Color> onValueChanged) :

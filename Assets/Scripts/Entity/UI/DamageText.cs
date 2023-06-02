@@ -20,7 +20,7 @@ namespace Entity.UI
     // Animation
     private SmoothVector2 animSizeUp;
     private SmoothVector2 animSizeDown;
-    private SmoothFloat animFade;
+    private SmoothFade animFade;
     private bool isIn = true;
     
     private static readonly Vector2 NormalSize = new Vector2(3f, 3f);
@@ -37,12 +37,7 @@ namespace Entity.UI
       base.Awake();
       animSizeUp = new SmoothVector2(this, MinSize, value => transform.localScale = value);
       animSizeDown = new SmoothVector2(this, NormalSize, value => transform.localScale = value);
-      animFade = new SmoothFloat(this, 0f, value =>
-      {
-        var color = tmp.color;
-        color.a = value;
-        tmp.color = color;
-      });
+      animFade = new SmoothFade(this,() => tmp.color, 0f, value => tmp.color = value);
       
       animSizeUp.timeout = 0.2f;
       animSizeDown.timeout = 0.5f;
@@ -62,17 +57,17 @@ namespace Entity.UI
       this.damage = damage;
       isIn = true;
       animSizeUp.Start(MinSize, NormalSize, 13f);
-      animFade.Start(0f, 1f, 5f);
+      animFade.FadeIn(6f);
     }
     
     private void AnimSizeUpOnonEnded(SmoothVector2 sender)
     {
       animSizeDown.Start(transform.localScale, MinSize, 7f);
       isIn = false;
-      animFade.Start(1f, 0f, 7f);
+      animFade.FadeOut(7f);
     }
     
-    private void AnimFadeOnonEnded(SmoothFloat sender)
+    private void AnimFadeOnonEnded(SmoothFade sender)
     {
       if (!isIn)
         Release();  

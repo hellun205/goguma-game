@@ -48,12 +48,12 @@ namespace Utils
 
     public static Color Setter(this Color color, float? r = null, float? g = null, float? b = null, float? a = null)
     {
-      Color result;
-      
-      result.r = r ?? color.r;
-      result.g = r ?? color.g;
-      result.b = r ?? color.b;
-      result.a = r ?? color.a;
+      Color result = color;
+
+      if (r is not null) result.r = r.Value;
+      if (g is not null) result.g = g.Value;
+      if (b is not null) result.b = b.Value;
+      if (a is not null) result.a = a.Value;
       
       return result;
     }
