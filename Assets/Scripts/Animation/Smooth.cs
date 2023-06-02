@@ -15,12 +15,12 @@ namespace Animation
     {
       value = startValue;
 
-      while (!endChecker.Invoke(value, endValue))
+      while (!endChecker.Invoke(value, endValue) && !isTimeOut)
       {
         yield return new WaitForEndOfFrame();
         value = lerp.Invoke(value, endValue, time);
+        SpendTime();
       }
-
       CallEndedEvent();
     }
   }

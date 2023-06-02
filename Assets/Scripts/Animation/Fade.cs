@@ -4,6 +4,7 @@ using Utils;
 
 namespace Animation
 {
+  [Obsolete]
   public abstract class Fade<T> : Lerper<T, Color> where T : Fade<T>
   {
     private const float fadeInValue = 1f;

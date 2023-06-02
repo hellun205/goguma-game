@@ -25,6 +25,9 @@ namespace Animation
 
     public bool isUnscaled { get; set; } = false;
 
+    public float timeout { get; set; } = 10f;
+    protected float currentTimeout;
+
     public TValue value
     {
       get => _value;
@@ -51,9 +54,12 @@ namespace Animation
       coroutiner = new Coroutiner(sender, Routine);
     }
 
-    protected void Start(TValue start, TValue end, float speed)
+    public void Start(TValue start, TValue end, float speed)
     {
       this.speed = speed;
+      startValue = start;
+      endValue = end;
+      currentTimeout = 0f;
       coroutiner.Start();
       CallStartedEvent();
     }
@@ -63,5 +69,9 @@ namespace Animation
     protected void CallEndedEvent() => onEnded?.Invoke((T) this);
 
     protected float time => (isUnscaled ? Time.unscaledDeltaTime : Time.deltaTime) * speed;
+
+    protected bool isTimeOut => currentTimeout >= timeout;
+
+    protected void SpendTime() => currentTimeout += Time.unscaledDeltaTime;
   }
 }

@@ -230,5 +230,4 @@ MonoBehaviour:
   entityName: 
   canDespawn: 1
   col: {fileID: 0}
-  rectTransform: {fileID: 0}
   tmp: {fileID: 4972409777575903090}

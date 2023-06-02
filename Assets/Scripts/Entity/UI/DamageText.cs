@@ -10,16 +10,21 @@ namespace Entity.UI
 {
   public class DamageText : UIEntity
   {
-    public static EntityType Type => EntityType.DamageText; 
+    public static EntityType Type => EntityType.DamageText;
     public override EntityType type => Type;
 
     [Header("UI Object")]
     [SerializeField]
     private TextMeshProUGUI tmp;
 
+    // Animation
     private SmoothVector2 animSizeUp;
     private SmoothVector2 animSizeDown;
-    private Straight
+    private SmoothFloat animFade;
+    private bool isIn = true;
+    
+    private static readonly Vector2 NormalSize = new Vector2(3f, 3f);
+    private static readonly Vector2 MinSize = new Vector2(0.1f, 0.1f);
 
     public int damage
     {
@@ -27,50 +32,50 @@ namespace Entity.UI
       set => tmp.text = value.ToString();
     }
 
+    protected override void Awake()
+    {
+      base.Awake();
+      animSizeUp = new SmoothVector2(this, MinSize, value => transform.localScale = value);
+      animSizeDown = new SmoothVector2(this, NormalSize, value => transform.localScale = value);
+      animFade = new SmoothFloat(this, 0f, value =>
+      {
+        var color = tmp.color;
+        color.a = value;
+        tmp.color = color;
+      });
+      
+      animSizeUp.timeout = 0.2f;
+      animSizeDown.timeout = 0.5f;
+      animFade.timeout = 0.6f;
+      
+      animSizeUp.onEnded += AnimSizeUpOnonEnded;
+      animFade.onEnded += AnimFadeOnonEnded;
+    }
+
     public override void OnRelease()
     {
       base.OnRelease();
-
-      if (fadeOut is not null)
-        StopCoroutine(fadeOut);
-
-      damage = 0;
-
-      var color = tmp.color;
-      color.a = 1f;
-      tmp.color = color;
-    }
-
-    private IEnumerator FadeOut(float moveSpeed = 2.5f, float smoothing = 3f)
-    {
-      while (true)
-      {
-        var color = tmp.color;
-
-        if (color.a > 0)
-        {
-          color.a = LerpUtils.ColorLerp(color.a, 0f, smoothing);
-          tmp.color = color;
-          Translate(0f, moveSpeed * Time.deltaTime);
-
-          yield return new WaitForNextFrameUnit();
-        }
-        else
-        {
-          Release();
-          yield break;
-        }
-      }
     }
 
     public void Show(int damage)
     {
       this.damage = damage;
-
-      if (fadeOut is not null)
-        StopCoroutine(fadeOut);
-
-      fadeOut = StartCoroutine(FadeOut());
+      isIn = true;
+      animSizeUp.Start(MinSize, NormalSize, 13f);
+      animFade.Start(0f, 1f, 5f);
+    }
+    
+    private void AnimSizeUpOnonEnded(SmoothVector2 sender)
+    {
+      animSizeDown.Start(transform.localScale, MinSize, 7f);
+      isIn = false;
+      animFade.Start(1f, 0f, 7f);
+    }
+    
+    private void AnimFadeOnonEnded(SmoothFloat sender)
+    {
+      if (!isIn)
+        Release();  
     }
   }
 }
