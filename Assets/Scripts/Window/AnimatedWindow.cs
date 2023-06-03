@@ -22,8 +22,8 @@ namespace Window
 
       canvasGroup = GetComponent<CanvasGroup>();
       defaultSize = transform.localScale.Setter(z: 1f);
-      animSize = new SmoothVector3(this, defaultSize, value => transform.localScale = value);
-      animFade = new StraightFloat(this, 0f, value => canvasGroup.alpha = value);
+      animSize = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      animFade = new(this, new(() => canvasGroup.alpha, value => canvasGroup.alpha = value));
 
       Managers.Window.onGet += WindowOnGet;
       animFade.onEnded += AnimFadeOnEnded;

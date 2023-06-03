@@ -6,7 +6,7 @@ namespace Entity.UI
 {
   public class HealthBar : UIEntity
   {
-    public static EntityType Type => EntityType.HpBar; 
+    public static EntityType Type => EntityType.HpBar;
     public override EntityType type => Type;
 
     private const float middleFollowSpeed = 4f;
@@ -46,17 +46,8 @@ namespace Entity.UI
     protected override void Awake()
     {
       base.Awake();
-      animMiddle = new SmoothFloat(this, 1f, value => middleImg.fillAmount = value);
+      animMiddle = new(this, new(() => middleImg.fillAmount, value => middleImg.fillAmount = value));
     }
-
-    // protected void Update()
-    // {
-    //   yellowSlider.value = Mathf.Lerp(
-    //     yellowSlider.value,
-    //     redSlider.value,
-    //     Time.deltaTime * smoothing
-    //   );
-    // }
 
     public void Init(float value, float maxValue)
     {

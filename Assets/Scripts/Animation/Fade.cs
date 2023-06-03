@@ -8,20 +8,8 @@ namespace Animation
   {
     private const float fadeInValue = 1f;
     private const float fadeOutValue = 0f;
-    
-    protected Func<Color> originalColor;
 
-    protected Fade(MonoBehaviour sender, Func<Color> colorPointer, float startValue, Action<Color> onValueChanged) :
-      base(sender, colorPointer.Invoke().Setter(a: startValue), onValueChanged)
-    {
-      originalColor = colorPointer;
-    }
-
-    protected override LerpDelegate lerp => (a, b, t) =>
-    {
-      var color = originalColor.Invoke();
-      return new Color(color.r, color.g, color.b, Mathf.Lerp(a.a, b.a, t));
-    };
+    protected override LerpDelegate lerp => (a, b, t) => value.Setter(a: Mathf.Lerp(a.a, b.a, t));
 
     protected override EqualDelegate endChecker => (a, b) => Mathf.Approximately(a.a, b.a);
 
@@ -31,8 +19,11 @@ namespace Animation
 
     public void Start(float endAlpha, float speed)
     {
-      var color = originalColor.Invoke();
+      var color = value;
       Start(color, color.Setter(a: endAlpha), speed);
+    }
+    protected Fade(MonoBehaviour sender, StructPointer<Color> valuePointer) : base(sender, valuePointer)
+    {
     }
   }
 }

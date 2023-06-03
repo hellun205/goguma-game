@@ -47,8 +47,8 @@ namespace Entity.Enemy
       anim = GetComponent<Animator>();
 
       defaultColor = spriteRenderer.color;
-      animColor = new SmoothColor(this, defaultColor, value => spriteRenderer.color = value);
-      animFade = new StraightFade(this, () => spriteRenderer.color, 1f, value => spriteRenderer.color = value)
+      animColor = new(this, new(() => spriteRenderer.color, value => spriteRenderer.color = value));
+      animFade = new(this, new(() => spriteRenderer.color, value => spriteRenderer.color = value))
       {
         timeout = 1f
       };

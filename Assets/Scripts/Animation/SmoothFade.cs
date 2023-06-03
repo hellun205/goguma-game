@@ -7,11 +7,6 @@ namespace Animation
 {
   public sealed class SmoothFade : Fade<SmoothFade>
   {
-    public SmoothFade(MonoBehaviour sender, Func<Color> colorPointer, float startValue, Action<Color> onValueChanged) :
-      base(sender, colorPointer, startValue, onValueChanged)
-    {
-    }
-
     protected override IEnumerator Routine()
     {
       value = startValue;
@@ -24,6 +19,10 @@ namespace Animation
       }
 
       CallEndedEvent();
+    }
+    
+    public SmoothFade(MonoBehaviour sender, StructPointer<Color> valuePointer) : base(sender, valuePointer)
+    {
     }
   }
 }

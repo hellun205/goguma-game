@@ -5,7 +5,7 @@ using Utils;
 
 namespace Animation
 {
-  public abstract class BaseAnimation<T, TValue> where T : BaseAnimation<T, TValue>
+  public abstract class BaseAnimation<T, TValue> where T : BaseAnimation<T, TValue> where TValue : struct
   {
     protected delegate TValue LerpDelegate(TValue a, TValue b, float t);
 
@@ -21,35 +21,31 @@ namespace Animation
 
     public Coroutiner coroutiner { get; }
 
-    private Action<TValue> onValueChanged;
+    protected StructPointer<TValue> pointer { get; }
 
     public bool isUnscaled { get; set; } = false;
 
     public float timeout { get; set; } = 10f;
+    
     protected float currentTimeout;
 
     public TValue value
     {
-      get => _value;
-      protected set
-      {
-        _value = value;
-        onValueChanged.Invoke(_value);
-      }
+      get => pointer.value;
+      protected set => pointer.value = value;
     }
-
-    private TValue _value;
-
+    
     protected TValue startValue;
+    
     protected TValue endValue;
+    
     protected float speed;
 
     protected abstract IEnumerator Routine();
 
-    protected BaseAnimation(MonoBehaviour sender, TValue startValue, Action<TValue> onValueChanged)
+    protected BaseAnimation(MonoBehaviour sender, StructPointer<TValue> valuePointer)
     {
-      this.onValueChanged = onValueChanged;
-      _value = startValue;
+      pointer = valuePointer;
       this.sender = sender;
       coroutiner = new Coroutiner(sender, Routine);
     }

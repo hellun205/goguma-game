@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
+using Utils;
 
 namespace Animation
 {
-  public abstract class Straight<T, TValue> : Lerper<T, TValue> where T : Straight<T, TValue>
+  public abstract class Straight<T, TValue> : Lerper<T, TValue> where T : Straight<T, TValue>where TValue : struct
   {
-    protected Straight(MonoBehaviour sender, TValue startValue, Action<TValue> onValueChanged) :
-      base(sender, startValue, onValueChanged)
-    {
-    }
-    
     protected override IEnumerator Routine()
     {
       value = startValue;
@@ -25,6 +20,9 @@ namespace Animation
       }
 
       CallEndedEvent();
+    }
+    protected Straight(MonoBehaviour sender, StructPointer<TValue> valuePointer) : base(sender, valuePointer)
+    {
     }
   }
 }

@@ -22,7 +22,7 @@ namespace Entity.UI
     private SmoothVector2 animSizeDown;
     private SmoothFade animFade;
     private bool isIn = true;
-    
+
     private static readonly Vector2 NormalSize = new Vector2(3f, 3f);
     private static readonly Vector2 MinSize = new Vector2(0.1f, 0.1f);
 
@@ -35,14 +35,14 @@ namespace Entity.UI
     protected override void Awake()
     {
       base.Awake();
-      animSizeUp = new SmoothVector2(this, MinSize, value => transform.localScale = value);
-      animSizeDown = new SmoothVector2(this, NormalSize, value => transform.localScale = value);
-      animFade = new SmoothFade(this,() => tmp.color, 0f, value => tmp.color = value);
-      
+      animSizeUp = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      animSizeDown = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      animFade = new(this, new(() => tmp.color, value => tmp.color = value));
+
       animSizeUp.timeout = 0.2f;
       animSizeDown.timeout = 0.5f;
       animFade.timeout = 0.6f;
-      
+
       animSizeUp.onEnded += AnimSizeUpOnonEnded;
       animFade.onEnded += AnimFadeOnonEnded;
     }
@@ -59,18 +59,18 @@ namespace Entity.UI
       animSizeUp.Start(MinSize, NormalSize, 13f);
       animFade.FadeIn(6f);
     }
-    
+
     private void AnimSizeUpOnonEnded(SmoothVector2 sender)
     {
       animSizeDown.Start(transform.localScale, MinSize, 7f);
       isIn = false;
       animFade.FadeOut(7f);
     }
-    
+
     private void AnimFadeOnonEnded(SmoothFade sender)
     {
       if (!isIn)
-        Release();  
+        Release();
     }
   }
 }
