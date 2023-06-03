@@ -187,9 +187,9 @@ namespace Entity.Player
     private void DebugKey()
     {
       if (Input.GetKeyDown(KeyCode.F6))
-        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x + 3f, 5f));
+        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
       else if (Input.GetKeyDown(KeyCode.F7))
-        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x + 3f, 5f),
+        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
           x => x.Init("appleBuff"));
     }
 
@@ -364,6 +364,7 @@ namespace Entity.Player
       // Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
 
       inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
+      inventory.GainItem(ItemManager.Instance.GetWithCode("sword"));
       SceneManager.LoadScene("Scenes/Maps/Test");
     }
 

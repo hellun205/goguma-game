@@ -1,5 +1,4 @@
-﻿using Audio;
-using Entity.Item.Useable;
+﻿using Entity.Item.Useable;
 using Entity.Player;
 using Manager;
 using Utils;
@@ -17,13 +16,13 @@ namespace Entity.Item
 
     public abstract UseableType u_type { get; }
 
-    public AudioData audioWhenUse;
+    public string audioWhenUse;
 
     public float cooldown = 0f;
 
     public virtual void Use()
     {
-      Managers.Audio.PlaySFX("eat apple"); 
+      Managers.Audio.PlaySFX(audioWhenUse); 
       onUse?.Invoke(this);
     }
 

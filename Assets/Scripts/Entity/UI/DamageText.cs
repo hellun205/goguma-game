@@ -52,7 +52,7 @@ namespace Entity.UI
       base.OnRelease();
     }
 
-    public void Show(int damage)
+    public void Init(int damage)
     {
       this.damage = damage;
       isIn = true;

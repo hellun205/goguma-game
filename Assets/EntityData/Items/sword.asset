@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96b5978b94e946bba84122cd27e195ff, type: 3}
+  m_Name: sword
+  m_EditorClassIdentifier: 
+  _name: "\uAC80"
+  nameColor: {r: 1, g: 1, b: 1, a: 1}
+  descriptions: "\uADF8\uB0E5 \uAC80."
+  sprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  sprite8x: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  spriteColor: {r: 1, g: 1, b: 1, a: 1}
+  effectColor: {r: 1, g: 1, b: 1, a: 1}
+  weaponType: 1
+  weaponSprite: {fileID: 21300000, guid: d202e53cea52c1249b95d6e801bc2d8f, type: 3}
+  skill:
+    damage: 5
+    zSprite: {fileID: 21300000, guid: a6fb91b57404bcc4087b2457eee86fc7, type: 3}
+    zSkill:
+    - damagePercent: 1.1
+      endTime: 0.452
+      animParameter: 10
+      audio: sword_z1
+      hitBoxPos: {x: 0.76, y: 0.41}
+      hitBoxSize: {x: 1.74, y: 1.46}
+    - damagePercent: 1.45
+      endTime: 0.432
+      animParameter: 11
+      audio: sword_z2
+      hitBoxPos: {x: 0.88, y: 0.07}
+      hitBoxSize: {x: 2.01, y: 1.85}
+    zCoolTime: 0.05
+    zKeepComboTime: 0.65
+    xSprite: {fileID: 21300000, guid: a1e804d64827fb44e9c5849ac46ff341, type: 3}
+    xSkill:
+    - damagePercent: 0.2
+      endTime: 0.58
+      animParameter: 3
+      audio: sword_x_0
+      hitBoxPos: {x: -0.03, y: -0.24}
+      hitBoxSize: {x: 1.83, y: 0.56}
+    - damagePercent: 3.2
+      endTime: 0.28
+      animParameter: 4
+      audio: sword_x_1
+      hitBoxPos: {x: 0.61, y: -0.12}
+      hitBoxSize: {x: 1.47, y: 0.2}
+    - damagePercent: 1.9
+      endTime: 0.4
+      animParameter: 5
+      audio: sword_x_2
+      hitBoxPos: {x: 0.27, y: -0.24}
+      hitBoxSize: {x: 2.14, y: 0.56}
+    xCoolTime: 1
+    xKeepComboTime: 1

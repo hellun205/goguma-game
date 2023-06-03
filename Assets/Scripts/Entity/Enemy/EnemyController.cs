@@ -106,12 +106,14 @@ namespace Entity.Enemy
 
     protected virtual void Remove()
     {
+      spriteRenderer.color = Color.clear;
       Release();
     }
 
     public override void OnGet()
     {
       base.OnGet();
+      spriteRenderer.color = Color.clear;
       Initialize();
     }
   }
