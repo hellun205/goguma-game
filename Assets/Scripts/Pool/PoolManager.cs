@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Manager;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Manager
+namespace Pool
 {
   public abstract class PoolManager<TObject> : SingleTon<PoolManager<TObject>> where TObject : Component
   {

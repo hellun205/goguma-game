@@ -1,29 +1,15 @@
 ﻿using JetBrains.Annotations;
-using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Window
 {
-  public class InputBoxWindow : BaseWindow
+  public class InputBoxWindow : ButtonWindow<InputBoxWindow>
   {
-    [Header("UI Object - Input Box")]
+    [Header("Input Box - Objects")]
     [SerializeField]
     private TextMeshProUGUI textTMP;
-
-    [SerializeField]
-    private Button trueBtn;
-
-    [SerializeField]
-    private TextMeshProUGUI trueBtnTMP;
-
-    [SerializeField]
-    private Button falseBtn;
-
-    [SerializeField]
-    private TextMeshProUGUI falseBtnTMP;
 
     [SerializeField]
     private TMP_InputField inputField;
@@ -34,10 +20,6 @@ namespace Window
     [Header("Input Box")]
     public string text;
 
-    public string confirmBtnText = "확인";
-
-    public string cancelBtnText = "취소";
-
     public string inputText = "";
 
     public string placeholder = "Enter Text...";
@@ -45,16 +27,11 @@ namespace Window
     [CanBeNull]
     public UnityAction<string> onSubmit;
 
-    protected override void OnCloseButtonClick()
-      => Managers.Window.Release(this);
-
     protected override void OnValidate()
     {
       base.OnValidate();
 
       textTMP.text = text;
-      trueBtnTMP.text = confirmBtnText;
-      falseBtnTMP.text = cancelBtnText;
       inputField.text = inputText;
       placeholderTMP.text = placeholder;
     }
@@ -62,12 +39,14 @@ namespace Window
     protected override void Awake()
     {
       base.Awake();
+      
+      onBtnClick.AddListener(OnBtnClick);
+      Init(text, falseBtnText, trueBtnText);
+    }
 
-      trueBtn.onClick.AddListener(() => onSubmit?.Invoke(inputField.text));
-      trueBtn.onClick.AddListener(OnCloseButtonClick);
-      falseBtn.onClick.AddListener(OnCloseButtonClick);
-
-      Init(text, confirmBtnText, cancelBtnText);
+    private void OnBtnClick(bool value)
+    {
+      if (value) onSubmit?.Invoke(inputField.text);
     }
 
     public void Init
@@ -80,23 +59,11 @@ namespace Window
     )
     {
       this.text = text;
-      this.confirmBtnText = trueText;
-      this.cancelBtnText = falseText;
       this.inputText = defValue;
       onSubmit = callback;
 
-      falseBtn.gameObject.SetActive(!string.IsNullOrEmpty(falseText));
-      OnValidate();
+      base.Init(trueText, falseText);
       inputField.ActivateInputField();
-    }
-
-    private void Update()
-    {
-      if (!Input.GetKeyDown(KeyCode.Return))
-        return;
-
-      onSubmit?.Invoke(inputField.text);
-      OnCloseButtonClick();
     }
   }
 }
