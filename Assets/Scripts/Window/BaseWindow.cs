@@ -1,5 +1,4 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +6,7 @@ namespace Window
 {
   public abstract class BaseWindow : MonoBehaviour
   {
-    [Header("UI Object - Base Window")]
+    [Header("Window - Object")]
     [SerializeField]
     protected TextMeshProUGUI titleTMP;
 
@@ -17,24 +16,18 @@ namespace Window
     [Header("Window")]
     public string title;
 
-    public abstract WindowType type { get; }
+    protected bool interactable = true;
 
     protected virtual void Awake()
     {
       closeBtn.onClick.AddListener(OnCloseButtonClick);
     }
 
-    protected virtual void OnCloseButtonClick()
-    {
-      WindowManager.Instance.pools[type].Release(this);
-    }
+    protected abstract void OnCloseButtonClick();
 
     protected virtual void OnValidate()
     {
       titleTMP.text = title;
     }
-
-    public abstract void SetDefault();
-
   }
 }

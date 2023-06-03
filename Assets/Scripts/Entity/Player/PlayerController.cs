@@ -16,7 +16,7 @@ namespace Entity.Player
 {
   public class PlayerController : Entity
   {
-    public static EntityType Type => EntityType.Player; 
+    public static EntityType Type => EntityType.Player;
     public override EntityType type => Type;
     public static PlayerController Instance { get; private set; }
 
@@ -152,7 +152,7 @@ namespace Entity.Player
       }
 
       if (movement.isInputCooldown ||
-          InputBoxWindow.isEnabled ||
+          Managers.Window.IsActive ||
           DialogueController.Instance.isEnabled)
         return;
 
