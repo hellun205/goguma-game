@@ -1,4 +1,5 @@
-﻿using Window;
+﻿using Inventory;
+using Window;
 
 namespace Manager
 {

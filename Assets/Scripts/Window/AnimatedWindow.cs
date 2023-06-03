@@ -1,46 +1,21 @@
-﻿using Animation;
-using Animation.Combined;
+﻿using Animation.Combined;
+using Animation.Preset;
 using Manager;
 using UnityEngine;
-using Utils;
 
 namespace Window
 {
   [RequireComponent(typeof(CanvasGroup))]
   public abstract class AnimatedWindow<T> : BaseWindow where T : AnimatedWindow<T>
   {
-    private CanvasGroup canvasGroup;
-
-    // private SmoothVector3 animSize;
-    // private StraightFloat animFade;
-    private SmoothSizeAndFade anim;
-
-    private Vector2 defaultSize;
-    private readonly Vector2 zero = new (0.8f, 0.8f);
+    private PanelVisibler anim;
 
     protected override void Awake()
     {
       base.Awake();
-
-      canvasGroup = GetComponent<CanvasGroup>();
-      defaultSize = transform.localScale;
-      // animSize = new(this, new(() => transform.localScale, value => transform.localScale = value));
-      // animFade = new(this, new(() => canvasGroup.alpha, value => canvasGroup.alpha = value));
-      anim = new
-      (
-        this,
-        new(() => transform.localScale, value => transform.localScale = value),
-        new(() => canvasGroup.alpha, value => canvasGroup.alpha = value)
-      )
-      {
-        minSize = zero,
-        maxSize = defaultSize,
-        fadeAnimSpeed = 6f,
-        sizeAnimSpeed = 8f
-      };
+      anim = new(this);
 
       Managers.Window.onGet += WindowOnGet;
-      anim.onHid += AnimOnHid;
     }
 
     private void WindowOnGet(BaseWindow sender)

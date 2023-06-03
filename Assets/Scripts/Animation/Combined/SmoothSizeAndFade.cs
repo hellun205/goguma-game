@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Utils;
 
 namespace Animation.Combined
@@ -8,7 +7,7 @@ namespace Animation.Combined
   {
     public event CombinedAnimationEventListener onShowed;
     public event CombinedAnimationEventListener onHid;
-    
+
     public Vector2 minSize = Vector2.zero;
     public Vector2 maxSize = Vector2.one;
     public float minAlpha = 0f;
@@ -27,6 +26,19 @@ namespace Animation.Combined
 
     private bool isFadeIn = true;
 
+    public float timeOut
+    {
+      get => _timeOut;
+      set
+      {
+        _timeOut = value;
+        animSize.timeout = _timeOut;
+        animFade.timeout = _timeOut;
+      }
+    }
+
+    private float _timeOut;
+
     public SmoothSizeAndFade
     (
       MonoBehaviour sender,
@@ -36,8 +48,9 @@ namespace Animation.Combined
     {
       size = sizePointer;
       alpha = alphaPointer;
-      animSize = new (sender, size) {timeout = 1f};
-      animFade = new (sender, alpha) {timeout = 1f};
+      animSize = new(sender, size);
+      animFade = new(sender, alpha);
+      timeOut = 1f;
 
       animSize.onEnded += OnSizeEnded;
       animFade.onEnded += OnFadeEnded;

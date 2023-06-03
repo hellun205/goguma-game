@@ -3359,6 +3359,8 @@ GameObject:
   - component: {fileID: 440872760}
   - component: {fileID: 440872762}
   - component: {fileID: 440872761}
+  - component: {fileID: 440872763}
+  - component: {fileID: 440872764}
   m_Layer: 5
   m_Name: InventoryPanel
   m_TagString: Untagged
@@ -3426,6 +3428,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440872759}
   m_CullTransparentMesh: 1
+--- !u!114 &440872763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440872759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9b8193bd6fe4f0282e740519e154408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: {fileID: 173448104}
+  slotCount: 28
+  dragImg: {fileID: 207297589}
+  dragedIdx: 0
+  isDragging: 0
+  toolTipPanel: {fileID: 1208680578}
+--- !u!225 &440872764
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440872759}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &450740384 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3453038356315128936, guid: 2fd1b4b5a1e1c2d46bdfe5382ec43dc5, type: 3}
@@ -5357,9 +5389,8 @@ GameObject:
   - component: {fileID: 1127839994}
   - component: {fileID: 1127839993}
   - component: {fileID: 1127839992}
-  - component: {fileID: 1127839996}
   m_Layer: 5
-  m_Name: UI Controller
+  m_Name: UI Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5455,26 +5486,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1127839996
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1127839990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9b8193bd6fe4f0282e740519e154408, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 440872759}
-  content: {fileID: 173448104}
-  slotPrefab: {fileID: 6449470030499448595, guid: 626706950be3c9747a51155d5a91cb34, type: 3}
-  slotCount: 28
-  dragImg: {fileID: 207297589}
-  dragedIdx: 0
-  isDragging: 0
-  toolTipPanel: {fileID: 1208680578}
 --- !u!1 &1134515990
 GameObject:
   m_ObjectHideFlags: 0
