@@ -27,7 +27,7 @@ namespace Window
 
     [SerializeField]
     private KeyCode falseKey = KeyCode.Escape;
-    
+
     [SerializeField]
     private Image btnPanel;
 
@@ -41,7 +41,7 @@ namespace Window
     private void Update()
     {
       if (!interactable) return;
-      
+
       if (Input.GetKeyDown(trueKey))
         onBtnClick?.Invoke(true);
       if (Input.GetKeyDown(falseKey))
@@ -51,8 +51,16 @@ namespace Window
     protected override void Awake()
     {
       base.Awake();
-      trueBtn.onClick.AddListener(() => onBtnClick?.Invoke(true));
-      falseBtn.onClick.AddListener(() => onBtnClick?.Invoke(false));
+      trueBtn.onClick.AddListener(() =>
+      {
+        if (interactable)
+          onBtnClick?.Invoke(true);
+      });
+      falseBtn.onClick.AddListener(() =>
+      {
+        if (interactable)
+          onBtnClick?.Invoke(false);
+      });
 
       onBtnClick.AddListener(_ => OnCloseButtonClick());
     }

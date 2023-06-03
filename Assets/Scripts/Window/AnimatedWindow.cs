@@ -1,4 +1,5 @@
 ﻿using Animation;
+using Animation.Combined;
 using Manager;
 using UnityEngine;
 using Utils;
@@ -9,47 +10,56 @@ namespace Window
   public abstract class AnimatedWindow<T> : BaseWindow where T : AnimatedWindow<T>
   {
     private CanvasGroup canvasGroup;
-    private SmoothVector3 animSize;
-    private StraightFloat animFade;
+
+    // private SmoothVector3 animSize;
+    // private StraightFloat animFade;
+    private SmoothSizeAndFade anim;
 
     private Vector2 defaultSize;
-    private readonly Vector3 zero = new Vector3(0.5f, 0.5f, 1f);
-    private bool isFadeIn = true;
+    private readonly Vector2 zero = new (0.8f, 0.8f);
 
     protected override void Awake()
     {
       base.Awake();
 
       canvasGroup = GetComponent<CanvasGroup>();
-      defaultSize = transform.localScale.Setter(z: 1f);
-      animSize = new(this, new(() => transform.localScale, value => transform.localScale = value));
-      animFade = new(this, new(() => canvasGroup.alpha, value => canvasGroup.alpha = value));
+      defaultSize = transform.localScale;
+      // animSize = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      // animFade = new(this, new(() => canvasGroup.alpha, value => canvasGroup.alpha = value));
+      anim = new
+      (
+        this,
+        new(() => transform.localScale, value => transform.localScale = value),
+        new(() => canvasGroup.alpha, value => canvasGroup.alpha = value)
+      )
+      {
+        minSize = zero,
+        maxSize = defaultSize,
+        fadeAnimSpeed = 6f,
+        sizeAnimSpeed = 8f
+      };
 
       Managers.Window.onGet += WindowOnGet;
-      animFade.onEnded += AnimFadeOnEnded;
+      anim.onHid += AnimOnHid;
     }
 
     private void WindowOnGet(BaseWindow sender)
     {
       if (sender != this) return;
       interactable = true;
-      isFadeIn = true;
-      animSize.Start(zero, defaultSize, 8f);
-      animFade.Start(0f, 1f, 6f);
+      anim.Show();
     }
 
     protected sealed override void OnCloseButtonClick()
     {
       if (!interactable) return;
-      isFadeIn = false;
       interactable = false;
-      animSize.Start(transform.localScale, zero, 8f);
-      animFade.Start(1f, 0f, 6f);
+      anim.Hide();
     }
-
-    private void AnimFadeOnEnded(StraightFloat sender)
+    
+    private void AnimOnHid(SmoothSizeAndFade sender)
     {
-      if (!isFadeIn) Managers.Window.Release((T) this);
+      Managers.Window.Release((T) this);
     }
   }
 }

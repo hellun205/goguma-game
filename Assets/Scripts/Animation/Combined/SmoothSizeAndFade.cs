@@ -6,6 +6,9 @@ namespace Animation.Combined
 {
   public sealed class SmoothSizeAndFade : CombinedAnimation<SmoothSizeAndFade>
   {
+    public event CombinedAnimationEventListener onShowed;
+    public event CombinedAnimationEventListener onHid;
+    
     public Vector2 minSize = Vector2.zero;
     public Vector2 maxSize = Vector2.one;
     public float minAlpha = 0f;
@@ -20,7 +23,7 @@ namespace Animation.Combined
     private StructPointer<float> alpha;
 
     private SmoothVector3 animSize;
-    private SmoothFloat animFade;
+    private StraightFloat animFade;
 
     private bool isFadeIn = true;
 
@@ -33,33 +36,41 @@ namespace Animation.Combined
     {
       size = sizePointer;
       alpha = alphaPointer;
-      animSize = new SmoothVector3(sender, size);
-      animFade = new SmoothFloat(sender, alpha);
+      animSize = new (sender, size) {timeout = 1f};
+      animFade = new (sender, alpha) {timeout = 1f};
 
+      animSize.onEnded += OnSizeEnded;
       animFade.onEnded += OnFadeEnded;
 
       _tmpZ = size.value.z;
+    }
+
+    private void OnSizeEnded(SmoothVector3 smoothVector3)
+    {
+      if (isFadeIn) onShowed?.Invoke(this);
     }
 
     public void Show()
     {
       isFadeIn = true;
       CallStartEvent();
-      animSize.Start(minSize, maxSize, sizeAnimSpeed);
+      animSize.Start(ToVector3(minSize), ToVector3(maxSize), sizeAnimSpeed);
       animFade.Start(minAlpha, maxAlpha, fadeAnimSpeed);
     }
 
     public void Hide()
     {
       isFadeIn = false;
-      animSize.Start(size.value, minSize, sizeAnimSpeed);
+      animSize.Start(ToVector3(size.value), ToVector3(minSize), sizeAnimSpeed);
       animFade.Start(alpha.value, minAlpha, fadeAnimSpeed);
     }
 
-    private void OnFadeEnded(SmoothFloat smoothFloat)
+    private void OnFadeEnded(StraightFloat smoothFloat)
     {
-      if (isFadeIn) return;
       CallEndedEvent();
+      if (!isFadeIn) onHid?.Invoke(this);
     }
+
+    private Vector3 ToVector3(Vector2 vector2) => ((Vector3) vector2).Setter(z: _tmpZ);
   }
 }
