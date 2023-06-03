@@ -760,11 +760,10 @@ MonoBehaviour:
   groundTag: Ground
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   walkingAnim: isWalking
   jumpingAnim: isJumping
   inputCooldown: 0.3
-  jumpKey: 32
 --- !u!61 &71035731
 BoxCollider2D:
   m_ObjectHideFlags: 0
