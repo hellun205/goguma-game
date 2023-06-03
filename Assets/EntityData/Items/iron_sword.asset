@@ -28,36 +28,21 @@ MonoBehaviour:
     - damagePercent: 0.9
       endTime: 0.11
       animParameter: 0
+      audio: sword_z_0
       hitBoxPos: {x: 0.55, y: -0.16}
       hitBoxSize: {x: 0.92, y: -0.97}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: b5a6658736cbb4542b074637e00ff852, type: 3}
-        pitch: 1.14
-        delay: 0
-        loop: 0
     - damagePercent: 1.2
       endTime: 0.12
       animParameter: 1
+      audio: sword_z_1
       hitBoxPos: {x: 0.03, y: 0}
       hitBoxSize: {x: 1.71, y: -1.11}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: b5a6658736cbb4542b074637e00ff852, type: 3}
-        pitch: 1.48
-        delay: 0
-        loop: 0
     - damagePercent: 1.7
       endTime: 0.37
       animParameter: 2
+      audio: sword_z_2
       hitBoxPos: {x: 0.4, y: -0.12}
       hitBoxSize: {x: 1.93, y: 0.75}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: b5a6658736cbb4542b074637e00ff852, type: 3}
-        pitch: 1.35
-        delay: 0
-        loop: 0
     zCoolTime: 0.2
     zKeepComboTime: 0.5
     xSprite: {fileID: 21300000, guid: a1e804d64827fb44e9c5849ac46ff341, type: 3}
@@ -65,35 +50,20 @@ MonoBehaviour:
     - damagePercent: 0.2
       endTime: 0.58
       animParameter: 3
+      audio: sword_x_0
       hitBoxPos: {x: -0.03, y: -0.24}
       hitBoxSize: {x: 1.83, y: 0.56}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: baf5afd6674c0f34aa9a487a3ca97407, type: 3}
-        pitch: 1.28
-        delay: 0
-        loop: 0
     - damagePercent: 3.2
       endTime: 0.28
       animParameter: 4
+      audio: sword_x_1
       hitBoxPos: {x: 0.61, y: -0.12}
       hitBoxSize: {x: 1.47, y: 0.2}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: baf5afd6674c0f34aa9a487a3ca97407, type: 3}
-        pitch: 1.69
-        delay: 0
-        loop: 0
     - damagePercent: 1.9
       endTime: 0.4
       animParameter: 5
+      audio: sword_x_2
       hitBoxPos: {x: 0.27, y: -0.24}
       hitBoxSize: {x: 2.14, y: 0.56}
-      sound:
-        name: 
-        audioClip: {fileID: 8300000, guid: baf5afd6674c0f34aa9a487a3ca97407, type: 3}
-        pitch: 1.12
-        delay: 0
-        loop: 0
     xCoolTime: 1
     xKeepComboTime: 1

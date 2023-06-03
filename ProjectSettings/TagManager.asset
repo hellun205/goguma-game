@@ -9,6 +9,8 @@ TagManager:
   - Npc
   - EntityCollection
   - Item
+  - PlayerStartPosition
+  - UIEntityCollection
   layers:
   - Default
   - TransparentFX
@@ -43,11 +45,23 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2316142517
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 84177943
+    locked: 0
+  - name: Npc
+    uniqueID: 1429639693
+    locked: 0
   - name: Item
     uniqueID: 1623085697
+    locked: 0
+  - name: UIEntity
+    uniqueID: 2055861755
     locked: 0
   - name: Player
     uniqueID: 1446722059

@@ -1,44 +1,58 @@
-﻿using UnityEngine;
+﻿using Animation;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Entity.UI
 {
   public class HealthBar : UIEntity
   {
-    public override EntityType type => EntityType.HpBar;
+    public static EntityType Type => EntityType.HpBar;
+    public override EntityType type => Type;
 
-    private const float smoothing = 2f;
+    private const float middleFollowSpeed = 4f;
+
+    private SmoothFloat animMiddle;
 
     [SerializeField]
-    private Slider redSlider;
+    private Image topImg;
 
     [SerializeField]
-    private Slider yellowSlider;
+    private Image middleImg;
+
+    private float _value;
+    private float _maxValue;
 
     public float value
     {
-      get => redSlider.value;
-      set => redSlider.value = value;
+      get => _value;
+      set
+      {
+        _value = value;
+        topImg.fillAmount = _value / maxValue;
+        animMiddle.Start(middleImg.fillAmount, topImg.fillAmount, middleFollowSpeed);
+      }
     }
 
     public float maxValue
     {
-      get => redSlider.maxValue;
+      get => _maxValue;
       set
       {
-        redSlider.maxValue = value;
-        yellowSlider.maxValue = value;
+        _maxValue = value;
+        this.value = this.value;
       }
     }
 
-    protected override void Update()
+    protected override void Awake()
     {
-      base.Update();
-      yellowSlider.value = Mathf.Lerp(
-        yellowSlider.value,
-        redSlider.value,
-        Time.deltaTime * smoothing
-      );
+      base.Awake();
+      animMiddle = new(this, new(() => middleImg.fillAmount, value => middleImg.fillAmount = value));
+    }
+
+    public void Init(float value, float maxValue)
+    {
+      this.value = value;
+      this.maxValue = maxValue;
     }
   }
 }

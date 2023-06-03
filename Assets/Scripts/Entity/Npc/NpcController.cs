@@ -3,6 +3,7 @@ using System.Linq;
 using Dialogue;
 using Entity.Player;
 using Entity.UI;
+using Manager;
 using UnityEngine;
 using Utils;
 
@@ -13,6 +14,7 @@ namespace Entity.Npc
   /// </summary>
   public class NpcController : Entity
   {
+    public static EntityType Type => EntityType.Npc; 
     public override EntityType type => EntityType.Npc;
 
     public Npc npcData;
@@ -48,7 +50,8 @@ namespace Entity.Npc
         yield return new WaitForSeconds(delay);
 
         var msgData = new MessageData(npcData.messages.Random());
-        messageBox = Entity.SummonMsgBox(MessageBoxPosition.position, msgData, () => SetTalking(false));
+        messageBox = Managers.Entity.GetEntity<MessageBox>(MessageBoxPosition.position,
+          x => x.Init(msgData, () => SetTalking(false)));
         SetTalking(true);
       }
     }
@@ -63,7 +66,7 @@ namespace Entity.Npc
 
     private void RefreshPosition()
     {
-      if (messageBox.position != (Vector2)MessageBoxPosition.position)
+      if (messageBox.position != (Vector2) MessageBoxPosition.position)
         messageBox.position = MessageBoxPosition.position;
     }
 
@@ -81,16 +84,16 @@ namespace Entity.Npc
             ),
             dialogue.text
           )).ToArray(), btn =>
+        {
+          if (npcData.type == NpcType.Shop)
+          {
+            DialogueController.Instance.Ask(new DialogueData(npcData.speakerData, "상점을 여시겠습니까?"), openShop =>
             {
-              if (npcData.type == NpcType.Shop)
-              {
-                DialogueController.Instance.Ask(new DialogueData(npcData.speakerData, "상점을 여시겠습니까?"), openShop =>
-                {
-                  if (openShop)
-                    Debug.Log("open Shop!");
-                });
-              }
-            }
+              if (openShop)
+                Debug.Log("open Shop!");
+            });
+          }
+        }
       );
     }
 
@@ -106,13 +109,13 @@ namespace Entity.Npc
       StopMessage();
     }
 
-    public void SetNpc(Npc npc)
+    public void Init(Npc npc)
     {
       this.npcData = npc;
       anim.runtimeAnimatorController = npc.animCtrler;
       entityName = npc._name;
     }
 
-    public void SetNpc(string uniqueName) => SetNpc(NpcManager.Instance.GetWithCode(uniqueName));
+    public void Init(string uniqueName) => Init(NpcManager.Instance.GetWithCode(uniqueName));
   }
 }

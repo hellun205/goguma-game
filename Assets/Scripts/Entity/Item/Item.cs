@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
+using String = System.String;
 
 namespace Entity.Item
 {

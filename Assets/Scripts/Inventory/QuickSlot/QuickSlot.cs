@@ -2,6 +2,7 @@
 using Audio;
 using Entity.Item;
 using Entity.Player;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -37,11 +38,7 @@ namespace Inventory.QuickSlot
     [HideInInspector]
     public byte index;
 
-    private Image drgImg => InventoryController.Instance.dragImg;
-
-    [Header("Sound")]
-    [SerializeField]
-    private AudioData dragSound;
+    private Image drgImg => InventoryManager.Instance.dragImg;
 
     private void Awake()
     {
@@ -92,7 +89,7 @@ namespace Inventory.QuickSlot
 
     public void OnDrop(PointerEventData eventData)
     {
-      var invenCtrl = InventoryController.Instance;
+      var invenCtrl = InventoryManager.Instance;
 
       if (invenCtrl.isDragging)
       {
@@ -114,7 +111,7 @@ namespace Inventory.QuickSlot
       }
 
       controller.CallSlotChanged();
-      AudioManager.Play(dragSound);
+      Managers.Audio.PlaySFX("drag_item");
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -122,7 +119,7 @@ namespace Inventory.QuickSlot
       if (eventData.button == PointerEventData.InputButton.Left)
       {
         controller.SetIndex(index);
-        AudioManager.Play("click");
+        Managers.Audio.PlaySFX("click");
       }
     }
 
@@ -136,7 +133,7 @@ namespace Inventory.QuickSlot
       controller.isDragging = true;
 
       drgImg.gameObject.SetActive(true);
-      AudioManager.Play(dragSound);
+      Managers.Audio.PlaySFX("drag_item");
     }
 
     public void OnDrag(PointerEventData eventData)

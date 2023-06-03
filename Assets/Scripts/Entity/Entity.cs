@@ -1,4 +1,5 @@
 ﻿using Entity.Item;
+using Manager;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -48,7 +49,7 @@ namespace Entity
     /// <summary>
     /// 엔티티를 삭제합니다.
     /// </summary>
-    public virtual void Release() => EntityManager.Release(this);
+    public virtual void Release() => Managers.Entity.ReleaseEntity(this);
 
     public virtual void OnGet() => onGet?.Invoke(this);
 
@@ -57,8 +58,10 @@ namespace Entity
     private void ThrowItemB(Item.Item item, byte count, sbyte direction = 1)
     {
       var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * direction);
-      var throwItem = Entity.SummonItem(new Vector2(startPositionX, position.y), item, count);
-
+      var pos = new Vector2(startPositionX, position.y);
+      // var throwItem = Entity.SummonItem(new Vector2(startPositionX, position.y), item, count);
+      var throwItem = Managers.Entity.GetEntity<ItemController>(pos, x => x.Init(item, count));
+      
       throwItem.Throw(new Vector2(direction * 2f, 3f), 4f);
     }
 

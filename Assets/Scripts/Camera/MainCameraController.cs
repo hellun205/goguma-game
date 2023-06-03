@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Entity;
+using UnityEngine;
 using Entity.Player;
 
 namespace Camera
@@ -33,6 +35,10 @@ namespace Camera
     /// </summary>
     public bool clamp = false;
 
+    public Vector2 add;
+
+    public ParallaxBG parallaxBG;
+    
     private void Awake()
     {
       if (Instance == null)
@@ -41,6 +47,10 @@ namespace Camera
         Destroy(gameObject);
 
       DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
 
     }
 
@@ -55,7 +65,7 @@ namespace Camera
     private void FollowPlayer()
     {
       var targetPos = PlayerController.Instance.transform.position;
-      targetPos = new Vector3(targetPos.x, targetPos.y, this.transform.position.z);
+      targetPos = new Vector3(targetPos.x + add.x, targetPos.y + add.y, this.transform.position.z);
 
       if (clamp)
       {
@@ -65,5 +75,6 @@ namespace Camera
 
       transform.position = Vector3.Lerp(transform.position, targetPos, smoothing * Time.fixedDeltaTime);
     }
+    
   }
 }

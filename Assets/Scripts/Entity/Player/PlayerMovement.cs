@@ -1,6 +1,6 @@
-﻿using Audio;
+﻿using Dialogue;
+using Manager;
 using UnityEngine;
-using Window;
 
 namespace Entity.Player
 {
@@ -10,12 +10,8 @@ namespace Entity.Player
     public float inputCooldown = 0.5f;
     private float curInputCooldown;
 
-    [SerializeField]
-    private KeyCode jumpKey = KeyCode.Space;
-
     private PlayerStatus status => controller.status;
-
-    // Components
+    
     private PlayerController controller;
 
     protected override void Awake()
@@ -34,20 +30,20 @@ namespace Entity.Player
         curInputCooldown += Time.deltaTime;
       else
       {
-        if (InputBoxWindow.isEnabled) return;
+        var interactable = !Managers.Window.IsActive &&
+                           !DialogueController.Instance.isEnabled;
+
         var horizontal = Input.GetAxisRaw("Horizontal");
         moveSpeed = status.moveSpeed;
         jumpPower = status.jumpPower;
         animator.SetFloat("moveSpeed", Mathf.Max(1f, status.moveSpeed));
-        Move(horizontal);
-        if (Input.GetKeyDown(KeyCode.Space))
+        Move(interactable ? horizontal : 0f);
+        if (interactable && Input.GetKeyDown(Managers.Key.jump) && canJump)
         {
-          AudioManager.Play("jump");
+          Managers.Audio.PlaySFX("jump");
           Jump();
         }
       }
-
-      CheckGround();
     }
 
     public void EnableInputCooldown() => curInputCooldown = 0f;

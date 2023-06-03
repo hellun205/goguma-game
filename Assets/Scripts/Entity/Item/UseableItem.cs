@@ -1,6 +1,6 @@
-﻿using Audio;
-using Entity.Item.Useable;
+﻿using Entity.Item.Useable;
 using Entity.Player;
+using Manager;
 using Utils;
 using Window;
 
@@ -16,19 +16,19 @@ namespace Entity.Item
 
     public abstract UseableType u_type { get; }
 
-    public AudioData audioWhenUse;
+    public string audioWhenUse;
 
     public float cooldown = 0f;
 
     public virtual void Use()
     {
-      AudioManager.Play(audioWhenUse);
+      Managers.Audio.PlaySFX(audioWhenUse); 
       onUse?.Invoke(this);
     }
 
     public virtual void OnRightClick()
     {
-      WindowManager.Ask("아이템 사용",
+      Managers.Window.Ask("아이템 사용",
         $"{nameColor.GetTag(_name)}(을)를 사용하시겠습니까?",
         "사용", "취소",
         use =>
