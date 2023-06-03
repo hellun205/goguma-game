@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using Animation.Combined;
+using Animation.Preset;
 using Entity.Player;
 using JetBrains.Annotations;
 using Manager;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -78,7 +78,7 @@ namespace Dialogue
     private Coroutiner writeCoroutiner;
 
     // Animation
-    private SmoothSizeAndFade anim;
+    private PanelVisibler anim;
 
     private readonly Vector2 zero = new(0.7f, 0.7f);
 
@@ -90,20 +90,10 @@ namespace Dialogue
       previousBtnImg = previousBtn.GetComponent<Image>();
       canvasGroup = GetComponent<CanvasGroup>();
 
-      anim = new(this,
-        new(() => transform.localScale, value => transform.localScale = value),
-        new(() => canvasGroup.alpha, value => canvasGroup.alpha = value))
-      {
-        minSize = zero,
-        maxSize = transform.localScale,
-        fadeAnimSpeed = 6f,
-        sizeAnimSpeed = 8f
-      };
-      anim.onStarted += sender => canvasGroup.blocksRaycasts = true;
-      anim.onHid += sender => canvasGroup.blocksRaycasts = false;
+      anim = new(this);
+      anim.animation.isUnscaled = true;
+      
       writeCoroutiner = new(this, WriteCoroutine);
-      canvasGroup.alpha = 0f;
-      canvasGroup.blocksRaycasts = false;
 
       ResetUI();
       Close();

@@ -2,7 +2,7 @@
 
 namespace Animation.Combined
 {
-  public class CombinedAnimation<T> where T : CombinedAnimation<T>
+  public abstract class CombinedAnimation<T> where T : CombinedAnimation<T>
   {
     public delegate void CombinedAnimationEventListener(T sender);
 
@@ -10,6 +10,9 @@ namespace Animation.Combined
     public event CombinedAnimationEventListener onEnded;
     
     protected MonoBehaviour sender { get; }
+
+    public abstract float timeOut { get; set; }
+    public abstract bool isUnscaled { get; set; }
 
     protected CombinedAnimation(MonoBehaviour sender)
     {

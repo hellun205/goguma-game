@@ -58,6 +58,7 @@ namespace Inventory
       slotPrefab = PrefabManager.Instance.GetObject<Slot>("InventorySlot");
       toolTipPanel.gameObject.SetActive(false);
       anim = new(this);
+      anim.animation.isUnscaled = true;
 
       SetCount(slotCount);
     }

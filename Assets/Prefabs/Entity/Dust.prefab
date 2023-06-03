@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   col: {fileID: 6560473075134663019}
-  distance: 0.2
+  distance: 0.5
 --- !u!95 &7103346309017370692
 Animator:
   serializedVersion: 5

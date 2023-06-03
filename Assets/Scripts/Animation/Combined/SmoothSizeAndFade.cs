@@ -26,18 +26,25 @@ namespace Animation.Combined
 
     private bool isFadeIn = true;
 
-    public float timeOut
+    public override float timeOut
     {
-      get => _timeOut;
+      get => animSize.timeout;
       set
       {
-        _timeOut = value;
-        animSize.timeout = _timeOut;
-        animFade.timeout = _timeOut;
+        animSize.timeout = value;
+        animFade.timeout = value;
       }
     }
 
-    private float _timeOut;
+    public override bool isUnscaled
+    {
+      get => animSize.isUnscaled;
+      set
+      {
+        animSize.isUnscaled = value;
+        animFade.isUnscaled = value;
+      }
+    }
 
     public SmoothSizeAndFade
     (

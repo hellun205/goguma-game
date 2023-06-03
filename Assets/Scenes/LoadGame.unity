@@ -760,7 +760,7 @@ MonoBehaviour:
   groundTag: Ground
   layerMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
   walkingAnim: isWalking
   jumpingAnim: isJumping
   inputCooldown: 0.3
@@ -859,7 +859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   col: {fileID: 71035731}
-  distance: 0.15
+  distance: 0.5
 --- !u!58 &71035736
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -891,7 +891,7 @@ MonoBehaviour:
   curHp: 0
   maxHp: 0
   col: {fileID: 71035731}
-  distance: 0.05
+  distance: 0.15
 --- !u!212 &71035738
 SpriteRenderer:
   m_ObjectHideFlags: 0

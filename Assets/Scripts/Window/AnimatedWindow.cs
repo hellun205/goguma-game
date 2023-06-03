@@ -16,6 +16,7 @@ namespace Window
       anim = new(this);
 
       Managers.Window.onGet += WindowOnGet;
+      anim.animation.onHid += AnimOnHid;
     }
 
     private void WindowOnGet(BaseWindow sender)
