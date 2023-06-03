@@ -25,7 +25,7 @@ namespace Entity.Item.Useable
       base.Use();
       if (!canDuplicateUse && BuffManager.Instance.HasBuff(this))
       {
-        WindowManager.Show("아이템 사용", "이미 사용 중 입니다.");
+        Managers.Window.ShowMsg("아이템 사용", "이미 사용 중 입니다.");
         return;
       }
       BuffManager.Instance.Add(this);

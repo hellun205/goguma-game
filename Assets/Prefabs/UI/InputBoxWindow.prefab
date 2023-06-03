@@ -1766,7 +1766,7 @@ GameObject:
   - component: {fileID: 3294150581864509413}
   - component: {fileID: 1282573690187865982}
   m_Layer: 18
-  m_Name: InputBox
+  m_Name: InputBoxWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

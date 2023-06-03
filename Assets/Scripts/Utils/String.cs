@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Utils
 {
-  public static class StringUtils
+  public static class String
   {
     public static string ToThousandsFormat(this float value) => $"{value:#,###}";
 

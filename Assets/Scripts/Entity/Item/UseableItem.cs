@@ -29,7 +29,7 @@ namespace Entity.Item
 
     public virtual void OnRightClick()
     {
-      WindowManager.Ask("아이템 사용",
+      Managers.Window.Ask("아이템 사용",
         $"{nameColor.GetTag(_name)}(을)를 사용하시겠습니까?",
         "사용", "취소",
         use =>

@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
-using Inventory;
+using Animation.Preset;
+using Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Manager
+namespace Inventory
 {
   public class InventoryManager : SingleTon<InventoryManager>
   {
     public bool activeInventory { get; private set; } = false;
 
-    private Inventory.Inventory _inventory;
+    private Inventory _inventory;
 
-    public Inventory.Inventory inventory
+    public Inventory inventory
     {
       get => _inventory;
       set
@@ -26,13 +27,9 @@ namespace Manager
 
     [Header("UI Object")]
     [SerializeField]
-    private GameObject panel;
-
-    [SerializeField]
     private Transform content;
 
     [Header("Slot")]
-    [SerializeField]
     private Slot slotPrefab;
 
     [SerializeField]
@@ -53,11 +50,14 @@ namespace Manager
     [Header("ToolTip")]
     public ItemToolTip toolTipPanel;
 
+    private PanelVisibler anim;
+
     protected override void Awake()
     {
       base.Awake();
+      slotPrefab = PrefabManager.Instance.GetObject<Slot>("InventorySlot");
       toolTipPanel.gameObject.SetActive(false);
-      panel.SetActive(activeInventory);
+      anim = new(this);
 
       SetCount(slotCount);
     }
@@ -72,7 +72,11 @@ namespace Manager
     {
       activeInventory = !activeInventory;
       Refresh();
-      panel.SetActive(activeInventory);
+      if (activeInventory)
+        anim.Show();
+      else
+        anim.Hide();
+      
       toolTipPanel.gameObject.SetActive(false);
       Managers.Audio.PlaySFX("open_inventory");
     }
