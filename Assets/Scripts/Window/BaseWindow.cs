@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Manager;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Window
@@ -14,27 +15,20 @@ namespace Window
     [SerializeField]
     protected Button closeBtn;
 
+    [FormerlySerializedAs("_title")]
     [Header("Window")]
     public string title;
-
-    public abstract WindowType type { get; }
 
     protected virtual void Awake()
     {
       closeBtn.onClick.AddListener(OnCloseButtonClick);
     }
 
-    protected virtual void OnCloseButtonClick()
-    {
-      WindowManager.Instance.pools[type].Release(this);
-    }
+    protected abstract void OnCloseButtonClick();
 
     protected virtual void OnValidate()
     {
       titleTMP.text = title;
     }
-
-    public abstract void SetDefault();
-
   }
 }

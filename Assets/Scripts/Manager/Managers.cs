@@ -1,4 +1,6 @@
-﻿namespace Manager
+﻿using Window;
+
+namespace Manager
 {
   public class Managers : SingleTon<Managers> , IDontDestroy
   {
@@ -7,6 +9,8 @@
     public static KeyManager Key { get; private set; }
     public static EntityManager Entity { get; private set; }
     public static Option Option { get; private set; }
+    public static PrefabManager Prefab { get; private set; }
+    public static WindowManager Window { get; private set; }
     
 
     protected override void Awake()
@@ -17,6 +21,8 @@
       Key = FindObjectOfType<KeyManager>();
       Entity = FindObjectOfType<EntityManager>();
       Option = FindObjectOfType<Option>();
+      Prefab = FindObjectOfType<PrefabManager>();
+      Window = FindObjectOfType<WindowManager>();
     }
   }
 }

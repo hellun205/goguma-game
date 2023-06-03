@@ -37,7 +37,7 @@ namespace Entity.Player
         curInputCooldown += Time.deltaTime;
       else
       {
-        var interactable = !InputBoxWindow.isEnabled &&
+        var interactable = !Managers.Window.IsActive &&
                            !DialogueController.Instance.isEnabled;
         
         var horizontal = Input.GetAxisRaw("Horizontal");

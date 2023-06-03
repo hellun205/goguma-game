@@ -23,7 +23,7 @@ namespace Inventory
         if (item is null)
           return;
 
-        WindowManager.Ask("버리기", $"{item.Value.item._name}(을)를 버리시겠습니까?", callback: @throw =>
+        Managers.Window.Ask("버리기", $"{item.Value.item._name}(을)를 버리시겠습니까?", callback: @throw =>
         {
           if (!@throw)
             return;
@@ -32,7 +32,7 @@ namespace Inventory
           else
           {
             var maxCnt = inven.ItemCount(item.Value.item);
-            WindowManager.ReadInt("버리기", cnt => Throw(item.Value.item, (ushort)cnt),
+            Managers.Window.ReadInt("버리기", cnt => Throw(item.Value.item, (ushort)cnt),
               $"몇개를 버리시겠습니까? (최대 {maxCnt} 개)", maxCnt, minValue: 0, maxValue: maxCnt);
           }
         });

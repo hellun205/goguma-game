@@ -1,17 +1,14 @@
-﻿using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
+using Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace Window
 {
   public class InputBoxWindow : BaseWindow
   {
-    public override WindowType type => WindowType.InputBox;
-
     [Header("UI Object - Input Box")]
     [SerializeField]
     private TextMeshProUGUI textTMP;
@@ -45,10 +42,11 @@ namespace Window
 
     public string placeholder = "Enter Text...";
 
-    public static bool isEnabled = false;
-
     [CanBeNull]
     public UnityAction<string> onSubmit;
+
+    protected override void OnCloseButtonClick()
+      => Managers.Window.Release(this);
 
     protected override void OnValidate()
     {
@@ -61,8 +59,6 @@ namespace Window
       placeholderTMP.text = placeholder;
     }
 
-    public override void SetDefault() => Set();
-
     protected override void Awake()
     {
       base.Awake();
@@ -71,10 +67,17 @@ namespace Window
       trueBtn.onClick.AddListener(OnCloseButtonClick);
       falseBtn.onClick.AddListener(OnCloseButtonClick);
 
-      Set(text, confirmBtnText, cancelBtnText);
+      Init(text, confirmBtnText, cancelBtnText);
     }
 
-    public void Set(string text = "", string trueText = "확인", string falseText = "취소", string defValue = "", UnityAction<string> callback = null)
+    public void Init
+    (
+      string text = "",
+      string trueText = "확인",
+      string falseText = "취소",
+      string defValue = "",
+      UnityAction<string> callback = null
+    )
     {
       this.text = text;
       this.confirmBtnText = trueText;
@@ -84,6 +87,7 @@ namespace Window
 
       falseBtn.gameObject.SetActive(!string.IsNullOrEmpty(falseText));
       OnValidate();
+      inputField.ActivateInputField();
     }
 
     private void Update()
@@ -93,12 +97,6 @@ namespace Window
 
       onSubmit?.Invoke(inputField.text);
       OnCloseButtonClick();
-    }
-
-    protected override void OnCloseButtonClick()
-    {
-      base.OnCloseButtonClick();
-      isEnabled = false;
     }
   }
 }

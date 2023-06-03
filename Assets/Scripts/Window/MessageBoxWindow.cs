@@ -1,14 +1,13 @@
-﻿using TMPro;
+﻿using Manager;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace Window
 {
   public class MessageBoxWindow : BaseWindow
   {
-    public override WindowType type => WindowType.MessageBox;
 
     [Header("UI Object - Message Box")]
     [SerializeField]
@@ -38,6 +37,9 @@ namespace Window
 
     public UnityEvent<bool> onBtnClick;
 
+    protected override void OnCloseButtonClick()
+      => Managers.Window.Release(this);
+
     protected override void OnValidate()
     {
       base.OnValidate();
@@ -46,17 +48,15 @@ namespace Window
       falseBtnTMP.text = falseBtnText;
     }
 
-    public override void SetDefault() => Set();
-
     protected override void Awake()
     {
       base.Awake();
       trueBtn.onClick.AddListener(() => onBtnClick?.Invoke(true));
       falseBtn.onClick.AddListener(() => onBtnClick?.Invoke(false));
-      Set(text, trueBtnText, falseBtnText);
+      Init(text, trueBtnText, falseBtnText);
     }
 
-    public void Set(string text = "", string trueText = "예", string falseText = "아니오", UnityAction<bool> onClick = null)
+    public void Init(string text = "", string trueText = "예", string falseText = "아니오", UnityAction<bool> onClick = null)
     {
       this.text = text;
       this.trueBtnText = trueText;
@@ -67,7 +67,7 @@ namespace Window
       falseBtn.gameObject.SetActive(!string.IsNullOrEmpty(falseText));
 
       onBtnClick.RemoveAllListeners();
-      onBtnClick.AddListener(b => OnCloseButtonClick());
+      onBtnClick.AddListener(_ => OnCloseButtonClick());
 
       if (onClick != null)
         onBtnClick.AddListener(onClick);
