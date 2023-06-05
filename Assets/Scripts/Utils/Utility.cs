@@ -54,10 +54,10 @@ namespace Utils
       if (g is not null) result.g = g.Value;
       if (b is not null) result.b = b.Value;
       if (a is not null) result.a = a.Value;
-      
+
       return result;
     }
-    
+
     public static Vector3 Setter(this Vector3 vector3, float? x = null, float? y = null, float? z = null)
     {
       var result = vector3;
@@ -65,17 +65,38 @@ namespace Utils
       if (x is not null) result.x = x.Value;
       if (y is not null) result.y = y.Value;
       if (z is not null) result.z = z.Value;
-      
+
       return result;
     }
-    
+
     public static Vector2 Setter(this Vector2 vector2, float? x = null, float? y = null)
     {
       var result = vector2;
 
       if (x is not null) result.x = x.Value;
       if (y is not null) result.y = y.Value;
-      
+
+      return result;
+    }
+    
+    public static Vector3 Plus(this Vector3 vector3, float? x = null, float? y = null, float? z = null)
+    {
+      var result = vector3;
+
+      if (x is not null) result.x += x.Value;
+      if (y is not null) result.y += y.Value;
+      if (z is not null) result.z += z.Value;
+
+      return result;
+    }
+
+    public static Vector2 Plus(this Vector2 vector2, float? x = null, float? y = null)
+    {
+      var result = vector2;
+
+      if (x is not null) result.x += x.Value;
+      if (y is not null) result.y += y.Value;
+
       return result;
     }
   }

@@ -14,6 +14,10 @@ namespace Entity.Player
 
     public float moveSpeed;
 
+    public byte level;
+
+    public ushort exp;
+
     [FormerlySerializedAs("jumpSpeed")]
     public float jumpPower;
 

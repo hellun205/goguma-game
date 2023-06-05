@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -29,29 +30,67 @@ namespace Utils
     public static string GetTimeStr(this float time, string second = "s", string minute = "m", string hour = "h")
     {
       var intTime = Mathf.RoundToInt(time);
-      int rem;
       int div;
       int value;
       string str;
-      if (intTime >= 3600)
+      switch (intTime)
       {
-        div = Math.DivRem(intTime, 3600, out rem);
-        value = div;
-        str = hour;
-      }
-      else if (intTime >= 60)
-      {
-        div = Math.DivRem(intTime, 60, out rem);
-        value = div;
-        str = minute;
-      }
-      else
-      {
-        value = intTime;
-        str = second;
+        case >= 3600:
+          div = Math.DivRem(intTime, 3600, out _);
+          value = div;
+          str = hour;
+          break;
+
+        case >= 60:
+          div = Math.DivRem(intTime, 60, out _);
+          value = div;
+          str = minute;
+          break;
+
+        default:
+          value = intTime;
+          str = second;
+          break;
       }
 
       return $"{value}{str}";
+    }
+
+    public static readonly string EndTag = "$";
+
+    public static readonly Dictionary<string, Color> Colors = new()
+    {
+      { "$4", new Color32(0xaa, 0x00, 0x00, 0xff) },
+      { "$c", new Color32(0xff, 0x55, 0x55, 0xff) },
+      { "$6", new Color32(0xff, 0xaa, 0x0, 0xff) },
+      { "$e", new Color32(0xff, 0xff, 0x55, 0xff) },
+      { "$2", new Color32(0x00, 0xaa, 0x00, 0xff) },
+      { "$a", new Color32(0x55, 0xff, 0x55, 0xff) },
+      { "$b", new Color32(0x55, 0xff, 0xff, 0xff) },
+      { "$3", new Color32(0x00, 0xaa, 0xaa, 0xff) },
+      { "$1", new Color32(0x00, 0x00, 0xaa, 0xff) },
+      { "$9", new Color32(0x55, 0x55, 0xff, 0xff) },
+      { "$d", new Color32(0xff, 0x55, 0xff, 0xff) },
+      { "$5", new Color32(0xaa, 0x00, 0xaa, 0xff) },
+      { "$f", new Color32(0xff, 0xff, 0xff, 0xff) },
+      { "$7", new Color32(0xaa, 0xaa, 0xaa, 0xff) },
+      { "$8", new Color32(0x55, 0x55, 0x55, 0xff) },
+      { "$0", new Color32(0x00, 0x00, 0x00, 0xff) },
+    };
+
+    public static string ToColorTags(this string text)
+    {
+      foreach (var (tag, color) in Colors)
+      {
+        if (!text.Contains(tag)) continue;
+
+        text = text.Replace(tag, $"<color=#{color.ToHexString()}>");
+      }
+
+      if (text.Contains(EndTag))
+        text = text.Replace(EndTag, "</color>");
+
+      return text;
     }
   }
 }

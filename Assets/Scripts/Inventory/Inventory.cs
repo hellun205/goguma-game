@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Entity.Item;
+using Entity.Npc;
 using UnityEngine;
 
 namespace Inventory
@@ -14,6 +15,11 @@ namespace Inventory
 
     public List<(BaseItem item, byte count)?> items;
     public byte slotCount;
+
+    public Inventory()
+    {
+      onItemChanged += ENpc.RefreshQuestAll;
+    }
 
     private void AddItem(BaseItem item, byte count = 1)
     {

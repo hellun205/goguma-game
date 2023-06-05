@@ -1,6 +1,8 @@
 using Animation;
+using Entity.Npc;
 using Entity.UI;
 using Manager;
+using Quest.User;
 using UnityEngine;
 
 namespace Entity.Enemy
@@ -85,6 +87,19 @@ namespace Entity.Enemy
 
     protected virtual void OnDead(Vector2 knockDir, float knockBack)
     {
+      Managers.Player.questData.quests.ForEach(info =>
+      {
+        info.requires.ForEach(require =>
+        {
+          if (require is NeedKillEnemy killEnemy && killEnemy.EnemyName == name)
+          {
+            require.Add();
+          }
+        });
+      });
+      
+      ENpc.RefreshQuestAll();
+      
       anim.SetBool(deadAnimParam, true);
       rigid.AddForce(knockDir * (knockBackPower * knockBack));
       animFade.FadeOut(3f);

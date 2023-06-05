@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Dialogue;
 using Entity.Player;
@@ -18,9 +19,21 @@ namespace Entity.Npc
 
     private UEMsgBox messageBox;
 
+    [SerializeField]
+    private GameObject exclamation;
+
+    [SerializeField]
+    private GameObject question;
+    
+    [SerializeField]
+    private GameObject dots;
+
     private Animator anim;
 
     private Coroutine messageCoroutine;
+
+    public List<int> canReceiveQuests;
+    public List<int> canEndQuests;
 
     public new Vector2 position
     {
@@ -42,10 +55,14 @@ namespace Entity.Npc
       while (true)
       {
         yield return new WaitForSeconds(delay);
-
+        SetQuestBoxPos(1.25f);
         var msgData = new MessageData(npcData.messages.Random());
         messageBox = Managers.Entity.Get<UEMsgBox>(MessageBoxPosition.position,
-          x => x.Init(msgData, () => SetTalking(false)));
+          x => x.Init(msgData, () =>
+          {
+            SetTalking(false);
+            SetQuestBoxPos(0.75f);
+          }));
         SetTalking(true);
       }
     }
@@ -68,16 +85,31 @@ namespace Entity.Npc
 
     public void Meet()
     {
-      DialogueController.Instance.ShowDialogues(
-        npcData.meetDialogue.Select(dialogue =>
-          new DialogueData(
-            (
-              dialogue.speaker == Speaker.Npc
-                ? npcData.speakerData
-                : PlayerController.Instance.speakerData
-            ),
-            dialogue.text
-          )).ToArray(), btn =>
+      if (canReceiveQuests.Any())
+      {
+        var quest = Managers.Quest.GetQuestByID(canReceiveQuests[0]);
+        Managers.Dialogue.ShowDialogues(GetDialogueData(quest.dialogue), _ =>
+        {
+          Managers.Dialogue.Ask(GetDialogueData(quest.askDialogue), accept =>
+          {
+            if (accept)
+            {
+              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.acceptDialogue));
+              Managers.Player.questData.quests.Add(quest.GetQuestInfo());
+              RefreshQuest();
+            }
+            else
+              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.refuseDialogue));
+          });
+        });
+        return;
+      }
+
+      if (canEndQuests.Any())
+      {
+      }
+
+      DialogueController.Instance.ShowDialogues(GetDialogueData(npcData.meetDialogue), _ =>
         {
           if (npcData.type == NpcType.Shop)
           {
@@ -94,7 +126,17 @@ namespace Entity.Npc
     public override void OnGet()
     {
       base.OnGet();
+      SetQuestBoxPos(0.75f);
+
       messageCoroutine = StartCoroutine(ShowMessage(12f));
+    }
+
+    public void SetQuestBoxPos(float value)
+    {
+      var pos = position.Plus(y: col.bounds.extents.y + value);
+      exclamation.transform.position = pos;
+      question.transform.position = pos;
+      dots.transform.position = pos;
     }
 
     public override void OnRelease()
@@ -108,8 +150,70 @@ namespace Entity.Npc
       this.npcData = npc;
       anim.runtimeAnimatorController = npc.animCtrler;
       entityName = npc._name;
+      RefreshQuest();
     }
 
     public void Init(string uniqueName) => Init(Managers.Npc.GetObject(uniqueName));
+
+    public void RefreshQuest()
+    {
+      var player = Managers.Player;
+      canEndQuests.Clear();
+      canReceiveQuests.Clear();
+      question.SetActive(false);
+      dots.SetActive(false);
+      exclamation.SetActive(false);
+
+      foreach (var quest in npcData.quest)
+      {
+        if (player.questData.quests.Any(info => info.questIndex == quest.questID) ||
+            player.questData.endedQuest.Contains(quest.questID) ||
+            quest.requireLevel > player.status.level)
+          continue;
+
+        if (
+          quest.requireQuests.Length == 0 ||
+          quest.requireQuests.All(require => player.questData.endedQuest.Contains(require))
+        )
+          canReceiveQuests.Add(quest.questID);
+      }
+
+      var endQuest = player.questData.quests.Where(quest => npcData.quest.Any(data => data.questID == quest.questIndex)
+                                                            && quest.isCompleted).Select(x => x.questIndex).ToArray();
+
+      if (endQuest.Any())
+        canEndQuests.AddRange(endQuest);
+
+      var receivedQuest =
+        player.questData.quests.Any(info => npcData.quest.Any(data => data.questID == info.questIndex));
+
+      if (canEndQuests.Any())
+        question.SetActive(true);
+      else if (receivedQuest)
+        dots.SetActive(true);
+      else if (canReceiveQuests.Any())
+        exclamation.SetActive(true);
+    }
+
+    private DialogueData[] GetDialogueData(IEnumerable<NpcDialogue> npcDialogues)
+    {
+      return npcDialogues.Select(GetDialogueData).ToArray();
+    }
+
+    private DialogueData GetDialogueData(NpcDialogue npcDialogue)
+    {
+      return new DialogueData(
+        npcDialogue.speaker == Speaker.Npc ? npcData.speakerData : PlayerController.Instance.speakerData,
+        npcDialogue.text);
+    }
+
+    public static void RefreshQuestAll()
+    {
+      var npcs = FindObjectsOfType<ENpc>();
+      foreach (var npc in npcs)
+      {
+        npc.RefreshQuest();
+      }
+    }
   }
 }

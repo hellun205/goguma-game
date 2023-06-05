@@ -2,6 +2,7 @@
 using System.Collections;
 using Animation.Combined;
 using Animation.Preset;
+using Entity.Npc;
 using Entity.Player;
 using JetBrains.Annotations;
 using Manager;

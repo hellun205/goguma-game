@@ -6,6 +6,7 @@ using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
 using Manager;
+using Quest.User;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -79,6 +80,9 @@ namespace Entity.Player
     private static readonly int WeaponType = Animator.StringToHash("weaponType");
     private bool isAttacking;
     private const float useCoolTime = 0.4f;
+    
+    // Quest
+    public QuestData questData = new QuestData();
 
     private void Awake()
     {

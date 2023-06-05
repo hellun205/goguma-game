@@ -23,5 +23,9 @@ namespace Manager
 
     public TComponent GetObject<TComponent>(string name) where TComponent : Component
       => GetObject(name).GetComponent<TComponent>();
+
+    public int GetID(TObject obj) => items.IndexOf(obj);
+
+    public TObject GetObjectByID(int id) => items[id];
   }
 }

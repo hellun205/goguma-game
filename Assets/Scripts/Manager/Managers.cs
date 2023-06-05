@@ -1,7 +1,10 @@
-﻿using Entity;
+﻿using Dialogue;
+using Entity;
 using Entity.Item;
 using Entity.Npc;
+using Entity.Player;
 using Inventory;
+using Quest;
 using Window;
 
 namespace Manager
@@ -17,7 +20,9 @@ namespace Manager
     public static WindowManager Window { get; private set; }
     public static ItemManager Item { get; private set; }
     public static NpcManager Npc { get; private set; }
-    
+    public static QuestManager Quest { get; private set; }
+    public static PlayerController Player { get; private set; }
+    public static DialogueController Dialogue { get; private set; }
 
     protected override void Awake()
     {
@@ -31,6 +36,9 @@ namespace Manager
       Window = FindObjectOfType<WindowManager>();
       Item = FindObjectOfType<ItemManager>();
       Npc = FindObjectOfType<NpcManager>();
+      Quest = FindObjectOfType<QuestManager>();
+      Player = FindObjectOfType<PlayerController>();
+      Dialogue = FindObjectOfType<DialogueController>();
     }
   }
 }
