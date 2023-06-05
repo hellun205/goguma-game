@@ -1,14 +1,12 @@
 ﻿using System;
+using Manager;
 using UnityEngine;
 
 namespace Entity.Item
 {
-  public class ItemController : Entity
+  public class EItem : Entity
   {
-    public static EntityType Type => EntityType.Item; 
-    public override EntityType type => Type;
-
-    public (Item item, byte count) data;
+    public (BaseItem item, byte count) data;
 
     [SerializeField]
     private SpriteRenderer[] sprRenderers;
@@ -30,7 +28,7 @@ namespace Entity.Item
 
     private Transform target;
 
-    private Action<(Item item, byte count)> callback;
+    private Action<(BaseItem item, byte count)> callback;
 
     protected virtual void Awake()
     {
@@ -43,7 +41,7 @@ namespace Entity.Item
         transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * pickupSpeed);
     }
 
-    public void Init(Item item, byte count = 1)
+    public void Init(BaseItem item, byte count = 1)
     {
       this.data = (item, count);
       if (item == null)
@@ -51,7 +49,7 @@ namespace Entity.Item
         entityName = string.Empty;
         for (var i = 0; i < sprRenderers.Length; i++)
         {
-          sprRenderers[i].sprite = ItemManager.GetInstance().noneSprite;
+          sprRenderers[i].sprite = Managers.Item.noneSprite;
           sprRenderers[i].enabled = false;
         }
 
@@ -67,10 +65,10 @@ namespace Entity.Item
     }
 
     public void Init(string uniqueName, byte count = 1) =>
-      Init(ItemManager.Instance.GetWithCode(uniqueName), count);
+      Init(Managers.Item.GetObject(uniqueName), count);
 
 
-    public void PickUp(Transform target, Action<(Item item, byte count)> callback)
+    public void PickUp(Transform target, Action<(BaseItem item, byte count)> callback)
     {
       this.callback = callback;
       this.target = target;
@@ -84,19 +82,19 @@ namespace Entity.Item
       base.Release();
     }
 
-    private void OnTriggerStay2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D collider)
     {
       if (isPickingUp)
       {
-        if (col.transform.name == target.name)
+        if (collider.transform.name == target.name)
         {
           callback.Invoke(data);
           Release();
         }
       }
-      else if (col.CompareTag("Item"))
+      else if (collider.CompareTag("Item"))
       {
-        var item = col.GetComponent<ItemController>();
+        var item = collider.GetComponent<EItem>();
         if (item.data.item == this.data.item && item.data.count != byte.MaxValue)
         {
           var plus = item.data.count + this.data.count;

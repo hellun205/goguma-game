@@ -7,7 +7,7 @@ namespace Entity
   public class HpBar : MonoBehaviour
   {
     private Entity entity;
-    private HealthBar hpBar;
+    private UEHpBar hpBar;
 
     public float curHp;
     public float maxHp;
@@ -54,7 +54,7 @@ namespace Entity
 
     public void LoadHpBar()
     {
-      hpBar = Managers.Entity.GetEntity<HealthBar>(GetPos(), x => x.Init(curHp, maxHp));
+      hpBar = Managers.Entity.GetEntity<UEHpBar>(GetPos(), x => x.Init(curHp, maxHp));
     }
 
     private void OnDestroy()

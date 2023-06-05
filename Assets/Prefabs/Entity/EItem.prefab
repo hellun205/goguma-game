@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1623085697
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: -2
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -190,7 +190,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1623085697
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: -3
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -218,7 +218,7 @@ GameObject:
   - component: {fileID: 7230938946806235690}
   - component: {fileID: 6551659703298800784}
   m_Layer: 0
-  m_Name: Item
+  m_Name: EItem
   m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,10 +262,6 @@ MonoBehaviour:
   - {fileID: 4322331574319515966}
   - {fileID: 2871993346777680277}
   countSprite: 0102050a
-  imgTrans: {fileID: 7463745998854943099}
-  maxY: 0.2
-  limitY: 0.05
-  speed: 2
   pickupSpeed: 6.63
   isPickingUp: 0
   isThrowing: 0
@@ -412,7 +408,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1623085697
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -554,7 +550,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1623085697
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: -1
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

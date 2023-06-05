@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Entity.Item
 {
   [CreateAssetMenu(fileName = "Item", menuName = "Item/Normal")]
-  public class NormalItem : Item
+  public class NormalItem : BaseItem
   {
     public override ItemType type => ItemType.Normal;
   }

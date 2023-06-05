@@ -1,14 +1,12 @@
 ﻿using Animation;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Entity.UI
 {
-  public class HealthBar : UIEntity
+  public class UEHpBar : UIEntity
   {
-    public static EntityType Type => EntityType.HpBar;
-    public override EntityType type => Type;
-
     private const float middleFollowSpeed = 4f;
 
     private SmoothFloat animMiddle;
@@ -21,6 +19,7 @@ namespace Entity.UI
 
     private float _value;
     private float _maxValue;
+    private bool _showText;
 
     public float value
     {

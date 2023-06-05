@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Audio;
 using Entity.Item;
 using Entity.Player;
 using Manager;
@@ -13,6 +12,7 @@ namespace Inventory.QuickSlot
   public class QuickSlot : MonoBehaviour, IDropHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler,
                            IEndDragHandler
   {
+    private Sprite noneSprite => Managers.Item.noneSprite;
     public Inventory inven => PlayerController.Instance.inventory;
 
     public byte? invenIndex = null;
@@ -54,7 +54,7 @@ namespace Inventory.QuickSlot
 
         if (item is null)
         {
-          iconImg.sprite = ItemManager.GetInstance().noneSprite;
+          iconImg.sprite = noneSprite;
           countTMP.text = "";
         }
         else
@@ -66,7 +66,7 @@ namespace Inventory.QuickSlot
       }
       else
       {
-        iconImg.sprite = ItemManager.GetInstance().noneSprite;
+        iconImg.sprite = noneSprite;
         countTMP.text = "";
       }
 

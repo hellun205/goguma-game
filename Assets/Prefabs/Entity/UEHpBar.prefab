@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 7559605400465727542}
   - component: {fileID: 1381983470079571550}
   m_Layer: 0
-  m_Name: HpBar
+  m_Name: UEHpBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -209,6 +209,7 @@ MonoBehaviour:
   col: {fileID: 0}
   topImg: {fileID: 8834885886849256446}
   middleImg: {fileID: 6510363004219036766}
+  tmp: {fileID: 0}
 --- !u!1 &8875619896175932870
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +277,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

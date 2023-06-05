@@ -9,20 +9,14 @@ using Utils;
 
 namespace Entity.Npc
 {
-  /// <summary>
-  /// NPC 컴포넌트
-  /// </summary>
-  public class NpcController : Entity
+  public class ENpc : Entity
   {
-    public static EntityType Type => EntityType.Npc; 
-    public override EntityType type => EntityType.Npc;
-
     public Npc npcData;
 
     [InspectorName("Position")]
     public Transform MessageBoxPosition;
 
-    private MessageBox messageBox;
+    private UEMsgBox messageBox;
 
     private Animator anim;
 
@@ -50,7 +44,7 @@ namespace Entity.Npc
         yield return new WaitForSeconds(delay);
 
         var msgData = new MessageData(npcData.messages.Random());
-        messageBox = Managers.Entity.GetEntity<MessageBox>(MessageBoxPosition.position,
+        messageBox = Managers.Entity.GetEntity<UEMsgBox>(MessageBoxPosition.position,
           x => x.Init(msgData, () => SetTalking(false)));
         SetTalking(true);
       }
@@ -116,6 +110,6 @@ namespace Entity.Npc
       entityName = npc._name;
     }
 
-    public void Init(string uniqueName) => Init(NpcManager.Instance.GetWithCode(uniqueName));
+    public void Init(string uniqueName) => Init(Managers.Npc.GetObject(uniqueName));
   }
 }

@@ -14,7 +14,7 @@ namespace Entity
     /// <summary>
     /// 이름표 엔티티
     /// </summary>
-    private DisplayText displayText;
+    private UEText displayText;
 
     /// <summary>
     /// 이름표를 표시 할 엔티티
@@ -48,7 +48,7 @@ namespace Entity
     public void OnGetEntity(Entity entity)
     {
       if (entity == this.entity)
-        displayText = Managers.Entity.GetEntity<DisplayText>(GetPos(), x => x.text = entity.entityName);
+        displayText = Managers.Entity.GetEntity<UEText>(GetPos(), x => x.text = entity.entityName);
     }
 
     public void OnReleasedEntity(Entity entity)

@@ -1,9 +1,12 @@
-﻿using Inventory;
+﻿using Entity;
+using Entity.Item;
+using Entity.Npc;
+using Inventory;
 using Window;
 
 namespace Manager
 {
-  public class Managers : SingleTon<Managers> , IDontDestroy
+  public sealed class Managers : SingleTon<Managers> , IDontDestroy
   {
     public static AudioManager Audio { get; private set; }
     public static InventoryManager Inventory { get; private set; }
@@ -12,6 +15,8 @@ namespace Manager
     public static Option Option { get; private set; }
     public static PrefabManager Prefab { get; private set; }
     public static WindowManager Window { get; private set; }
+    public static ItemManager Item { get; private set; }
+    public static NpcManager Npc { get; private set; }
     
 
     protected override void Awake()
@@ -24,6 +29,8 @@ namespace Manager
       Option = FindObjectOfType<Option>();
       Prefab = FindObjectOfType<PrefabManager>();
       Window = FindObjectOfType<WindowManager>();
+      Item = FindObjectOfType<ItemManager>();
+      Npc = FindObjectOfType<NpcManager>();
     }
   }
 }

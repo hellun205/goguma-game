@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ScriptableObject;
+﻿using Manager;
 using UnityEngine;
 
 namespace Entity.Item
 {
-  public class ItemManager : ScriptableObjectManager<Item>
+  public class ItemManager : ObjectCollector<ItemManager, BaseItem>
   {
     public Sprite noneSprite;
-
-    public static ItemManager GetInstance() => (ItemManager)Instance;
-
+    
   }
 }

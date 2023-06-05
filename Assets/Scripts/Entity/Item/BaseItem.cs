@@ -1,14 +1,9 @@
-﻿using System;
-using System.Text;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 using Utils;
-using String = System.String;
 
 namespace Entity.Item
 {
-  public abstract class Item : UnityEngine.ScriptableObject
+  public abstract class BaseItem : ScriptableObject
   {
     [Header("Item")]
     public string _name;
@@ -40,7 +35,7 @@ namespace Entity.Item
 
     protected string GetStringTag(string style, string value)
     {
-      return string.IsNullOrEmpty(value) ? String.Empty : style.GetStyleTag(value);
+      return string.IsNullOrEmpty(value) ? string.Empty : style.GetStyleTag(value);
     }
   }
 }

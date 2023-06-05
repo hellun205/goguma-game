@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections;
 using Animation;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using Utils;
 
 namespace Entity.UI
 {
-  public class DamageText : UIEntity
+  public class UEDamage : UIEntity
   {
-    public static EntityType Type => EntityType.DamageText;
-    public override EntityType type => Type;
-
     [Header("UI Object")]
     [SerializeField]
     private TextMeshProUGUI tmp;

@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 6560473075134663017}
   - component: {fileID: 6560473075134663018}
   - component: {fileID: 6560473075134663019}
-  - component: {fileID: 6560473075134663028}
+  - component: {fileID: 7015818600477544909}
   - component: {fileID: 6560473075134663023}
   - component: {fileID: -3067237561173252021}
   - component: {fileID: 7103346309017370692}
   m_Layer: 8
-  m_Name: Dust
+  m_Name: EEDust
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,7 +137,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.2253442, y: 1.1160173}
   m_EdgeRadius: 0
---- !u!114 &6560473075134663028
+--- !u!114 &7015818600477544909
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,17 +146,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 6560473075134663029}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b206b271fc2e54491ac0ce5ceeb246, type: 3}
+  m_Script: {fileID: 11500000, guid: 93ec3c150d20433aa89dedb1935a8bac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: "\uBA3C\uC9C0"
-  canDespawn: 0
-  col: {fileID: 0}
+  canDespawn: 1
+  col: {fileID: 6560473075134663019}
   status:
     maxHp: 50
     hp: 50
-    damage: 1
-  hitColor: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
+    damage: 0
+  hitColor: {r: 0.5372549, g: 0.5372549, b: 0.5372549, a: 1}
   deadAnimParam: isDead
   knockBackPower: 50
   spriteRenderer: {fileID: 6560473075134663017}

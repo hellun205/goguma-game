@@ -12,10 +12,10 @@ namespace Inventory
 
     public event _onItemChanged onItemChanged;
 
-    public List<(Item item, byte count)?> items;
+    public List<(BaseItem item, byte count)?> items;
     public byte slotCount;
 
-    private void AddItem(Item item, byte count = 1)
+    private void AddItem(BaseItem item, byte count = 1)
     {
       for (var i = 0; i < items.Count; i++)
       {
@@ -34,7 +34,7 @@ namespace Inventory
       return items.Count(item => !item.HasValue) > 0;
     }
 
-    public ushort GainItem(Item item, ushort count = 1)
+    public ushort GainItem(BaseItem item, ushort count = 1)
     {
       var linq = (
         from item_ in items
@@ -84,7 +84,7 @@ namespace Inventory
       return 0;
     }
 
-    public bool CheckItem(Item item, ushort count = 1)
+    public bool CheckItem(BaseItem item, ushort count = 1)
     {
       var itemCnt = ItemCount(item);
 
@@ -96,7 +96,7 @@ namespace Inventory
       return itemCnt >= count;
     }
 
-    public ushort ItemCount(Item item)
+    public ushort ItemCount(BaseItem item)
     {
       var list = items.Where(x => x.HasValue && x.Value.item == item).ToArray();
 
@@ -106,7 +106,7 @@ namespace Inventory
       return (ushort)list.Sum(x => x.Value.count);
     }
 
-    public bool LoseItem(Item item, ushort count = 1)
+    public bool LoseItem(BaseItem item, ushort count = 1)
     {
       if (!CheckItem(item, count))
         return false;
@@ -160,13 +160,13 @@ namespace Inventory
 
     public Inventory(byte slotCount)
     {
-      this.items = new List<(Item item, byte count)?>();
+      this.items = new List<(BaseItem item, byte count)?>();
       this.slotCount = slotCount;
 
       for (var i = 0; i < this.slotCount; i++)
         items.Add(null);
     }
 
-    public (Item item, byte count)? this[int idx] => items[idx];
+    public (BaseItem item, byte count)? this[int idx] => items[idx];
   }
 }

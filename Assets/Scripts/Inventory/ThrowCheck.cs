@@ -41,7 +41,7 @@ namespace Inventory
         quickCtrl.AssignSlot(quickCtrl.dragedIdx, null);
     }
 
-    private static void Throw(Item item, ushort count)
+    private static void Throw(BaseItem item, ushort count)
     {
       var player = PlayerController.Instance;
       var check = player

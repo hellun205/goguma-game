@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ScriptableObject;
-using UnityEngine;
+﻿using Manager;
 
 namespace Entity.Npc
 {
-  public class NpcManager : ScriptableObjectManager<Npc>
+  public class NpcManager : ObjectCollector<NpcManager, Npc>
   {
-    public static NpcManager GetInstance() => (NpcManager)Instance;
-
   }
 }
