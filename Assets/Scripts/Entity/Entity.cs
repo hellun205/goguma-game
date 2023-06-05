@@ -21,26 +21,30 @@ namespace Entity
     [SerializeField]
     protected BoxCollider2D col;
 
-    protected virtual void OnBecameInvisible()
-    {
-      if (canDespawn)
-        Release();
-    }
+    // protected virtual void OnBecameInvisible()
+    // {
+    //   if (canDespawn)
+    //     Release();
+    // }
 
     public void Translate(float x, float y) => position = new Vector2(position.x + x, position.y + y);
     
-    public virtual void Release() => Managers.Entity.ReleaseEntity(this);
+    public virtual void Release() => Managers.Entity.Release(this);
 
     public virtual void OnGet() => onGet?.Invoke(this);
 
-    public virtual void OnRelease() => onRelease?.Invoke(this);
+    public virtual void OnRelease()
+    {
+      StopAllCoroutines();
+      onRelease?.Invoke(this);
+    }
 
     private void ThrowItemB(Item.BaseItem item, byte count, sbyte direction = 1)
     {
       var startPositionX = (position.x + (col.bounds.extents.x + 0.6f) * direction);
       var pos = new Vector2(startPositionX, position.y);
       // var throwItem = Entity.SummonItem(new Vector2(startPositionX, position.y), item, count);
-      var throwItem = Managers.Entity.GetEntity<Item.EItem>(pos, x => x.Init(item, count));
+      var throwItem = Managers.Entity.Get<Item.EItem>(pos, x => x.Init(item, count));
       
       throwItem.Throw(new Vector2(direction * 2f, 3f), 4f);
     }

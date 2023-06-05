@@ -35,8 +35,8 @@ namespace Entity
     {
       entity = GetComponent<Entity>();
       colDistance = col.bounds.extents.y;
-      EntityManager.Instance.onGetAfter += OnGetEntity;
-      EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
+      EntityManager.Instance.onGetEntityAfter += OnGetEntityEntity;
+      EntityManager.Instance.onReleaseEntityBefore += OnReleasedEntity;
     }
 
     private void Update()
@@ -45,10 +45,10 @@ namespace Entity
       displayText.position = GetPos();
     }
 
-    public void OnGetEntity(Entity entity)
+    public void OnGetEntityEntity(Entity entity)
     {
       if (entity == this.entity)
-        displayText = Managers.Entity.GetEntity<UEText>(GetPos(), x => x.text = entity.entityName);
+        displayText = Managers.Entity.Get<UEText>(GetPos(), x => x.text = entity.entityName);
     }
 
     public void OnReleasedEntity(Entity entity)
@@ -59,8 +59,8 @@ namespace Entity
 
     private void OnDestroy()
     {
-      EntityManager.Instance.onGetAfter -= OnGetEntity;
-      EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
+      EntityManager.Instance.onGetEntityAfter -= OnGetEntityEntity;
+      EntityManager.Instance.onReleaseEntityBefore -= OnReleasedEntity;
     }
   }
 }

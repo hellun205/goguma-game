@@ -237,7 +237,7 @@ GameObject:
   - component: {fileID: 12148464}
   - component: {fileID: 12148463}
   m_Layer: 0
-  m_Name: NpcManager
+  m_Name: Npc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e345459108dd4a6fbeea3d238a69be8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  list:
+  items:
   - {fileID: 11400000, guid: 4c7e2ceb24d042348b5b4a1c0c61a35f, type: 2}
 --- !u!4 &12148464
 Transform:
@@ -7295,7 +7295,7 @@ GameObject:
   - component: {fileID: 2040307402}
   - component: {fileID: 2040307401}
   m_Layer: 0
-  m_Name: ItemManager
+  m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7313,7 +7313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a99587569c1452689de249dc32d9c66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  list:
+  items:
   - {fileID: 11400000, guid: 95a560ffc01cde64f8106e981df217a7, type: 2}
   - {fileID: 11400000, guid: 6d08ee73e62e70544b15e117ed8c275f, type: 2}
   - {fileID: 11400000, guid: c444f05d26a04bb4c93c7836cf12fbe1, type: 2}
@@ -7400,35 +7400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cef4687f87544a038b576ff446191b72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  managements:
-  - type: 4
-    prefab: {fileID: 1166170861826038880, guid: a980c6b6fd3d54949bb3814605ca755d, type: 3}
-    maxCount: 7
-    isUI: 1
-  - type: 2
-    prefab: {fileID: 1110954321598639403, guid: 5e54030e26204b04fb8c0e6ee26ae7a8, type: 3}
-    maxCount: 10
-    isUI: 0
-  - type: 1
-    prefab: {fileID: 4451883627737325709, guid: c0166578202995e48bc720487a92ad60, type: 3}
-    maxCount: 15
-    isUI: 1
-  - type: 5
-    prefab: {fileID: 6216576640922608934, guid: 1b227430328d6284ea3ed8b5d98a4c45, type: 3}
-    maxCount: 30
-    isUI: 0
-  - type: 6
-    prefab: {fileID: 1381983470079571550, guid: ed72edcf2c8183e49aa4202a58010315, type: 3}
-    maxCount: 30
-    isUI: 1
-  - type: 3
-    prefab: {fileID: 6560473075134663028, guid: 60ba78d96edb16547819b808cd541b00, type: 3}
-    maxCount: 30
-    isUI: 0
-  - type: 7
-    prefab: {fileID: 3734029138900567733, guid: 051696dc818d4a94198202907ad00195, type: 3}
-    maxCount: 10
-    isUI: 1
   getPosition: {x: 0, y: 0}
   releasePosition: {x: 0, y: 0}
 --- !u!4 &2123160864

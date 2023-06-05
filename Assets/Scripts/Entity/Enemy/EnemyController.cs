@@ -60,7 +60,7 @@ namespace Entity.Enemy
         : new Vector2(-1, 2);
 
       // hit damage
-      Managers.Entity.GetEntity<UEDamage>(position, x => x.Init(Mathf.RoundToInt(damage)));
+      Managers.Entity.Get<UEDamage>(position, x => x.Init(Mathf.RoundToInt(damage)));
 
       // hp
       status.hp = Mathf.Max(status.hp - damage, 0f);

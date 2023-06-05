@@ -29,8 +29,8 @@ namespace Entity
     {
       entity = GetComponent<Entity>();
       colDistance = col.bounds.extents.y;
-      EntityManager.Instance.onGetAfter += OnGetEntity;
-      EntityManager.Instance.onReleaseBefore += OnReleasedEntity;
+      EntityManager.Instance.onGetEntityAfter += OnGetEntityEntity;
+      EntityManager.Instance.onReleaseEntityBefore += OnReleasedEntity;
     }
 
     private void Update()
@@ -40,7 +40,7 @@ namespace Entity
       hpBar.value = curHp;
     }
 
-    public void OnGetEntity(Entity entity)
+    public void OnGetEntityEntity(Entity entity)
     {
       if (entity == this.entity)
         LoadHpBar();
@@ -54,13 +54,13 @@ namespace Entity
 
     public void LoadHpBar()
     {
-      hpBar = Managers.Entity.GetEntity<UEHpBar>(GetPos(), x => x.Init(curHp, maxHp));
+      hpBar = Managers.Entity.Get<UEHpBar>(GetPos(), x => x.Init(curHp, maxHp));
     }
 
     private void OnDestroy()
     {
-      EntityManager.Instance.onGetAfter -= OnGetEntity;
-      EntityManager.Instance.onReleaseBefore -= OnReleasedEntity;
+      EntityManager.Instance.onGetEntityAfter -= OnGetEntityEntity;
+      EntityManager.Instance.onReleaseEntityBefore -= OnReleasedEntity;
     }
   }
 }

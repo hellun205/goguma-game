@@ -41,11 +41,6 @@ namespace Entity.UI
       animFade.onEnded += AnimFadeOnonEnded;
     }
 
-    public override void OnRelease()
-    {
-      base.OnRelease();
-    }
-
     public void Init(int damage)
     {
       this.damage = damage;

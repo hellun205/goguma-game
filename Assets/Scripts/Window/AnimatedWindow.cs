@@ -15,7 +15,7 @@ namespace Window
       base.Awake();
       anim = new(this);
 
-      Managers.Window.onGet += WindowOnGet;
+      Managers.Window.onGetAfter += WindowOnGet;
       anim.animation.onHid += AnimOnHid;
     }
 

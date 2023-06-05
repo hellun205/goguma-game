@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using Entity.UI;
 using Manager;
+using Pool;
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace Entity
 {
-  public class EntityManager : SingleTon<EntityManager>
+  public class EntityManager : PoolManager<EntityManager, Entity>
   {
     /// <summary>
     /// Container of entity
@@ -19,18 +19,11 @@ namespace Entity
     /// </summary>
     public Transform ContainerOfUIEntity { get; private set; }
 
-    /// <summary>
-    /// Object Pool
-    /// </summary>
-    private Dictionary<string, IObjectPool<Entity>> pools;
-
     public delegate void entityEvent(Entity entity);
 
-    public delegate void defaultEvent();
+    public event entityEvent onReleaseEntityBefore;
 
-    public event entityEvent onReleaseBefore;
-
-    public event entityEvent onGetAfter;
+    public event entityEvent onGetEntityAfter;
 
     public Vector2 getPosition = Vector2.zero;
 
@@ -39,39 +32,36 @@ namespace Entity
     protected override void Awake()
     {
       base.Awake();
+
       ContainerOfEntity = GameObject.FindWithTag("EntityCollection").transform;
       ContainerOfUIEntity = GameObject.FindWithTag("UIEntityCollection").transform;
-
-      pools = new Dictionary<string, IObjectPool<Entity>>();
     }
-    
-    private Entity OnCreateObject(string type)
+
+    protected override Entity OnCreatePool(string type)
     {
       var prefab = Managers.Prefab.GetObject<Entity>(type);
       var parent = prefab is UIEntity ? ContainerOfUIEntity : ContainerOfEntity;
       var obj = Instantiate(prefab, parent);
       obj.name = type;
-      
+
       return obj;
     }
-    
-    private void OnGetObject(Entity entity)
+
+    protected override void OnGetPool(Entity obj)
     {
-      entity.position = getPosition;
-      entity.gameObject.SetActive(true);
-      onGetAfter?.Invoke(entity);
-      entity.OnGet();
+      obj.position = getPosition;
+      obj.gameObject.SetActive(true);
+      onGetEntityAfter?.Invoke(obj);
+      obj.OnGet();
     }
-    
-    private void OnReleaseObject(Entity entity)
+
+    protected override void OnReleasePool(Entity obj)
     {
-      onReleaseBefore?.Invoke(entity);
-      entity.OnRelease();
-      entity.gameObject.SetActive(false);
-      entity.position = releasePosition;
+      onReleaseEntityBefore?.Invoke(obj);
+      obj.OnRelease();
+      obj.gameObject.SetActive(false);
+      obj.position = releasePosition;
     }
-    
-    private void OnDetroyObject(Entity entity) => Destroy(entity.gameObject);
 
     /// <summary>
     /// Get entity from pool
@@ -79,30 +69,15 @@ namespace Entity
     /// <param name="startPosition">entity's position</param>
     /// <param name="set">setting entity</param>
     /// <returns>entity</returns>
-    public T GetEntity<T>(Vector2 startPosition, Action<T> set = null) where T : Entity
+    public T Get<T>(Vector2 startPosition, Action<T> set = null) where T : Entity
     {
-      var type = typeof(T).Name;
-      if (!pools.ContainsKey(type))
-      {
-        pools.Add(type, new ObjectPool<Entity>(
-          () => OnCreateObject(type),
-          OnGetObject,
-          OnReleaseObject,
-          OnDetroyObject
-        ));
-      }
-
       getPosition = startPosition;
-      var entity = pools[type].Get();
-      set?.Invoke((T) entity);
-
-      return (T) entity;
+      return Get(set);
     }
-
-    /// <summary>
-    /// Release entity
-    /// </summary>
-    /// <param name="entity">entity to release</param>
-    public void ReleaseEntity(Entity entity) => pools[entity.name].Release(entity);
+    
+    public void Release(Entity entity)
+    {
+      pools[entity.name].Release(entity);
+    }
   }
 }

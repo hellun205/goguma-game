@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections;
 using Manager;
 using UnityEngine;
+using Utils;
 
 namespace Entity.Item
 {
   public class EItem : Entity
   {
+    public static float DespawnTime = 300f;
+    
     public (BaseItem item, byte count) data;
 
     [SerializeField]
@@ -30,9 +34,25 @@ namespace Entity.Item
 
     private Action<(BaseItem item, byte count)> callback;
 
+    private Coroutiner despawnTimer;
+
     protected virtual void Awake()
     {
       rb = GetComponent<Rigidbody2D>();
+      canDespawn = false;
+      despawnTimer = new(this, DespawnCoroutine);
+    }
+
+    private IEnumerator DespawnCoroutine()
+    {
+      yield return new WaitForSeconds(DespawnTime);
+      Release();
+    }
+
+    public override void OnGet()
+    {
+      base.OnGet();
+      despawnTimer.Start();
     }
 
     private void Update()

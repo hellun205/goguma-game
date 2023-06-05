@@ -44,7 +44,7 @@ namespace Entity.Npc
         yield return new WaitForSeconds(delay);
 
         var msgData = new MessageData(npcData.messages.Random());
-        messageBox = Managers.Entity.GetEntity<UEMsgBox>(MessageBoxPosition.position,
+        messageBox = Managers.Entity.Get<UEMsgBox>(MessageBoxPosition.position,
           x => x.Init(msgData, () => SetTalking(false)));
         SetTalking(true);
       }

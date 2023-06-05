@@ -11,7 +11,7 @@ namespace Map
 
     public void Start()
     {
-      Managers.Entity.GetEntity<ENpc>(transform.position, x => x.Init(npcName));
+      Managers.Entity.Get<ENpc>(transform.position, x => x.Init(npcName));
     }
   }
 }

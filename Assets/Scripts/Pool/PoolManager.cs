@@ -7,12 +7,16 @@ using UnityEngine.Pool;
 
 namespace Pool
 {
-  public abstract class PoolManager<TObject> : SingleTon<PoolManager<TObject>> where TObject : Component
+  public abstract class PoolManager<T, TObject> : SingleTon<T> 
+    where T : PoolManager<T, TObject>
+    where TObject : Component
   {
     public delegate void PoolEventListener(TObject sender);
 
-    public event PoolEventListener onGet;
-    public event PoolEventListener onRelease;
+    public event Action onGetBefore;
+    public event PoolEventListener onGetAfter;
+    public event PoolEventListener onReleaseBefore;
+    public event Action onReleaseAfter;
 
     protected Dictionary<string, IObjectPool<TObject>> pools = new Dictionary<string, IObjectPool<TObject>>();
 
@@ -26,10 +30,11 @@ namespace Pool
         pools.Add(type, new ObjectPool<TObject>(() => OnCreatePool(type), OnGetPool, OnReleasePool, OnDestroyPool));
       }
 
+      onGetBefore?.Invoke();
       var obj = pools[type].Get();
       var objT = obj as T;
       objSet?.Invoke(objT);
-      onGet?.Invoke(obj);
+      onGetAfter?.Invoke(obj);
       return objT;
     }
 
@@ -43,8 +48,9 @@ namespace Pool
       }
 
       var objT = obj as TObject;
+      onReleaseBefore?.Invoke(objT);
       pools[type].Release(objT);
-      onRelease?.Invoke(objT);
+      onReleaseAfter?.Invoke();
     }
 
     protected virtual TObject OnCreatePool(string type) =>

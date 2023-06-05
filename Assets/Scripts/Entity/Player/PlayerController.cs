@@ -183,9 +183,9 @@ namespace Entity.Player
     private void DebugKey()
     {
       if (Input.GetKeyDown(KeyCode.F6))
-        Managers.Entity.GetEntity<EEDust>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
+        Managers.Entity.Get<EEDust>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
       else if (Input.GetKeyDown(KeyCode.F7))
-        Managers.Entity.GetEntity<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
+        Managers.Entity.Get<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
           x => x.Init("appleBuff"));
     }
 
@@ -352,8 +352,8 @@ namespace Entity.Player
 
     private void Start()
     {
-      GetComponent<NameTag>().OnGetEntity(this);
-      hpBar.OnGetEntity(this);
+      GetComponent<NameTag>().OnGetEntityEntity(this);
+      hpBar.OnGetEntityEntity(this);
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
 
