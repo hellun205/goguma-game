@@ -28,6 +28,13 @@ namespace Quest
     
     public NpcDialogue[] refuseDialogue;
 
+    public NpcDialogue[] completeDialogue;
+
+    [Header("Reward")]
+    public Reward[] rewards;
+
+    public NpcDialogue cantCompensateDialogue;
+
     public QuestInfo GetQuestInfo()
     {
       var info = new QuestInfo

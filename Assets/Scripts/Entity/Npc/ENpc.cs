@@ -24,7 +24,7 @@ namespace Entity.Npc
 
     [SerializeField]
     private GameObject question;
-    
+
     [SerializeField]
     private GameObject dots;
 
@@ -32,8 +32,8 @@ namespace Entity.Npc
 
     private Coroutine messageCoroutine;
 
-    public List<int> canReceiveQuests;
-    public List<int> canEndQuests;
+    public List<int> receivableQuests;
+    public List<int> completableQuests;
 
     public new Vector2 position
     {
@@ -85,9 +85,26 @@ namespace Entity.Npc
 
     public void Meet()
     {
-      if (canReceiveQuests.Any())
+      if (completableQuests.Any())
       {
-        var quest = Managers.Quest.GetQuestByID(canReceiveQuests[0]);
+        var quest = Managers.Quest.GetQuestByID(completableQuests[0]);
+        Managers.Dialogue.ShowDialogues(GetDialogueData(quest.completeDialogue), _ =>
+        {
+          if (quest.rewards.Any(reward => !reward.Compensate()))
+            Managers.Dialogue.ShowDialogue(GetDialogueData(quest.cantCompensateDialogue));
+          else
+          {
+            Managers.Player.questData.endedQuest.Add(quest.index);
+            Managers.Player.questData.RemoveQuest(quest.index);
+            RefreshQuest();
+          }
+        });
+        return;
+      }
+      
+      if (receivableQuests.Any())
+      {
+        var quest = Managers.Quest.GetQuestByID(receivableQuests[0]);
         Managers.Dialogue.ShowDialogues(GetDialogueData(quest.dialogue), _ =>
         {
           Managers.Dialogue.Ask(GetDialogueData(quest.askDialogue), accept =>
@@ -103,10 +120,6 @@ namespace Entity.Npc
           });
         });
         return;
-      }
-
-      if (canEndQuests.Any())
-      {
       }
 
       DialogueController.Instance.ShowDialogues(GetDialogueData(npcData.meetDialogue), _ =>
@@ -158,40 +171,39 @@ namespace Entity.Npc
     public void RefreshQuest()
     {
       var player = Managers.Player;
-      canEndQuests.Clear();
-      canReceiveQuests.Clear();
+      completableQuests.Clear();
+      receivableQuests.Clear();
       question.SetActive(false);
       dots.SetActive(false);
       exclamation.SetActive(false);
-
-      foreach (var quest in npcData.quest)
-      {
-        if (player.questData.quests.Any(info => info.questIndex == quest.questID) ||
-            player.questData.endedQuest.Contains(quest.questID) ||
-            quest.requireLevel > player.status.level)
-          continue;
-
-        if (
+      
+      var receivable = npcData.quest.Where(quest =>
+        player.questData.quests.All(info => info.questIndex == quest.questID) &&
+        !player.questData.endedQuest.Contains(quest.questID) &&
+        quest.requireLevel <= player.status.level &&
+        (
           quest.requireQuests.Length == 0 ||
           quest.requireQuests.All(require => player.questData.endedQuest.Contains(require))
         )
-          canReceiveQuests.Add(quest.questID);
-      }
+      ).Select(x => x.questID).ToArray();
 
-      var endQuest = player.questData.quests.Where(quest => npcData.quest.Any(data => data.questID == quest.questIndex)
-                                                            && quest.isCompleted).Select(x => x.questIndex).ToArray();
+      var completable = player.questData.quests.Where(quest =>
+        npcData.quest.Any(data => data.questID == quest.questIndex) &&
+        quest.isCompleted
+      ).Select(x => x.questIndex).ToArray();
 
-      if (endQuest.Any())
-        canEndQuests.AddRange(endQuest);
-
+      if (receivable.Any())
+        receivableQuests.AddRange(receivable);
+      if (completable.Any())
+        completableQuests.AddRange(completable);
       var receivedQuest =
         player.questData.quests.Any(info => npcData.quest.Any(data => data.questID == info.questIndex));
 
-      if (canEndQuests.Any())
+      if (completableQuests.Any())
         question.SetActive(true);
       else if (receivedQuest)
         dots.SetActive(true);
-      else if (canReceiveQuests.Any())
+      else if (receivableQuests.Any())
         exclamation.SetActive(true);
     }
 
@@ -210,7 +222,7 @@ namespace Entity.Npc
     public static void RefreshQuestAll()
     {
       var npcs = FindObjectsOfType<ENpc>();
-      foreach (var npc in npcs)
+      foreach (var npc in npcs.Where(npc => npc.gameObject.activeSelf))
       {
         npc.RefreshQuest();
       }

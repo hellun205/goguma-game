@@ -1,6 +1,4 @@
 ﻿using Entity.Enemy;
-using Entity.Item;
-using Entity.Player;
 using Manager;
 using UnityEngine;
 

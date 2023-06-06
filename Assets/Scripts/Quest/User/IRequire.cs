@@ -7,5 +7,7 @@
     public int Max { get; }
     
     public int Current { get; }
+
+    public virtual bool IsComplete => Max <= Current;
   }
 }

@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d148f31760db443a8dfa06f6e7966155, type: 3}
-  m_Name: Quest1
+  m_Name: tall_carrot.testquest
   m_EditorClassIdentifier: 
   _name: 
   index: 101
   descriptions: 
   contents:
   - {fileID: 11400000, guid: 7a0624e95dcdbeb4695add7d3162c484, type: 2}
+  - {fileID: 11400000, guid: f67a92161d189c943823232d7d9de5ed, type: 2}
   dialogue:
   - speaker: 1
     text: "\uC548\uB155 ! \uCC98\uC74C \uBCF4\uB294 \uC885\uC871\uC774\uB124?"

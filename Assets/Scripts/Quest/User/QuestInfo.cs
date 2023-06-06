@@ -11,6 +11,6 @@ namespace Quest.User
     
     public List<IRequire> requires = new List<IRequire>();
 
-    public bool isCompleted => requires.All(require => require.Max <= require.Current);
+    public bool isCompleted => requires.All(require => require.IsComplete);
   }
 }
