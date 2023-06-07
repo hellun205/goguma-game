@@ -66,7 +66,6 @@ namespace Window
       int maxValue = Int32.MaxValue
     )
     {
-      string @return = "";
       int returnInt;
 
       void ShowInputBox()

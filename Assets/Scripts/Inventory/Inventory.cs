@@ -45,21 +45,21 @@ namespace Inventory
     public ushort CanGainItemCount(BaseItem item)
     {
       var equals = items
-       .Where(_item => _item.HasValue && _item.Value.item == item)
-       .Sum(_item => byte.MaxValue - _item.Value.count);
+        .Where(_item => _item.HasValue && _item.Value.item == item)
+        .Sum(_item => byte.MaxValue - _item.Value.count);
       var empties = items
-       .Where(_item => _item.HasValue)
-       .Sum(_ => byte.MaxValue);
+        .Where(_item => _item.HasValue)
+        .Sum(_ => byte.MaxValue);
 
-      return (ushort) (equals + empties);
+      return (ushort)(equals + empties);
     }
 
     public ushort GainItem(BaseItem item, ushort count = 1)
     {
       var equalIndexes = items
-       .Where((_item, _) => _item.HasValue && _item.Value.item == item)
-       .Select(_item => items.IndexOf(_item.Value))
-       .ToArray();
+        .Where((_item, _) => _item.HasValue && _item.Value.item == item)
+        .Select(_item => items.IndexOf(_item.Value))
+        .ToArray();
 
       var i = 0;
       while (count > 0)
@@ -69,21 +69,36 @@ namespace Inventory
           var it = items[equalIndexes[i]].Value;
           if (it.count < byte.MaxValue)
           {
-            if (count > byte.MaxValue)
+            var c = byte.MaxValue - it.count;
+            if (c <= count)
             {
-              // Todo
+              SetItemCount(equalIndexes[i], byte.MaxValue);
+              count -= (byte)c;
             }
             else
             {
-              
+              SetItemCount(equalIndexes[i], (byte)(it.count + c));
+              count = 0;
             }
           }
           else
             i++;
         }
-        // else if ()
-        // {
-        // }
+        else if (CanAddItem())
+        {
+          if (count > byte.MaxValue)
+          {
+            count -= byte.MaxValue;
+            AddItem(item, byte.MaxValue);
+          }
+          else
+          {
+            count = 0;
+            AddItem(item, (byte)count);
+          }
+        }
+        else
+          return count;
       }
 
 
@@ -110,7 +125,7 @@ namespace Inventory
       if (list.Length == 0)
         return 0;
 
-      return (ushort) list.Sum(x => x.Value.count);
+      return (ushort)list.Sum(x => x.Value.count);
     }
 
     public bool LoseItem(BaseItem item, ushort count = 1)
@@ -133,7 +148,7 @@ namespace Inventory
 
         if (count < itemCount)
         {
-          items[i] = (item, (byte) (itemCount - count));
+          items[i] = (item, (byte)(itemCount - count));
           break;
         }
         else if (count == itemCount)

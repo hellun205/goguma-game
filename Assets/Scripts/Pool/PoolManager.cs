@@ -22,9 +22,9 @@ namespace Pool
 
     protected Transform parent;
 
-    public T Get<T>([CanBeNull] Action<T> objSet = null) where T : Component
+    public TType Get<TType>([CanBeNull] Action<TType> objSet = null) where TType : Component
     {
-      var type = typeof(T).Name;
+      var type = typeof(TType).Name;
       if (!pools.ContainsKey(type))
       {
         pools.Add(type, new ObjectPool<TObject>(() => OnCreatePool(type), OnGetPool, OnReleasePool, OnDestroyPool));
@@ -32,15 +32,15 @@ namespace Pool
 
       onGetBefore?.Invoke();
       var obj = pools[type].Get();
-      var objT = obj as T;
+      var objT = obj as TType;
       objSet?.Invoke(objT);
       onGetAfter?.Invoke(obj);
       return objT;
     }
 
-    public void Release<T>(T obj) where T : Component
+    public void Release<TType>(TType obj) where TType : Component
     {
-      var type = typeof(T).Name;
+      var type = typeof(TType).Name;
       if (!pools.ContainsKey(type))
       {
         Debug.LogError($"Can't release object. This is not managed by this manager.");

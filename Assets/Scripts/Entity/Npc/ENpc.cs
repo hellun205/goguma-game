@@ -14,7 +14,6 @@ namespace Entity.Npc
   {
     public Npc npcData;
 
-    [InspectorName("Position")]
     public Transform MessageBoxPosition;
 
     private UEMsgBox messageBox;
