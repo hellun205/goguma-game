@@ -21,7 +21,7 @@ namespace Inventory
       onItemChanged += ENpc.RefreshQuestAll;
     }
 
-    private void AddItem(BaseItem item, byte count = 1)
+    private void AddItemOnList(BaseItem item, byte count = 1)
     {
       for (var i = 0; i < items.Count; i++)
       {
@@ -45,10 +45,10 @@ namespace Inventory
     public ushort CanGainItemCount(BaseItem item)
     {
       var equals = items
-        .Where(_item => _item.HasValue && _item.Value.item == item)
-        .Sum(_item => byte.MaxValue - _item.Value.count);
+        .Where(x => x.HasValue && x.Value.item == item)
+        .Sum(x => byte.MaxValue - x.Value.count);
       var empties = items
-        .Where(_item => _item.HasValue)
+        .Where(x => !x.HasValue)
         .Sum(_ => byte.MaxValue);
 
       return (ushort)(equals + empties);
@@ -56,54 +56,62 @@ namespace Inventory
 
     public ushort GainItem(BaseItem item, ushort count = 1)
     {
-      var equalIndexes = items
-        .Where((_item, _) => _item.HasValue && _item.Value.item == item)
-        .Select(_item => items.IndexOf(_item.Value))
-        .ToArray();
-
       var i = 0;
       while (count > 0)
       {
-        if (i < equalIndexes.Length)
+        var equalIndexes = items
+          .Where(x => x.HasValue && x.Value.item == item && x.Value.count < byte.MaxValue)
+          .Select(x => items.IndexOf(x.Value))
+          .ToArray();
+        if (!equalIndexes.Any())
         {
-          var it = items[equalIndexes[i]].Value;
-          if (it.count < byte.MaxValue)
-          {
-            var c = byte.MaxValue - it.count;
-            if (c <= count)
-            {
-              SetItemCount(equalIndexes[i], byte.MaxValue);
-              count -= (byte)c;
-            }
-            else
-            {
-              SetItemCount(equalIndexes[i], (byte)(it.count + c));
-              count = 0;
-            }
-          }
-          else
-            i++;
-        }
-        else if (CanAddItem())
-        {
-          if (count > byte.MaxValue)
-          {
-            count -= byte.MaxValue;
-            AddItem(item, byte.MaxValue);
-          }
-          else
-          {
-            count = 0;
-            AddItem(item, (byte)count);
-          }
+          if (items.All(x => x.HasValue))
+            break;
+          var c = CalcCount(0, count, out var left);
+          AddItemOnList(item, c);
+          count = left;
         }
         else
-          return count;
+        {
+          var it = items[equalIndexes[i]].Value;
+          
+          if (it.count < byte.MaxValue)
+          {
+            var c = CalcCount(it.count, count, out var left);
+            SetItemCount(equalIndexes[i], c);
+            count = left;
+          }
+          else 
+            i++;
+        }
       }
+      
+      onItemChanged?.Invoke();
+      return count;
+    }
 
+    public bool LoseItem(BaseItem item, ushort count = 1)
+    {
+      
 
       onItemChanged?.Invoke();
-      return 0;
+      return true;
+    }
+
+    private static byte CalcCount(byte curCount, ushort countToAdd, out ushort leftCount)
+    {
+      var addable = byte.MaxValue - curCount;
+      
+      if (countToAdd >= addable)
+      {
+        leftCount = (ushort)(countToAdd - addable);
+        return byte.MaxValue;
+      }
+      else
+      {
+        leftCount = 0;
+        return (byte)(curCount + countToAdd);
+      }
     }
 
     public bool CheckItem(BaseItem item, ushort count = 1)
@@ -126,45 +134,6 @@ namespace Inventory
         return 0;
 
       return (ushort)list.Sum(x => x.Value.count);
-    }
-
-    public bool LoseItem(BaseItem item, ushort count = 1)
-    {
-      if (!CheckItem(item, count))
-        return false;
-
-      var linq = (
-        from item_ in items
-        where item_.HasValue && item_.Value.item == item
-        select items.IndexOf(item_)
-      ).ToArray();
-
-      foreach (var i in linq)
-      {
-        if (!this[i].HasValue)
-          continue;
-
-        var itemCount = this[i].Value.count;
-
-        if (count < itemCount)
-        {
-          items[i] = (item, (byte)(itemCount - count));
-          break;
-        }
-        else if (count == itemCount)
-        {
-          items[i] = null;
-          break;
-        }
-        else
-        {
-          count -= itemCount;
-          items[i] = null;
-        }
-      }
-
-      onItemChanged?.Invoke();
-      return true;
     }
 
     public void Move(byte aIdx, byte bIdx)

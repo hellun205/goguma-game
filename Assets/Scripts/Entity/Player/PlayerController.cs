@@ -191,6 +191,9 @@ namespace Entity.Player
       else if (Input.GetKeyDown(KeyCode.F7))
         Managers.Entity.Get<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
           x => x.Init("appleBuff"));
+      else if (Input.GetKeyDown(KeyCode.F8))
+        Managers.Entity.Get<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
+          x => x.Init("appleBuff", 255));
     }
 
     private void OnChangedSlot(byte slotIdx)
