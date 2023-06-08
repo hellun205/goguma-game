@@ -46,11 +46,11 @@ namespace Inventory.QuickSlot
       rectTransform = GetComponent<RectTransform>();
     }
 
-    private void InventoryItemChanged()
+    private void InventoryItemChanged(Inventory sender)
     {
       if (invenIndex.HasValue)
       {
-        var item = inven[invenIndex.Value];
+        var item = sender[invenIndex.Value];
 
         if (item is null)
         {
@@ -76,7 +76,7 @@ namespace Inventory.QuickSlot
     public void SetIndex(byte? index = null)
     {
       invenIndex = index;
-      InventoryItemChanged();
+      InventoryItemChanged(inven);
     }
 
     public void SetEnabled(bool enable)

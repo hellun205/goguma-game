@@ -9,16 +9,16 @@ namespace Inventory
 {
   public sealed class Inventory
   {
-    public delegate void _onItemChanged();
+    public delegate void InventoryEventListener(Inventory sender);
 
-    public event _onItemChanged onItemChanged;
+    public event InventoryEventListener onItemChanged;
 
     public List<(BaseItem item, byte count)?> items;
     public byte slotCount;
 
     private Inventory()
     {
-      onItemChanged += ENpc.RefreshQuestAll;
+      onItemChanged += _ => ENpc.RefreshQuestAll();
     }
 
     private void AddItemOnList(BaseItem item, byte count = 1)
@@ -34,11 +34,6 @@ namespace Inventory
     }
 
     private void SetItemCount(int index, byte count) => items[index] = (items[index].Value.item, count);
-
-    public bool CanAddItem()
-    {
-      return items.Count(item => !item.HasValue) > 0;
-    }
 
     public bool CanGainItem(BaseItem item, ushort count) => count <= CanGainItemCount(item);
 
@@ -86,15 +81,36 @@ namespace Inventory
         }
       }
       
-      onItemChanged?.Invoke();
+      onItemChanged?.Invoke(this);
       return count;
     }
 
     public bool LoseItem(BaseItem item, ushort count = 1)
     {
+      if (ItemCount(item) < count)
+        return false;
       
+      while (count > 0)
+      {
+        var equalFirstIndex = items
+          .Where(x => x.HasValue && x.Value.item == item)
+          .Select(x => items.IndexOf(x.Value))
+          .ToArray()[0];
+        
+        var it = items[equalFirstIndex].Value;
+        if (it.count <= count)
+        {
+          items[equalFirstIndex] = null;
+          count -= it.count;
+        }
+        else
+        {
+          SetItemCount(equalFirstIndex, (byte)(it.count - count));
+          count = 0;
+        }
+      }
 
-      onItemChanged?.Invoke();
+      onItemChanged?.Invoke(this);
       return true;
     }
 
@@ -136,17 +152,17 @@ namespace Inventory
       return (ushort)list.Sum(x => x.Value.count);
     }
 
-    public void Move(byte aIdx, byte bIdx)
+    public void Move(byte a, byte b)
     {
-      if (items[bIdx].HasValue)
-        (items[bIdx], items[aIdx]) = (items[aIdx], items[bIdx]);
+      if (items[b].HasValue)
+        (items[b], items[a]) = (items[a], items[b]);
       else
       {
-        items[bIdx] = items[aIdx];
-        items[aIdx] = null;
+        items[b] = items[a];
+        items[a] = null;
       }
 
-      onItemChanged?.Invoke();
+      onItemChanged?.Invoke(this);
     }
 
     public Inventory(byte slotCount) : this()

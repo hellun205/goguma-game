@@ -106,11 +106,13 @@ namespace Inventory
       slots.Clear();
     }
 
-    public void Refresh()
+    public void Refresh() => Refresh(inventory);
+
+    public void Refresh(Inventory sender)
     {
-      for (var i = 0; i < inventory.items.Count; i++)
+      for (var i = 0; i < sender.items.Count; i++)
       {
-        var item = inventory.items[i];
+        var item = sender.items[i];
 
         if (item.HasValue)
           slots[i].SetItem(item.Value.item, item.Value.count);
