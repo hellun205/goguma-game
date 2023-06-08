@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using Entity.Item;
+using Entity.Npc;
 using UnityEngine;
 
 namespace Inventory
 {
-  public class Inventory
+  public sealed class Inventory
   {
-    public delegate void _onItemChanged();
+    public delegate void InventoryEventListener(Inventory sender);
 
-    public event _onItemChanged onItemChanged;
+    public event InventoryEventListener onItemChanged;
 
-    public List<(Item item, byte count)?> items;
+    public List<(BaseItem item, byte count)?> items;
     public byte slotCount;
 
-    private void AddItem(Item item, byte count = 1)
+    private Inventory()
+    {
+      onItemChanged += _ => ENpc.RefreshQuestAll();
+    }
+
+    private void AddItemOnList(BaseItem item, byte count = 1)
     {
       for (var i = 0; i < items.Count; i++)
       {
@@ -29,62 +35,102 @@ namespace Inventory
 
     private void SetItemCount(int index, byte count) => items[index] = (items[index].Value.item, count);
 
-    public bool CanAddItem()
+    public bool CanGainItem(BaseItem item, ushort count) => count <= CanGainItemCount(item);
+
+    public ushort CanGainItemCount(BaseItem item)
     {
-      return items.Count(item => !item.HasValue) > 0;
+      var equals = items
+        .Where(x => x.HasValue && x.Value.item == item)
+        .Sum(x => byte.MaxValue - x.Value.count);
+      var empties = items
+        .Where(x => !x.HasValue)
+        .Sum(_ => byte.MaxValue);
+
+      return (ushort)(equals + empties);
     }
 
-    public ushort GainItem(Item item, ushort count = 1)
+    public ushort GainItem(BaseItem item, ushort count = 1)
     {
-      var linq = (
-        from item_ in items
-        where item_.HasValue
-          && item_.Value.item == item
-          && item_.Value.count < byte.MaxValue
-        select items.IndexOf(item_)
-      ).ToArray();
-
-      if (linq.Length > 0)
+      var i = 0;
+      while (count > 0)
       {
-        var plus = items[linq[0]].Value.count + count;
-
-        if (plus <= byte.MaxValue)
-          SetItemCount(linq[0], (byte)plus);
+        var equalIndexes = items
+          .Where(x => x.HasValue && x.Value.item == item && x.Value.count < byte.MaxValue)
+          .Select(x => items.IndexOf(x.Value))
+          .ToArray();
+        if (!equalIndexes.Any())
+        {
+          if (items.All(x => x.HasValue))
+            break;
+          var c = CalcCount(0, count, out var left);
+          AddItemOnList(item, c);
+          count = left;
+        }
         else
         {
-          SetItemCount(linq[0], byte.MaxValue);
-          var left = GainItem(item, (byte)(count - byte.MaxValue));
-
-          if (left > 0)
-            return left;
+          var it = items[equalIndexes[i]].Value;
+          
+          if (it.count < byte.MaxValue)
+          {
+            var c = CalcCount(it.count, count, out var left);
+            SetItemCount(equalIndexes[i], c);
+            count = left;
+          }
+          else 
+            i++;
         }
+      }
+      
+      onItemChanged?.Invoke(this);
+      return count;
+    }
+
+    public bool LoseItem(BaseItem item, ushort count = 1)
+    {
+      if (ItemCount(item) < count)
+        return false;
+      
+      while (count > 0)
+      {
+        var equalFirstIndex = items
+          .Where(x => x.HasValue && x.Value.item == item)
+          .Select(x => items.IndexOf(x.Value))
+          .ToArray()[0];
+        
+        var it = items[equalFirstIndex].Value;
+        if (it.count <= count)
+        {
+          items[equalFirstIndex] = null;
+          count -= it.count;
+        }
+        else
+        {
+          SetItemCount(equalFirstIndex, (byte)(it.count - count));
+          count = 0;
+        }
+      }
+
+      onItemChanged?.Invoke(this);
+      return true;
+    }
+
+    private static byte CalcCount(byte curCount, ushort countToAdd, out ushort leftCount)
+    {
+      var addable = byte.MaxValue - curCount;
+      
+      if (countToAdd >= addable)
+      {
+        leftCount = (ushort)(countToAdd - addable);
+        return byte.MaxValue;
       }
       else
       {
-        if (CanAddItem())
-        {
-          if (count <= byte.MaxValue)
-          {
-            AddItem(item, (byte)count);
-          }
-          else
-          {
-            AddItem(item, byte.MaxValue);
-            var left = GainItem(item, (byte)(count - byte.MaxValue));
-            if (left > 0) return left;
-          }
-        }
-        else
-        {
-          return count;
-        }
+        leftCount = 0;
+        return (byte)(curCount + countToAdd);
       }
-
-      onItemChanged?.Invoke();
-      return 0;
     }
 
-    public bool CheckItem(Item item, ushort count = 1)
+    public bool CheckItem(BaseItem item, ushort count = 1)
     {
       var itemCnt = ItemCount(item);
 
@@ -96,7 +142,7 @@ namespace Inventory
       return itemCnt >= count;
     }
 
-    public ushort ItemCount(Item item)
+    public ushort ItemCount(BaseItem item)
     {
       var list = items.Where(x => x.HasValue && x.Value.item == item).ToArray();
 
@@ -106,67 +152,28 @@ namespace Inventory
       return (ushort)list.Sum(x => x.Value.count);
     }
 
-    public bool LoseItem(Item item, ushort count = 1)
+    public void Move(byte a, byte b)
     {
-      if (!CheckItem(item, count))
-        return false;
-
-      var linq = (
-        from item_ in items
-        where item_.HasValue && item_.Value.item == item
-        select items.IndexOf(item_)
-      ).ToArray();
-
-      foreach (var i in linq)
-      {
-        if (!this[i].HasValue)
-          continue;
-
-        var itemCount = this[i].Value.count;
-
-        if (count < itemCount)
-        {
-          items[i] = (item, (byte)(itemCount - count));
-          break;
-        }
-        else if (count == itemCount)
-        {
-          items[i] = null;
-          break;
-        }
-        else
-        {
-          count -= itemCount;
-          items[i] = null;
-        }
-      }
-
-      onItemChanged?.Invoke();
-      return true;
-    }
-
-    public void Move(byte aIdx, byte bIdx)
-    {
-      if (items[bIdx].HasValue)
-        (items[bIdx], items[aIdx]) = (items[aIdx], items[bIdx]);
+      if (items[b].HasValue)
+        (items[b], items[a]) = (items[a], items[b]);
       else
       {
-        items[bIdx] = items[aIdx];
-        items[aIdx] = null;
+        items[b] = items[a];
+        items[a] = null;
       }
 
-      onItemChanged?.Invoke();
+      onItemChanged?.Invoke(this);
     }
 
-    public Inventory(byte slotCount)
+    public Inventory(byte slotCount) : this()
     {
-      this.items = new List<(Item item, byte count)?>();
+      this.items = new List<(BaseItem item, byte count)?>();
       this.slotCount = slotCount;
 
       for (var i = 0; i < this.slotCount; i++)
         items.Add(null);
     }
 
-    public (Item item, byte count)? this[int idx] => items[idx];
+    public (BaseItem item, byte count)? this[int idx] => items[idx];
   }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Entity.Item
 {
   [CreateAssetMenu(fileName = "Wearable", menuName = "Item/Wearable")]
-  public class WearableItem : Item
+  public class WearableItem : BaseItem
   {
     public override ItemType type => ItemType.Wearable;
 

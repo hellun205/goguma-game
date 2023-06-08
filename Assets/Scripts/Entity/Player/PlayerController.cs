@@ -1,5 +1,4 @@
-﻿using Audio;
-using Dialogue;
+﻿using Dialogue;
 using Entity.Enemy;
 using Entity.Item;
 using Entity.Npc;
@@ -7,17 +6,15 @@ using Entity.Player.Attack;
 using Inventory;
 using Inventory.QuickSlot;
 using Manager;
+using Quest.User;
 using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Window;
 
 namespace Entity.Player
 {
   public class PlayerController : Entity
   {
-    public static EntityType Type => EntityType.Player;
-    public override EntityType type => Type;
     public static PlayerController Instance { get; private set; }
 
     // Components
@@ -83,6 +80,9 @@ namespace Entity.Player
     private static readonly int WeaponType = Animator.StringToHash("weaponType");
     private bool isAttacking;
     private const float useCoolTime = 0.4f;
+    
+    // Quest
+    public QuestData questData = new QuestData();
 
     private void Awake()
     {
@@ -187,10 +187,13 @@ namespace Entity.Player
     private void DebugKey()
     {
       if (Input.GetKeyDown(KeyCode.F6))
-        Managers.Entity.GetEntity<EnemyController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
+        Managers.Entity.Get<EEDust>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f));
       else if (Input.GetKeyDown(KeyCode.F7))
-        Managers.Entity.GetEntity<ItemController>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
+        Managers.Entity.Get<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
           x => x.Init("appleBuff"));
+      else if (Input.GetKeyDown(KeyCode.F8))
+        Managers.Entity.Get<Item.EItem>(new Vector2(position.x * movement.direction + 1f, position.y + 0.2f),
+          x => x.Init("appleBuff", 255));
     }
 
     private void OnChangedSlot(byte slotIdx)
@@ -356,15 +359,15 @@ namespace Entity.Player
 
     private void Start()
     {
-      GetComponent<NameTag>().OnGetEntity(this);
-      hpBar.OnGetEntity(this);
+      GetComponent<NameTag>().OnGetEntityEntity(this);
+      hpBar.OnGetEntityEntity(this);
       hpBar.maxHp = status.maxHp;
       hpBar.curHp = status.hp;
 
       // Entity.SummonNpc(new Vector2(-4.3f, -2.2f), "TallCarrot");
 
-      inventory.GainItem(ItemManager.Instance.GetWithCode("iron_sword"));
-      inventory.GainItem(ItemManager.Instance.GetWithCode("sword"));
+      inventory.GainItem(Managers.Item.GetObject("iron_sword"));
+      inventory.GainItem(Managers.Item.GetObject("sword"));
       SceneManager.LoadScene("Scenes/Maps/Test");
     }
 
@@ -379,7 +382,7 @@ namespace Entity.Player
 
       if (hit && hit.transform.CompareTag("Npc"))
       {
-        var npc = hit.transform.GetComponent<NpcController>();
+        var npc = hit.transform.GetComponent<ENpc>();
 
         npc.Meet();
       }
@@ -392,7 +395,7 @@ namespace Entity.Player
 
       if (hit && hit.transform.CompareTag("Item"))
       {
-        var item = hit.transform.GetComponent<ItemController>();
+        var item = hit.transform.GetComponent<Item.EItem>();
 
         if (!item.isPickingUp && !item.isThrowing)
           item.PickUp(transform, OnPickUpItem);
@@ -401,7 +404,7 @@ namespace Entity.Player
 
     public void EnableInputCooldown() => movement.EnableInputCooldown();
 
-    private void OnPickUpItem((Item.Item item, byte count) data)
+    private void OnPickUpItem((Item.BaseItem item, byte count) data)
     {
       // Debug.Log($"get: {data.item._name}, count: {data.count}");
       Managers.Audio.PlaySFX("pickup_item");
@@ -412,7 +415,7 @@ namespace Entity.Player
         ThrowItem(data.item, left);
     }
 
-    public void ThrowItem(Item.Item item, ushort count) =>
+    public void ThrowItem(Item.BaseItem item, ushort count) =>
       base.ThrowItem(item, count, (sbyte) (movement.currentDirection == Direction.Left ? -1 : 1));
   }
 }

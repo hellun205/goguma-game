@@ -7,35 +7,40 @@ using UnityEngine.Pool;
 
 namespace Pool
 {
-  public abstract class PoolManager<TObject> : SingleTon<PoolManager<TObject>> where TObject : Component
+  public abstract class PoolManager<T, TObject> : SingleTon<T> 
+    where T : PoolManager<T, TObject>
+    where TObject : Component
   {
     public delegate void PoolEventListener(TObject sender);
 
-    public event PoolEventListener onGet;
-    public event PoolEventListener onRelease;
+    public event Action onGetBefore;
+    public event PoolEventListener onGetAfter;
+    public event PoolEventListener onReleaseBefore;
+    public event Action onReleaseAfter;
 
     protected Dictionary<string, IObjectPool<TObject>> pools = new Dictionary<string, IObjectPool<TObject>>();
 
     protected Transform parent;
 
-    public T Get<T>([CanBeNull] Action<T> objSet = null) where T : Component
+    public TType Get<TType>([CanBeNull] Action<TType> objSet = null) where TType : Component
     {
-      var type = typeof(T).Name;
+      var type = typeof(TType).Name;
       if (!pools.ContainsKey(type))
       {
         pools.Add(type, new ObjectPool<TObject>(() => OnCreatePool(type), OnGetPool, OnReleasePool, OnDestroyPool));
       }
 
+      onGetBefore?.Invoke();
       var obj = pools[type].Get();
-      var objT = obj as T;
+      var objT = obj as TType;
       objSet?.Invoke(objT);
-      onGet?.Invoke(obj);
+      onGetAfter?.Invoke(obj);
       return objT;
     }
 
-    public void Release<T>(T obj) where T : Component
+    public void Release<TType>(TType obj) where TType : Component
     {
-      var type = typeof(T).Name;
+      var type = typeof(TType).Name;
       if (!pools.ContainsKey(type))
       {
         Debug.LogError($"Can't release object. This is not managed by this manager.");
@@ -43,8 +48,9 @@ namespace Pool
       }
 
       var objT = obj as TObject;
+      onReleaseBefore?.Invoke(objT);
       pools[type].Release(objT);
-      onRelease?.Invoke(objT);
+      onReleaseAfter?.Invoke();
     }
 
     protected virtual TObject OnCreatePool(string type) =>

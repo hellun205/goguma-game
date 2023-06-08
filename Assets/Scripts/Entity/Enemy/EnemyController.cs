@@ -1,17 +1,14 @@
-using System;
-using System.Collections;
 using Animation;
+using Entity.Npc;
 using Entity.UI;
 using Manager;
+using Quest.User;
 using UnityEngine;
 
 namespace Entity.Enemy
 {
   public class EnemyController : Entity
   {
-    public static EntityType Type => EntityType.Enemy;
-    public override EntityType type => Type;
-
     public EnemyStatus status;
 
     [SerializeField]
@@ -65,7 +62,7 @@ namespace Entity.Enemy
         : new Vector2(-1, 2);
 
       // hit damage
-      Managers.Entity.GetEntity<DamageText>(position, x => x.Init(Mathf.RoundToInt(damage)));
+      Managers.Entity.Get<UEDamage>(position, x => x.Init(Mathf.RoundToInt(damage)));
 
       // hp
       status.hp = Mathf.Max(status.hp - damage, 0f);
@@ -90,6 +87,19 @@ namespace Entity.Enemy
 
     protected virtual void OnDead(Vector2 knockDir, float knockBack)
     {
+      Managers.Player.questData.quests.ForEach(info =>
+      {
+        info.requires.ForEach(require =>
+        {
+          if (require is NeedKillEnemy killEnemy && killEnemy.EnemyName == name)
+          {
+            require.Add();
+          }
+        });
+      });
+      
+      ENpc.RefreshQuestAll();
+      
       anim.SetBool(deadAnimParam, true);
       rigid.AddForce(knockDir * (knockBackPower * knockBack));
       animFade.FadeOut(3f);

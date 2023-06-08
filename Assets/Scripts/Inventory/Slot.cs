@@ -15,7 +15,7 @@ namespace Inventory
                       IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
   {
     [HideInInspector]
-    public Item item;
+    public BaseItem item;
 
     [HideInInspector]
     public byte count = 1;
@@ -50,7 +50,7 @@ namespace Inventory
     [SerializeField]
     private AudioData dragSound;
 
-    public void SetItem(Item item = null, byte count = 0)
+    public void SetItem(BaseItem item = null, byte count = 0)
     {
       this.item = item;
       this.count = count;

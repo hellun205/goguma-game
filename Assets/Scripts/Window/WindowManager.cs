@@ -6,18 +6,18 @@ using UnityEngine.Events;
 
 namespace Window
 {
-  public sealed class WindowManager : PoolManager<BaseWindow>
+  public sealed class WindowManager : PoolManager<WindowManager, BaseWindow>
   {
     public bool IsActive => count > 0;
 
     private byte count;
-    
+
     protected override void Awake()
     {
       base.Awake();
       parent = GameObject.Find("@WindowContainer").transform;
-      onGet += _ => count++;
-      onRelease += _ => count--;
+      onGetAfter += _ => count++;
+      onReleaseBefore += _ => count--;
     }
 
     public MessageBoxWindow Ask(
@@ -32,7 +32,7 @@ namespace Window
         msgBox.title = title;
         msgBox.Init(text, yesText, noText, callback);
       });
-    
+
     public MessageBoxWindow ShowMsg(
       string title,
       string text,
@@ -66,7 +66,6 @@ namespace Window
       int maxValue = Int32.MaxValue
     )
     {
-      string @return = "";
       int returnInt;
 
       void ShowInputBox()

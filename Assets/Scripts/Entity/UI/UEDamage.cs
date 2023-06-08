@@ -1,0 +1,65 @@
+﻿using System;
+using Animation;
+using TMPro;
+using UnityEngine;
+
+namespace Entity.UI
+{
+  public class UEDamage : UIEntity
+  {
+    [Header("UI Object")]
+    [SerializeField]
+    private TextMeshProUGUI tmp;
+
+    // Animation
+    private SmoothVector2 animSizeUp;
+    private SmoothVector2 animSizeDown;
+    private SmoothFade animFade;
+    private bool isIn = true;
+
+    private static readonly Vector2 NormalSize = new Vector2(3f, 3f);
+    private static readonly Vector2 MinSize = new Vector2(0.1f, 0.1f);
+
+    public int damage
+    {
+      get => Int32.Parse(tmp.text);
+      set => tmp.text = value.ToString();
+    }
+
+    protected override void Awake()
+    {
+      base.Awake();
+      animSizeUp = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      animSizeDown = new(this, new(() => transform.localScale, value => transform.localScale = value));
+      animFade = new(this, new(() => tmp.color, value => tmp.color = value));
+
+      animSizeUp.timeout = 0.2f;
+      animSizeDown.timeout = 0.5f;
+      animFade.timeout = 0.6f;
+
+      animSizeUp.onEnded += AnimSizeUpOnonEnded;
+      animFade.onEnded += AnimFadeOnonEnded;
+    }
+
+    public void Init(int damage)
+    {
+      this.damage = damage;
+      isIn = true;
+      animSizeUp.Start(MinSize, NormalSize, 13f);
+      animFade.FadeIn(6f);
+    }
+
+    private void AnimSizeUpOnonEnded(SmoothVector2 sender)
+    {
+      animSizeDown.Start(transform.localScale, MinSize, 7f);
+      isIn = false;
+      animFade.FadeOut(7f);
+    }
+
+    private void AnimFadeOnonEnded(SmoothFade sender)
+    {
+      if (!isIn)
+        Release();
+    }
+  }
+}

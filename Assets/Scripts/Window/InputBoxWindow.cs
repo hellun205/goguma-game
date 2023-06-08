@@ -30,7 +30,7 @@ namespace Window
     protected override void OnValidate()
     {
       base.OnValidate();
-
+    
       textTMP.text = text;
       inputField.text = inputText;
       placeholderTMP.text = placeholder;

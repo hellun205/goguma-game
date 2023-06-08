@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dialogue;
+using Quest;
 using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Entity.Npc
 {
   [Serializable]
-  public abstract class Npc : UnityEngine.ScriptableObject
+  public abstract class Npc : ScriptableObject
   {
     public abstract NpcType type { get; }
 
@@ -24,5 +25,8 @@ namespace Entity.Npc
     public NpcDialogue[] meetDialogue;
 
     public Dialogue.Speaker speakerData => new Dialogue.Speaker(_name, avatar, AvatarPosition.Right);
+
+    [Header("Quest")]
+    public NpcQuestData[] quest;
   }
 }

@@ -8,7 +8,7 @@ namespace Inventory
   public class ItemToolTip : MonoBehaviour
   {
     [HideInInspector]
-    public Item itemData;
+    public BaseItem itemData;
 
     [SerializeField]
     private TextMeshProUGUI text;

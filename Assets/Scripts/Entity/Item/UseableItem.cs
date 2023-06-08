@@ -6,7 +6,7 @@ using Window;
 
 namespace Entity.Item
 {
-  public abstract class UseableItem : Item, IInteractable
+  public abstract class UseableItem : BaseItem, IInteractable
   {
     public delegate void _onUse(UseableItem item);
 
