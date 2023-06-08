@@ -1,5 +1,7 @@
 ﻿using System;
 using Manager;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Quest
 {
@@ -8,21 +10,34 @@ namespace Quest
   {
     public RewardType type;
 
-    public string item_name;
+    public string itemName;
 
+    [Min(1)]
     public ushort amount;
 
-    public bool Compensate()
+    public bool CanCompensate()
     {
       var player = Managers.Player;
       switch (type)
       {
         case RewardType.Item:
         {
-          var item = Managers.Item.GetObject(item_name);
-          if (!player.inventory.CanGainItem(item, amount))
-            return false;
+          var item = Managers.Item.GetObject(itemName);
+          return player.inventory.CanGainItem(item, amount);
+        }
+        default:
+          return true;
+      }
+    }
 
+    public void Compensate()
+    {
+      var player = Managers.Player;
+      switch (type)
+      {
+        case RewardType.Item:
+        {
+          var item = Managers.Item.GetObject(itemName);
           player.inventory.GainItem(item, amount);
           break;
         }
@@ -39,8 +54,6 @@ namespace Quest
           break;
         }
       }
-
-      return true;
     }
   }
 }

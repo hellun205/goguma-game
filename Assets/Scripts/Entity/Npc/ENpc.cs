@@ -89,10 +89,12 @@ namespace Entity.Npc
         var quest = Managers.Quest.GetQuestByID(completableQuests[0]);
         Managers.Dialogue.ShowDialogues(GetDialogueData(quest.completeDialogue), _ =>
         {
-          if (quest.rewards.Any(reward => !reward.Compensate()))
+          if (quest.rewards.Any(reward => !reward.CanCompensate()))
             Managers.Dialogue.ShowDialogue(GetDialogueData(quest.cantCompensateDialogue));
           else
           {
+            foreach (var reward in quest.rewards)
+              reward.Compensate();
             Managers.Player.questData.endedQuest.Add(quest.index);
             Managers.Player.questData.RemoveQuest(quest.index);
             RefreshQuest();
