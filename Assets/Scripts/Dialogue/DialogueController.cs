@@ -15,46 +15,36 @@ namespace Dialogue
 {
   public class DialogueController : SingleTon<DialogueController>
   {
-    [Header("Dialogue Objects")]
-    [SerializeField]
+    [Header("Dialogue Objects")] [SerializeField]
     private Image leftAvatar;
 
-    [SerializeField]
-    private Image rightAvatar;
+    [SerializeField] private Image rightAvatar;
 
-    [SerializeField]
-    private TextMeshProUGUI speakerName;
+    [SerializeField] private TextMeshProUGUI speakerName;
 
-    [SerializeField]
-    private TextMeshProUGUI text;
+    [SerializeField] private TextMeshProUGUI text;
 
-    [SerializeField]
-    private Button nextBtn;
+    [SerializeField] private Button nextBtn;
 
-    [SerializeField]
-    private TextMeshProUGUI nextBtnText;
+    [SerializeField] private TextMeshProUGUI nextBtnText;
 
     private Image nextBtnImg;
 
-    [SerializeField]
-    private Button previousBtn;
+    [SerializeField] private Button previousBtn;
 
-    [SerializeField]
-    private TextMeshProUGUI previousBtnText;
+    [SerializeField] private TextMeshProUGUI previousBtnText;
 
     private Image previousBtnImg;
 
     private CanvasGroup canvasGroup;
 
-    [Header("Dialogue")]
-    private const float WriteDelay = 0.05f;
+    [Header("Dialogue")] private const float WriteDelay = 0.05f;
 
     public bool isEnabled { get; private set; }
 
     public bool skipable = true;
 
-    [Header("Ask Setting")]
-    public Color yesColor;
+    [Header("Ask Setting")] public Color yesColor;
 
     public Color noColor;
 
@@ -74,7 +64,7 @@ namespace Dialogue
 
     private (bool isAsk, string yes, string no) ask;
 
-    private Action<bool> callback;
+    private Action<DialogueEventArgs> callback;
 
     private Coroutiner writeCoroutiner;
 
@@ -93,7 +83,7 @@ namespace Dialogue
 
       anim = new(this);
       anim.animation.isUnscaled = true;
-      
+
       writeCoroutiner = new(this, WriteCoroutine);
 
       ResetUI();
@@ -180,11 +170,11 @@ namespace Dialogue
     /// <param name="btn"></param>
     private void Close(bool? btn = null)
     {
-      anim.Hide();
-      isEnabled = false;
-
       if (btn.HasValue)
-        callback?.Invoke(btn.Value);
+        callback?.Invoke(new DialogueEventArgs()
+        {
+          button = btn.Value,
+        });
     }
 
     /// <summary>
@@ -193,13 +183,13 @@ namespace Dialogue
     /// <param name="dialogue">dialogue data</param>
     /// <param name="callback">callback at end of dialogue</param>
     /// <param name="isAsk">type is ask</param>
-    public void ShowDialogue(DialogueData dialogue, [CanBeNull] Action<bool> callback = null, bool isAsk = false)
+    public void ShowDialogue(DialogueData dialogue, [CanBeNull] Action<DialogueEventArgs> callback = null,
+      bool isAsk = false)
     {
-      if (isEnabled)
-        return;
+      if (!isEnabled)
+        anim.Show();
 
       isEnabled = true;
-      anim.Show();
       ResetUI(dialogue.speaker, isAsk);
       ask.isAsk = isAsk;
       curText = dialogue.text.ToCharArray();
@@ -213,18 +203,26 @@ namespace Dialogue
     /// </summary>
     /// <param name="dialogues">dialogue collection</param>
     /// <param name="callback">callback at end of dialogue</param>
-    public void ShowDialogues(DialogueData[] dialogues, [CanBeNull] Action<bool> callback = null)
+    public void ShowDialogues(DialogueData[] dialogues, [CanBeNull] Action<DialogueEventArgs> callback = null)
     {
-      if (isEnabled)
-        return;
+      if (!isEnabled)
+        anim.Show();
 
       isEnabled = true;
-      anim.Show();
       isMulti = true;
       multiList = dialogues;
       multIndex = 0;
       this.callback = callback;
       SetMultiDialogue();
+    }
+
+    /// <summary>
+    /// Close current dialogue panel.
+    /// </summary>
+    public void Close()
+    {
+      anim.Hide();
+      isEnabled = false;
     }
 
     /// <summary>
@@ -234,7 +232,8 @@ namespace Dialogue
     /// <param name="callback">대화 종료 후 콜백(예: 참, 아니요: 거짓 반환)</param>
     /// <param name="yesText">예 버튼의 텍스트</param>
     /// <param name="noText">아니요 버튼의 텍스트</param>
-    public void Ask(DialogueData dialogue, Action<bool> callback, string yesText = "예", string noText = "아니요")
+    public void Ask(DialogueData dialogue, Action<DialogueEventArgs> callback, string yesText = "예",
+      string noText = "아니요")
     {
       ask.yes = yesText;
       ask.no = noText;
@@ -254,13 +253,14 @@ namespace Dialogue
       curTextIndex = 0;
       isWriting = true;
       PlayerController.Instance.EnableInputCooldown();
-      
+
       while (curTextIndex < curText.Length)
       {
         text.text += curText[curTextIndex];
         curTextIndex++;
         yield return isWriting ? new WaitForSeconds(WriteDelay) : null;
       }
+
       isWriting = false;
       ShowBtns();
     }

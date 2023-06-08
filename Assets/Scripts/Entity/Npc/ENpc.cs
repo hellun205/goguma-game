@@ -18,14 +18,11 @@ namespace Entity.Npc
 
     private UEMsgBox messageBox;
 
-    [SerializeField]
-    private GameObject exclamation;
+    [SerializeField] private GameObject exclamation;
 
-    [SerializeField]
-    private GameObject question;
+    [SerializeField] private GameObject question;
 
-    [SerializeField]
-    private GameObject dots;
+    [SerializeField] private GameObject dots;
 
     private Animator anim;
 
@@ -76,7 +73,7 @@ namespace Entity.Npc
 
     private void RefreshPosition()
     {
-      if (messageBox.position != (Vector2) MessageBoxPosition.position)
+      if (messageBox.position != (Vector2)MessageBoxPosition.position)
         messageBox.position = MessageBoxPosition.position;
     }
 
@@ -87,12 +84,13 @@ namespace Entity.Npc
       if (completableQuests.Any())
       {
         var quest = Managers.Quest.GetQuestByID(completableQuests[0]);
-        Managers.Dialogue.ShowDialogues(GetDialogueData(quest.completeDialogue), _ =>
+        Managers.Dialogue.ShowDialogues(GetDialogueData(quest.completeDialogue), e =>
         {
           if (quest.rewards.Any(reward => !reward.CanCompensate()))
-            Managers.Dialogue.ShowDialogue(GetDialogueData(quest.cantCompensateDialogue));
+            Managers.Dialogue.ShowDialogue(GetDialogueData(quest.cantCompensateDialogue), e => e.Close());
           else
           {
+            e.Close();
             foreach (var reward in quest.rewards)
               reward.Compensate();
             Managers.Player.questData.endedQuest.Add(quest.index);
@@ -102,36 +100,44 @@ namespace Entity.Npc
         });
         return;
       }
-      
+
       if (receivableQuests.Any())
       {
         var quest = Managers.Quest.GetQuestByID(receivableQuests[0]);
         Managers.Dialogue.ShowDialogues(GetDialogueData(quest.dialogue), _ =>
         {
-          Managers.Dialogue.Ask(GetDialogueData(quest.askDialogue), accept =>
+          Managers.Dialogue.Ask(GetDialogueData(quest.askDialogue), e =>
           {
-            if (accept)
+            if (e.button)
             {
-              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.acceptDialogue));
+              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.acceptDialogue), e => e.Close());
               Managers.Player.questData.quests.Add(quest.GetQuestInfo());
               RefreshQuest();
             }
             else
-              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.refuseDialogue));
+              Managers.Dialogue.ShowDialogues(GetDialogueData(quest.refuseDialogue), e => e.Close());
           });
         });
         return;
       }
 
-      DialogueController.Instance.ShowDialogues(GetDialogueData(npcData.meetDialogue), _ =>
+      DialogueController.Instance.ShowDialogues(GetDialogueData(npcData.meetDialogue), e =>
         {
-          if (npcData.type == NpcType.Shop)
+          switch (npcData.type)
           {
-            DialogueController.Instance.Ask(new DialogueData(npcData.speakerData, "상점을 여시겠습니까?"), openShop =>
+            case NpcType.Shop:
+              DialogueController.Instance.Ask(new DialogueData(npcData.speakerData, "상점을 여시겠습니까?"), e =>
+              {
+                if (e.button)
+                  Debug.Log("open Shop!");
+                e.Close();
+              });
+              break;
+            default:
             {
-              if (openShop)
-                Debug.Log("open Shop!");
-            });
+              e.Close();
+              break;
+            }
           }
         }
       );
@@ -177,7 +183,7 @@ namespace Entity.Npc
       question.SetActive(false);
       dots.SetActive(false);
       exclamation.SetActive(false);
-      
+
       var receivable = npcData.quest.Where(quest =>
         player.questData.quests.All(info => info.questIndex == quest.questID) &&
         !player.questData.endedQuest.Contains(quest.questID) &&

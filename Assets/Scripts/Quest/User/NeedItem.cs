@@ -1,5 +1,4 @@
-﻿using System;
-using Entity.Player;
+﻿using Entity.Player;
 using Manager;
 
 namespace Quest.User
